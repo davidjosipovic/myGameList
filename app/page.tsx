@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-function page() {
+function Page() {
   const [data, setData] = useState<any>(null)
   const [isLoading, setLoading] = useState(true)
  
@@ -27,4 +27,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
