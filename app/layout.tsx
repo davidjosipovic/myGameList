@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import AuthStatus from "@/components/auth-status";
 import { Suspense } from "react";
+import './globals.css'
 
 const inter = Inter({
   variable: "--font-inter",
