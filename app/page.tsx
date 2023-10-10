@@ -1,30 +1,22 @@
-import Image from "next/image";
-import Link from "next/link";
+const MyGameListHome: React.FC = () => {
+    return (
+        <div className="min-h-screen bg-gray-200 flex flex-col justify-center items-center">
+            <div className="bg-white p-8 rounded-lg shadow-md w-96">
+                <h1 className="text-2xl font-bold mb-4">Welcome to MyGameList</h1>
+                <p className="mb-4">
+                    Track and showcase your favorite games, discover new ones, and connect with gamers like you.
+                </p>
+                <div className="flex justify-between">
+                    <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        Sign In
+                    </button>
+                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                        Register
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
-export default function Home() {
-  return (
-    <div className="flex h-screen bg-black">
-      <div className="w-screen h-screen flex flex-col justify-center items-center">
-       
-        <div className="text-center max-w-screen-sm mb-10">
-          <h1 className="text-stone-200 font-bold text-2xl">
-            MyGameList
-          </h1>
-          <p className="text-stone-400 mt-5">
-            Ovo je moj projekt
-          </p>
-        </div>
-        <div className="flex space-x-3">
-          <Link
-            href="/protected"
-            prefetch={false} // workaround until https://github.com/vercel/vercel/pull/8978 is deployed
-            className="text-stone-400 underline hover:text-stone-200 transition-all"
-          >
-             <button className="btn rounded  bg-white text-black">Login</button>
-          </Link>
-          
-        </div>
-      </div>
-    </div>
-  );
-}
+export default MyGameListHome;

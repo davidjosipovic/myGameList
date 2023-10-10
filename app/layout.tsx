@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import AuthStatus from "@/components/auth-status";
 import { Suspense } from "react";
 import './globals.css'
+import Navbar from "@/components/Navbar";
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,17 +31,23 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  
 }: {
   children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={inter.variable}>
+        
         <Toaster />
         <Suspense fallback="Loading...">
-          <AuthStatus />
+          
         </Suspense>
+       
+        <Navbar/>
         {children}
+       
+        
       </body>
     </html>
   );
