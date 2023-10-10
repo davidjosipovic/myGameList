@@ -14,6 +14,7 @@ export default function Login() {
           </p>
         </div>
         <Form type="register" />
+        <div className="bg-black flex items-center justify-center"><Link href='/'><button className="btn text-white">Home</button></Link></div>
       </div>
     </div>
   );
