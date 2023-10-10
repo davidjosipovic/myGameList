@@ -2,9 +2,15 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import { compare } from "bcrypt";
+import TwitchProvider from "next-auth/providers/twitch";
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    TwitchProvider({
+      clientId: process.env.TWITCH_ID,
+      clientSecret: process.env.TWITCH_SECRET
+    }),
+    
     CredentialsProvider({
       name:"Credentials",
       credentials: {
