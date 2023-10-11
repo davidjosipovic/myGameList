@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { FC, useState } from 'react';
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import SignOut from './sign-out';
 
 
 
@@ -47,6 +48,7 @@ const Navbar: FC = () => {
               <Link href="/login"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign in</div></Link>
               <Link href="/register"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign up</div></Link>
               <Link href="/profile"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Profile</div></Link>
+              <SignOut></SignOut>
             </div>
           )}
         </div>
