@@ -1,25 +1,20 @@
 'use client'
 import Link from 'next/link';
 import React, { FC, useState } from 'react';
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import Image from 'next/image';
 import SignOut from './sign-out';
-
-
-
-
+import { useSession } from "next-auth/react"
 
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
- 
+  const { data: session } = useSession()
   
-  
+
   return (
 
-    <div className='bg-gray-800 '>
-      <nav className="flex items-center justify-between bg-gray-800 py-4 text-white container mx-auto z-10">
+    <div className='fixed top-0 w-full bg-gray-900 shadow-lg z-50'>
+      <nav className="flex items-center justify-between  py-4 text-white container mx-auto z-10">
       <Link className='flex items-center' href="/"><Image
           src="/logo.png"
           width={50}
@@ -28,9 +23,6 @@ const Navbar: FC = () => {
           />
           <div className="text-3xl pl-2 font-bold">myGameList</div></Link>
         
-
-<div className="text-2xl pl-2 font-bold px-0"><Link href="/">MyGameList</Link></div>
-
 <div className="relative lg:hidden flex space-x-4 items-center">
           {/* Search Icon */}
           <button  onClick={() => {setIsSearchOpen(!isSearchOpen);setIsOpen(false)}} className="focus:outline-none z-20">
@@ -56,11 +48,11 @@ const Navbar: FC = () => {
           {/* Dropdown Menu */}
           {isOpen && (
             <div className="fixed top-16 left-0 w-full h-screen bg-white text-black z-20 flex flex-col justify-center items-center">
-              <Link href="/login"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign in</div></Link>
-              <Link href="/register"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign up</div></Link>
+              <div>{!session && (<Link href="/login"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign in</div></Link>)}</div>
+              <div>{!session && (<Link href="/register"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign up</div></Link>)}</div>
               <Link href="/topgames"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Top Games</div></Link>
-              <Link href="/profile"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Profile</div></Link>
-              <SignOut></SignOut>
+              <div>{session && (<Link href="/profile"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Profile</div></Link>)}</div>
+              <div>{session && (<SignOut/>)}</div>
             </div>
           )}
         </div>
@@ -69,12 +61,13 @@ const Navbar: FC = () => {
         <div className="hidden lg:flex space-x-4 items-center">
           <input type="text" className="p-2 bg-white rounded text-black shadow" placeholder="Search games..."/>
           
-          <Link href="/login"><div className="hover:text-gray-300">Sign in</div></Link>
-          <Link href="/register"><div className="hover:text-gray-300">Sign up</div></Link>
+          <div>{!session && (<Link href="/login"><div className="hover:text-gray-300">Sign in</div></Link>)}</div>
+          <div>{!session && (<Link href="/register"><div className="hover:text-gray-300">Sign up</div></Link>)}</div>
           <Link href="/topgames"><div className="hover:text-gray-300">Top Games</div></Link>
-          <Link href="/profile"><div className="hover:text-gray-300">Profile</div></Link>
-          <SignOut />
+          <div>{session && (<Link href="/profile"><div className="hover:text-gray-300">Profile</div></Link>)}</div>
+          <div>{session && (<SignOut />)}</div>
         </div>
+        
       </nav>
     </div>
   );

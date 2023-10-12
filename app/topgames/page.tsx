@@ -1,5 +1,4 @@
 'use client';
-'use strict';
 
 import React, { useEffect, useState } from 'react';
 
@@ -45,11 +44,11 @@ const GameComponent: React.FC = () => {
             
             <div className="md:hidden">
               {game.cover && (
-                <img src={`https:${game.cover.url}`} alt={`${game.name} cover`} className="w-full h-48 object-cover rounded mb-4" />
+                <img src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover rounded " />
               )}
               <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 rounded-b">
-                <h2 className="text-l  font-semibold mb-2 text-white">{game.name}</h2>
-                <p className="text-white text-sm mb-1">Rating: {game.rating.toFixed(2)}</p>
+                <h2 className="text-sm  font-semibold underline text-white whitespace-nowrap overflow-hidden truncate">{game.name}</h2>
+                <p className="text-white text-sm ">Rating: {game.rating.toFixed(2)}</p>
                 <p className="text-white text-sm">Ratings Count: {game.rating_count}</p>
               </div>
             </div>
