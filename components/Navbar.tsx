@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { FC, useState } from 'react';
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import Image from 'next/image';
 
 
 
@@ -16,8 +17,14 @@ const Navbar: FC = () => {
   return (
     <div className='bg-gray-800 '>
       <nav className="flex items-center justify-between bg-gray-800 py-4 text-white container mx-auto z-10">
+      <Link className='flex items-center' href="/"><Image
+          src="/logo.png"
+          width={50}
+          height={50}
+          alt='Logo'
+          />
+          <div className="text-3xl pl-2 font-bold">myGameList</div></Link>
         
-        <div className="text-2xl pl-2 font-bold px-0"><Link href="/">MyGameList</Link></div>
 
         <div className="relative lg:hidden flex space-x-4 items-center">
           {/* Search Icon */}
