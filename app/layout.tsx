@@ -41,7 +41,7 @@ export default async function RootLayout({
         
         <Toaster />
         <Suspense fallback="Loading...">
-          
+          <AuthStatus></AuthStatus>
         </Suspense>
        
         <Navbar/>
