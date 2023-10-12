@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 export default function SignOut() {
   return (
     <button
-      className="hover:bg-gray-200 p-1 rounded"
+      className="hover:text-gray-200"
       onClick={() => signOut()}
     >
       Sign out
