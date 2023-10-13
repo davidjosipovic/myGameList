@@ -5,6 +5,7 @@ import { compare } from "bcrypt";
 import TwitchProvider from "next-auth/providers/twitch";
 
 export const authOptions: NextAuthOptions = {
+  
   providers: [
     TwitchProvider({
       clientId: process.env.TWITCH_ID,
@@ -18,7 +19,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        console.log("Authorizing...");
         const { email, password } = credentials ?? {}
         if (!email || !password) {
           throw new Error("Missing username or password");
@@ -29,7 +29,6 @@ export const authOptions: NextAuthOptions = {
             email,
           },
         });
-        console.log("User fetched:", user);
         // if user doesn't exist or password doesn't match
         if (!user || !(await compare(password, user.password))) {
           throw new Error("Invalid username or password");
