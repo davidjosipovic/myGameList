@@ -24,7 +24,6 @@ const GameComponent: React.FC = () => {
         console.error(err);
       });
   }, []);
-
   return (
     <div className="flex justify-center items-center">
   <div className="container mx-auto h-screen  ">
