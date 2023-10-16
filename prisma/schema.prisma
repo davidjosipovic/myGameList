@@ -14,6 +14,22 @@ datasource db {
 
 model User {
   id            String    @id @default(uuid()) 
-  email         String   @unique
+  email         String    @unique
   password      String
+  username      String?    @unique
+  info          String?   // Optional user info
+  picture       String?
+  games         Game[]
+  createdAt     DateTime @default(now())
+}
+
+model Game {
+  id        Int      @id @default(autoincrement())
+  gameId    String
+  rating    Int?
+  review    String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
