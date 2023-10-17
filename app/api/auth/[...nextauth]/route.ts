@@ -13,28 +13,39 @@ export const authOptions: NextAuthOptions = {
     }),
     
     CredentialsProvider({
-      name:"Credentials",
+      name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Email or Username", type: "text" }, // Changed type to text to allow either email or username
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        const { email, password } = credentials ?? {}
+        const { email, password } = credentials ?? {};
         if (!email || !password) {
           throw new Error("Missing username or password");
         }
-        
-        const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
-        });
+
+        // Check if the provided email/username is actually an email or a username
+        let user;
+        if (email.includes("@")) { // If it includes '@', we treat it as an email
+          user = await prisma.user.findUnique({
+            where: {
+              email,
+            },
+          });
+        } else { // Else, treat it as a username
+          user = await prisma.user.findUnique({
+            where: {
+              username: email,
+            },
+          });
+        }
+
         // if user doesn't exist or password doesn't match
         if (!user || !(await compare(password, user.password))) {
           throw new Error("Invalid username or password");
         } 
         return user;
-      } ,
+      },
     } as any),
   ],
 };
