@@ -7,13 +7,13 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const email = params.id;
+  const name = params.id;
 
   try {
     // Fetch the user based on the email
     const user = await prisma.user.findUnique({
       where: {
-        email: email,
+        name: name,
       },
     });
 

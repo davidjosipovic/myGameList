@@ -4,12 +4,12 @@ import React, { useEffect, useState } from 'react';
 
 const dummyData = {
     pictureUrl: 'https://via.placeholder.com/150',
-    username: 'DemoUser',
+    name: 'DemoUser',
     bio: 'This is a short bio for a demo user.',
     gamesPlayed: 150
 };
 
-const ProfilePage: React.FC = () => {
+const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
   const [user, setUser] = useState(dummyData);
   const [isLoading, setLoading] = useState(true);
   const { data: session } = useSession();
@@ -18,7 +18,7 @@ const ProfilePage: React.FC = () => {
     async function fetchUserData() {
       if (session && session.user.email) {
         try {
-          const response = await fetch(`/api/user/${encodeURIComponent(session.user.email)}`);
+          const response = await fetch(`/api/user/${encodeURIComponent(params.id)}`);
           if (!response.ok) {
             throw new Error('Failed to fetch user data');
           }
@@ -40,9 +40,8 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md flex flex-col items-center space-y-4">
-      <img className="w-32 h-32 rounded-full" src={user.pictureUrl} alt={`${user.username} profile`} />
-      <h1 className="text-3xl font-semibold">{user.username}</h1>
-      
+      <img className="w-32 h-32 rounded-full" src={user.pictureUrl} alt={`${user.name} profile`} />
+      <h1 className="text-3xl font-semibold">{user.name}</h1>
       <p className="text-center text-gray-600">{user.bio}</p>
       
       <section className="w-full mt-4 border-t border-gray-200 pt-4">

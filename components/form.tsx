@@ -17,15 +17,15 @@ export default function Form({ type }: { type: "login" | "register" }) {
         e.preventDefault();
         setLoading(true);
         const email = e.currentTarget.email.value;
-        const username = e.currentTarget.username?.value;  // Only capture username if it exists
+        const name = e.currentTarget.name?.value;  // Only capture name if it exists
         const password = e.currentTarget.password.value;
 
         if (type === "login") {
-          // Use email as a fallback for login if username is not provided
+          // Use email as a fallback for login if name is not provided
           signIn("credentials", {
             redirect: false,
-            email: username ? undefined : email,
-            username: username,
+            email: name ? undefined : email,
+            name: name,
             password: password,
           }).then(({ error }) => {
             if (error) {
@@ -44,7 +44,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
             },
             body: JSON.stringify({
               email: email,
-              username: username,  // Send username for registration
+              name: name,  // Send name for registration
               password: password,
             }),
           }).then(async (res) => {
@@ -79,15 +79,15 @@ export default function Form({ type }: { type: "login" | "register" }) {
       </div>
       {type === "register" && (
         <div>
-          <label htmlFor="username" className="block text-xs text-gray-600 uppercase">
-            Username
+          <label htmlFor="name" className="block text-xs text-gray-600 uppercase">
+            name
           </label>
           <input
-            id="username"
-            name="username"
+            id="name"
+            name="name"
             type="text"
-            placeholder="username"
-            autoComplete="username"
+            placeholder="name"
+            autoComplete="name"
             required
             className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
           />
