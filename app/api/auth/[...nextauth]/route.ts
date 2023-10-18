@@ -5,7 +5,19 @@ import { compare } from "bcrypt";
 import TwitchProvider from "next-auth/providers/twitch";
 
 export const authOptions: NextAuthOptions = {
-  
+  callbacks: {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return { ...token, ...session.user };
+      }
+      return { ...token, ...user };
+    },
+
+    async session({ session, token }) {
+      session.user = token as any;
+      return session;
+    },
+  },
   providers: [
     TwitchProvider({
       clientId: process.env.TWITCH_ID,
@@ -35,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         } else { // Else, treat it as a username
           user = await prisma.user.findUnique({
             where: {
-              username: email,
+              name: email,
             },
           });
         }

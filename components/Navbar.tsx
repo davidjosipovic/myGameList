@@ -48,14 +48,22 @@ const Navbar: FC = () => {
           {/* Dropdown Menu */}
           {isOpen && (
             <div className="fixed top-16 left-0 w-full h-screen bg-white text-black z-20 flex flex-col justify-center items-center">
+              {session && (
+            <div className="text-gray-300">{session.user.name}</div>
+          )}
               <div>{!session && (<Link href="/login"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign in</div></Link>)}</div>
               <div>{!session && (<Link href="/register"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Sign up</div></Link>)}</div>
               <Link href="/topgames"><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Top Games</div></Link>
               <div>{session && (<Link href={`/profile/${session.user.name}`}><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center" onClick={() => setIsOpen(false)}>Profile</div></Link>)}</div>
               <div>{session && (<SignOut/>)}</div>
+              
             </div>
           )}
+
+            
         </div>
+
+
 
         {/* Regular menu for larger screens */}
         <div className="hidden lg:flex space-x-4 items-center">
@@ -64,8 +72,12 @@ const Navbar: FC = () => {
           <div>{!session && (<Link href="/login"><div className="hover:text-gray-300">Sign in</div></Link>)}</div>
           <div>{!session && (<Link href="/register"><div className="hover:text-gray-300">Sign up</div></Link>)}</div>
           <Link href="/topgames"><div className="hover:text-gray-300">Top Games</div></Link>
+          
           <div>{session && (<Link href={`/profile/${session.user.name}`}><div className="hover:text-gray-300">Profile</div></Link>)}</div>
           <div>{session && (<SignOut />)}</div>
+          {session && (
+            <div className="text-gray-300">{session.user.name}</div>
+          )}
         </div>
         
       </nav>

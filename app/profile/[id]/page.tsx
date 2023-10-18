@@ -1,11 +1,12 @@
 'use client'
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link'; 
 
 const dummyData = {
     pictureUrl: 'https://via.placeholder.com/150',
     name: 'DemoUser',
-    bio: 'This is a short bio for a demo user.',
+    info: 'This is a short bio for a demo user.',
     gamesPlayed: 150
 };
 
@@ -42,8 +43,16 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
     <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md flex flex-col items-center space-y-4">
       <img className="w-32 h-32 rounded-full" src={user.pictureUrl} alt={`${user.name} profile`} />
       <h1 className="text-3xl font-semibold">{user.name}</h1>
-      <p className="text-center text-gray-600">{user.bio}</p>
+      <p className="text-center text-gray-600">{user.info}</p>
+    
       
+      {/* Add an "Edit Profile" button */}
+      {session && (
+        <Link className="text-blue-500 underline" href="/editprofile">
+          Edit Profile
+        </Link>
+      )}
+
       <section className="w-full mt-4 border-t border-gray-200 pt-4">
         <h2 className="text-xl font-bold mb-2">Statistics</h2>
         <ul className="list-disc pl-5">
@@ -54,5 +63,6 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
     </div>
   );
 };
+
 
 export default ProfilePage;
