@@ -74,6 +74,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             <div className="md:w-1/3">
               {game.cover && (
                 <Image
+                height={500} width={500}
                   src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
                   alt={`${game.name} cover`}
                   className="w-3/4 md:w-2/3 mx-auto object-cover rounded mb-4"
@@ -156,6 +157,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   <div className="flex flex-wrap">
                     {game.screenshots.map((screenshot, index) => (
                       <Image
+                      height={500} width={500}
                         key={index}
                         src={`https:${screenshot.url.replace('t_thumb', 't_cover_big')}`}
                         alt={`Screenshot ${index}`}
