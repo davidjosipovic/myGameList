@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 type Game = {
   id: number;
@@ -72,7 +73,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
           <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 md:flex md:space-x-4">
             <div className="md:w-1/3">
               {game.cover && (
-                <img
+                <Image
                   src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
                   alt={`${game.name} cover`}
                   className="w-3/4 md:w-2/3 mx-auto object-cover rounded mb-4"
@@ -154,7 +155,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   <h3 className="text-xl font-semibold text-indigo-800 mb-4">Screenshots</h3>
                   <div className="flex flex-wrap">
                     {game.screenshots.map((screenshot, index) => (
-                      <img
+                      <Image
                         key={index}
                         src={`https:${screenshot.url.replace('t_thumb', 't_cover_big')}`}
                         alt={`Screenshot ${index}`}
