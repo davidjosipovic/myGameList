@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Game = {
   id: number;
@@ -44,7 +45,7 @@ const GameComponent: React.FC = () => {
 
               <Link href={`/game/${game.id}`}><div className="md:hidden">
                 {game.cover && (
-                  <img src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover rounded " />
+                  <Image src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover rounded " />
                 )}
                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 rounded-b">
                   <h2 className="text-sm  font-semibold underline text-white whitespace-nowrap overflow-hidden truncate">{game.name}</h2>
@@ -58,7 +59,7 @@ const GameComponent: React.FC = () => {
               </div>
               <div className=" hidden md:flex w-5/6 items-center">
                 {game.cover && (
-                  <img src={`https:${game.cover.url}`} alt={`${game.name} cover`} className="w-24 h-24 object-cover rounded mr-4 shadow" />
+                  <Image src={`https:${game.cover.url}`} alt={`${game.name} cover`} className="w-24 h-24 object-cover rounded mr-4 shadow" />
                 )}
                 <div className=''>
                   <h2 className="text-xl  font-semibold text-gray-700">{game.name}</h2>
