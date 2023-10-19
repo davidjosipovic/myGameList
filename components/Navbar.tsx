@@ -4,6 +4,7 @@ import React, { FC, useState } from 'react';
 import Image from 'next/image';
 import SignOut from './sign-out';
 import { useSession } from "next-auth/react"
+import SearchGameComponent from './searchGame';
 
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,8 +34,8 @@ const Navbar: FC = () => {
           
           {/* Dropdown Search Bar */}
           {isSearchOpen && (
-            <div className="absolute  mt-32 right-0  w-96 py-2 bg-white text-black rounded-lg shadow-xl">
-              <input type="text" className="p-2 w-full rounded" placeholder="Search games..."/>
+            <div className="absolute  mt-32 right-0 w-52 py-2 bg-white text-black rounded-lg shadow-xl">
+             <SearchGameComponent/>
             </div>
           )}
 
@@ -67,7 +68,7 @@ const Navbar: FC = () => {
 
         {/* Regular menu for larger screens */}
         <div className="hidden lg:flex space-x-4 items-center">
-          <input type="text" className="p-2 bg-white rounded text-black shadow" placeholder="Search games..."/>
+          <SearchGameComponent/>
           
           <div>{!session && (<Link href="/login"><div className="hover:text-gray-300">Sign in</div></Link>)}</div>
           <div>{!session && (<Link href="/register"><div className="hover:text-gray-300">Sign up</div></Link>)}</div>

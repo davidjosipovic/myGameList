@@ -4,20 +4,21 @@ import { NextResponse } from "next/server";
 
 
 
-export async function POST(req: Request,) {
+export async function POST(req: Request,{ params }: { params: { id: string }}) {
+    const id = params.id;
   if (req.method !== 'POST') {
     return NextResponse.json({ error: "error" }, { status: 405 });  // Method Not Allowed if not POST
   }
 
   try {
     const response = await fetch('https://api.igdb.com/v4/games', {
-      method: 'POST',
+      method: 'POST', 
       headers: {
         'Accept': 'application/json',
         'Client-ID': process.env.CLIENT_ID ,
         'Authorization': process.env.BEARER_ACCESS_TOKEN
       },
-      body: "fields id,name,rating,rating_count,cover.url; sort rating desc; limit 100; where rating_count>100 & version_parent = null;"
+      body: `fields id, name; search "${id}";limit 10; where version_parent = null;`
     });
 
     const data = await response.json();
