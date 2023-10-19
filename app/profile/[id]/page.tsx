@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link'; 
 
 const dummyData = {
-    pictureUrl: 'https://via.placeholder.com/150',
-    name: 'DemoUser',
-    info: 'This is a short bio for a demo user.',
-    gamesPlayed: 150
+  pictureUrl: 'https://via.placeholder.com/150',
+  name: 'DemoUser',
+  info: 'This is a short bio for a demo user.',
+  gamesPlayed: 150
 };
 
 const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
@@ -17,23 +17,21 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     async function fetchUserData() {
-      if (session && session.user.email) {
-        try {
-          const response = await fetch(`/api/user/${encodeURIComponent(params.id)}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-          }
-          const fetchedData = await response.json();
-          setUser(prev => ({ ...dummyData, ...fetchedData }));
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching user:", error);
-          setLoading(false);
+      try {
+        const response = await fetch(`/api/user/${encodeURIComponent(params.id)}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
         }
+        const fetchedData = await response.json();
+        setUser(prev => ({ ...dummyData, ...fetchedData }));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setLoading(false);
       }
     }
     fetchUserData();
-  }, [session]);
+  }, [params.id]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -45,12 +43,13 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
       <h1 className="text-3xl font-semibold">{user.name}</h1>
       <p className="text-center text-gray-600">{user.info}</p>
     
-      
-      {/* Add an "Edit Profile" button */}
-      {session && (
+      {/* Add an "Edit Profile" button, but require a session for editing */}
+      {session ? (
         <Link className="text-blue-500 underline" href="/editprofile">
           Edit Profile
         </Link>
+      ) : (
+        <p>You need to be logged in to edit your profile.</p>
       )}
 
       <section className="w-full mt-4 border-t border-gray-200 pt-4">
@@ -63,6 +62,5 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
     </div>
   );
 };
-
 
 export default ProfilePage;

@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const MyGameListHome: React.FC = () => {
     fetch(
@@ -26,10 +27,10 @@ const MyGameListHome: React.FC = () => {
                
                 <div className="flex justify-between">
                     <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                        Sign In
+                       <Link href="/login">Sign In</Link> 
                     </button>
                     <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                        Register
+                        <Link href="/register">Register</Link> 
                     </button>
                 </div>
             </div>

@@ -48,7 +48,7 @@ const GameComponent: React.FC = () => {
                 )}
                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 rounded-b">
                   <h2 className="text-sm  font-semibold underline text-white whitespace-nowrap overflow-hidden truncate">{game.name}</h2>
-                  <p className="text-white text-sm ">Rating: {game.rating}</p>
+                  <p className="text-white text-sm ">Rating: {Math.floor(game.rating)}</p>
                   <p className="text-white text-sm">Ratings Count: {game.rating_count}</p>
                 </div>
               </div></Link>
@@ -67,7 +67,7 @@ const GameComponent: React.FC = () => {
               </div>
 
               <div className="hidden md:block w-1/6 text-center text-2xl font-semibold text-gray-700">
-                {game.rating}
+              {Math.floor(game.rating)}
               </div>
               <div className="hidden md:block w-1/6 text-center text-lg text-gray-600">
                 N/A
