@@ -28,6 +28,7 @@ export async function GET(
       },
     });
 
+    
     if (!games || games.length === 0) {
       return NextResponse.json({ status: 404, statusText: 'Games not found for the user' });
     }
