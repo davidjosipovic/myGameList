@@ -51,7 +51,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
       ) : (
         <p>You need to be logged in to edit your profile.</p>
       )}
-
+      <div><Link href={`/gamelist/${user.name}`}><div className="cursor-pointer hover:bg-gray-200 p-2 rounded w-full text-center">Gamelist</div></Link></div>
       <section className="w-full mt-4 border-t border-gray-200 pt-4">
         <h2 className="text-xl font-bold mb-2">Statistics</h2>
         <ul className="list-disc pl-5">

@@ -25,7 +25,7 @@ model User {
 
 model Game {
   id        Int      @id @default(autoincrement())
-  gameId    String
+  gameId    Int
   rating    Int?
   review    String?
   userId    String

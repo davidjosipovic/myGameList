@@ -1,6 +1,7 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 type Game = {
   id: number;
@@ -22,6 +23,10 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const [game, setGame] = useState<Game | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [review, setReview] = useState<string>('');
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const { data: session } = useSession()
+
 
   useEffect(() => {
     if (params.id) {
@@ -61,11 +66,73 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
       </ul>
     );
   };
+
+  const handleAddToListClick = () => {
+    if (game) {
+      const requestData = {
+        gameId: params.id,
+        rating: selectedRating || 0,
+        review: review,
+      };
+
+      fetch(`/api/gamelist/${session.user.name}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Handle success (e.g., display a success message)
+          } else {
+            // Handle error (e.g., display an error message)
+            console.error('Error adding to list:', response.status);
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding to list:', error);
+        });
+    }
+  };
+
+  const handleSubmitReview = () => {
+    if (game) {
+      const requestData = {
+        gameId: params.id,
+        rating: selectedRating || 0,
+        review: review,
+      };
+
+      fetch(`/api/gamelist/${session.user.name}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Handle success (e.g., display a success message)
+          } else {
+            // Handle error (e.g., display an error message)
+            console.error('Error submitting review:', response.status);
+          }
+        })
+        .catch((error) => {
+          console.error('Error submitting review:', error);
+        });
+    }
+
+    setIsReviewOpen(false);
+  };
+
   function formatUnixTimestamp(unixTimestamp: number): string {
     const date = new Date(unixTimestamp * 1000); // Convert to milliseconds
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString(undefined, options);
   }
+
   return (
     <div className="bg-gray-100 min-h-screen p-4 md:p-24">
       <div className="container  mx-auto py-8">
@@ -74,7 +141,8 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             <div className="md:w-1/3">
               {game.cover && (
                 <Image
-                height={500} width={500}
+                  height={500}
+                  width={500}
                   src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
                   alt={`${game.name} cover`}
                   className="w-3/4 md:w-2/3 mx-auto object-cover rounded mb-4"
@@ -93,17 +161,47 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
 
                 <button
                   className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                  onClick={handleAddToListClick}
                 >
                   Add to List
                 </button>
+                <button
+                  className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                  onClick={() => setIsReviewOpen(!isReviewOpen)}
+                >
+                  Review
+                </button>
+                {isReviewOpen && (
+                  <div className="mt-4">
+                    <textarea
+                      className="w-full px-3 py-2 border rounded-md"
+                      rows={4}
+                      placeholder="Write your review..."
+                      value={review}
+                      onChange={(e) => setReview(e.target.value)}
+                    ></textarea>
+                    <button
+                      className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                      onClick={handleSubmitReview}
+                    >
+                      Submit Review
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             <div className="md:w-2/3">
               <h2 className="text-3xl font-semibold text-indigo-800 mb-4">{game.name}</h2>
-              <p className="text-gray-600 mb-2"><span className="font-medium">Rating:</span> {Math.floor(game.rating)}</p>
-              <p className="text-gray-600 mb-2"><span className="font-medium">Ratings Count:</span> {game.rating_count}</p>
+              <p className="text-gray-600 mb-2">
+                <span className="font-medium">Rating:</span> {Math.floor(game.rating)}
+              </p>
+              <p className="text-gray-600 mb-2">
+                <span className="font-medium">Ratings Count:</span> {game.rating_count}
+              </p>
               <p className="text-sm text-gray-700 mb-4">{game.summary}</p>
-              <p className="text-gray-600 mb-2"><span className="font-medium">Release Date:</span> {formatUnixTimestamp(game.first_release_date)}</p>
+              <p className="text-gray-600 mb-2">
+                <span className="font-medium">Release Date:</span> {formatUnixTimestamp(game.first_release_date)}
+              </p>
 
               {/* Include missing properties */}
               {game.platforms && game.platforms.length > 0 && (
@@ -157,14 +255,13 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   <div className="flex flex-wrap">
                     {game.screenshots.map((screenshot, index) => (
                       <Image
-                      height={500} width={500}
+                        height={500}
+                        width={500}
                         key={index}
                         src={`https:${screenshot.url.replace('t_thumb', 't_cover_big')}`}
                         alt={`Screenshot ${index}`}
                         className="w-1/2 md:w-1/4 p-2"
                       />
-
-
                     ))}
                   </div>
                 </div>
@@ -186,8 +283,6 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   </div>
                 </div>
               )}
-
-
             </div>
           </div>
         ) : (
