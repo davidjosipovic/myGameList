@@ -19,6 +19,7 @@ type Game = {
   first_release_date: number;
 };
 
+
 const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const [game, setGame] = useState<Game | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
