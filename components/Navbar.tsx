@@ -10,8 +10,6 @@ const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { data: session } = useSession()
-  
-
   return (
 
     <div className='fixed top-0 w-full bg-gray-900 shadow-lg z-50'>
