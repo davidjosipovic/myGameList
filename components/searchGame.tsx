@@ -7,8 +7,6 @@ const SearchGameComponent = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hasError, setHasError] = useState(false);
-
-  // Reference to the input field element
   const inputRef = useRef(null);
 
   useEffect(() => {
