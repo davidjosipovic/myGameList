@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation"; // changed `navigation` to `router`
 export default function Form({ type }: { type: "login" | "register" }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
   return (
     <form
       onSubmit={(e) => {
