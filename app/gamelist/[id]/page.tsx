@@ -2,34 +2,47 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DeleteGameButton from '@/components/DeleteGameButton';
+import Image from 'next/image';
 
-type UserGame = {
+interface UserGame {
   id: number;
   gameId: string;
-  rating: null | number;
-  review: null | string;
+  rating: number | null;
+  review: string | null;
   userId: string;
-};
+}
 
-type Game = {
+interface Game {
   id: number;
   name: string;
-  cover: { id: number; url: string };
-};
+  cover: {
+    id: number;
+    url: string;
+  };
+}
 
 interface GameListProps {
-  params: { id: string };
+  params: {
+    id: string;
+  };
 }
 
 const GameList: React.FC<GameListProps> = ({ params }) => {
   const [userGames, setUserGames] = useState<UserGame[]>([]);
   const [completedGames, setCompletedGames] = useState<Game[]>([]);
 
-  const fetchUserGames = () => {
-    fetch(`/api/gamelist/${params.id}`)
-      .then((response) => response.json())
-      .then(setUserGames)
-      .catch(console.error);
+  const fetchUserGames = async () => {
+    try {
+      const response = await fetch(`/api/gamelist/${params.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserGames(data);
+      } else {
+        console.error('Failed to fetch user games');
+      }
+    } catch (error) {
+      console.error('Error fetching user games:', error);
+    }
   };
 
   const fetchGameDetails = (games: UserGame[]) => {
@@ -59,24 +72,32 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
   }, [userGames]);
 
   const renderGame = (game: Game, userGame: UserGame) => (
-    
-      <div className="bg-white m-2 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 flex items-center">
-        {game.cover && (
-          <img
-            src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
-            alt={`${game.name} cover`}
-            className="w-24 h-24 object-cover rounded mr-4"
+    <div key={game.id} className="bg-white m-2 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 flex items-center">
+      {game.cover && (
+        <Image
+        width={500}
+        height={500}
+          src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
+          alt={`${game.name} cover`}
+          className="w-24 h-24 object-cover rounded mr-4"
+        />
+      )}
+      <div>
+        <Link href={`/game/${game.id}`}>
+          <h2 className="text-xl font-semibold text-gray-700">{game.name}</h2>
+        </Link>
+        <p className="text-gray-500">
+          {userGame.rating ? `Rating: ${userGame.rating}` : 'No rating'}
+        </p>
+        {userGame.userId && (
+          <DeleteGameButton
+            gameId={game.id}
+            userId={params.id}
+            onGameDeleted={fetchUserGames}
           />
         )}
-        <div>
-        <Link key={game.id} href={`/game/${game.id}`}><h2 className="text-xl font-semibold text-gray-700">{game.name}</h2></Link>
-          <p className="text-gray-500">{userGame.rating ? `Rating: ${userGame.rating}` : 'No rating'}</p>
-          {userGame.userId && ( // Check if the userGame has an ID to determine if it's in the user's list
-          <DeleteGameButton gameId={game.id} userId={params.id} onGameDeleted={fetchUserGames} />
-        )}
-        </div>
       </div>
-    
+    </div>
   );
 
   return (
@@ -96,3 +117,4 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
 };
 
 export default GameList;
+

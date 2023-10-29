@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const MyGameListHome: React.FC = () => {
   return (
@@ -27,7 +28,8 @@ const MyGameListHome: React.FC = () => {
             {/* Game card 1 */}
             <div className="bg-gray-100 p-2 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
               {/* Game image */}
-              <img src="/game1.jpg" alt="Game 1" className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2" />
+              <Image width={500}
+        height={500} src="/game1.jpg" alt="Game 1" className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2" />
               <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Game 1</h3>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700">Description of Game 1.</p>
             </div>
@@ -35,7 +37,8 @@ const MyGameListHome: React.FC = () => {
             {/* Game card 2 */}
             <div className="bg-gray-100 p-2 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
               {/* Game image */}
-              <img src="/game2.jpg" alt="Game 2" className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2" />
+              <Image width={500}
+        height={500} src="/game2.jpg" alt="Game 2" className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2" />
               <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Game 2</h3>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700">Description of Game 2.</p>
             </div>
