@@ -32,22 +32,24 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const [isAddingToList, setIsAddingToList] = useState(false);
 
   const checkGameInDatabase = () => {
-    fetch(`/api/gamelist/${session.user.name}/${params.id}`, { method: 'GET' })
-      .then((response) => {
-        response.json().then((data) => {
-          if (data.status === 404) {
-            setGameExistsInDatabase(false); // Set the state when the specific status message is received
-          } else {
-
-            setGameExistsInDatabase(true); // Set the state for other errors
-          }
+    if (session) {
+      fetch(`/api/gamelist/${session.user ? session.user.name : ''}/${params.id}`, { method: 'GET' })
+        .then((response) => {
+          response.json().then((data) => {
+            if (data.status === 404) {
+              setGameExistsInDatabase(false); // Set the state when the specific status message is received
+            } else {
+              setGameExistsInDatabase(true); // Set the state for other errors
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error checking game in the database:', error);
+          setGameExistsInDatabase(false); // Handle the error by setting the state accordingly
         });
-      })
-      .catch((error) => {
-        console.error('Error checking game in the database:', error);
-        setGameExistsInDatabase(false); // Handle the error by setting the state accordingly
-      });
+    }
   };
+  
 
   // Function to fetch game details
   const fetchGameDetails = () => {
@@ -72,7 +74,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
       // Fetch game details
       fetchGameDetails();
     }
-  }, [params.id, session.user.name]);
+  }, [params.id]);
 
   const handleRatingChange = (rating: number) => {
     setSelectedRating(rating);
@@ -222,27 +224,31 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString(undefined, options);
   }
+  const handleNotLoggedInAction = () => {
+    // You can customize this function based on your requirements.
+    // For example, you can show a modal to prompt the user to log in or register.
+    alert("Please log in or register to use this feature.");
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen p-4 md:p-24">
-      <div className="container  mx-auto py-8">
-        {game ? (
-          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 md:flex md:space-x-4">
-            <div className="md:w-1/3">
-              {game.cover && (
-                <Image
-                  height={500}
-                  width={500}
-                  src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
-                  alt={`${game.name} cover`}
-                  className="w-3/4 md:w-2/3 mx-auto object-cover rounded mb-4"
-                />
-              )}
-              <div className="mt-6 px-10">
-
-
+  <div className="container  mx-auto py-8">
+    {game ? (
+      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 md:flex md:space-x-4">
+        <div className="md:w-1/3">
+          {game.cover && (
+            <Image
+              height={500}
+              width={500}
+              src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
+              alt={`${game.name} cover`}
+              className="w-3/4 md:w-2/3 mx-auto object-cover rounded mb-4"
+            />
+          )}
+          <div className="mt-6 px-10">
+            {session ? ( // Check if the user is logged in
+              <>
                 {gameExistsInDatabase ? (
-
                   <DeleteGameButton
                     gameId={game.id}
                     userId={session.user.name}
@@ -251,12 +257,11 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                 ) : (
                   <button
                     className={`px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600
-  transition-opacity duration-300 ${isReviewOpen ? 'opacity-0 pointer-events-none' : ''}`}
+                      transition-opacity duration-300 ${isReviewOpen ? 'opacity-0 pointer-events-none' : ''}`}
                     onClick={handleAddToListClick}
                     disabled={isAddingToList}
                   >
                     {isAddingToList ? 'Adding to List...' : 'Add to List'}
-
                   </button>
                 )}
                 <div className="relative  inline-block">
@@ -291,108 +296,112 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                     </button>
                   </div>
                 )}
+              </>
+            ) : (
+              <button
+                className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                onClick={handleNotLoggedInAction}
+              >
+                Login / Register
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="md:w-2/3">
+          <h2 className="text-3xl font-semibold text-indigo-800 mb-4">{game.name}</h2>
+          <p className="text-gray-600 mb-2">
+            <span className="font-medium">Rating:</span> {Math.floor(game.rating)}
+          </p>
+          <p className="text-gray-600 mb-2">
+            <span className="font-medium">Ratings Count:</span> {game.rating_count}
+          </p>
+          <p className="text-sm text-gray-700 mb-4">{game.summary}</p>
+          <p className="text-gray-600 mb-2">
+            <span className="font-medium">Release Date:</span> {formatUnixTimestamp(game.first_release_date)}
+          </p>
+          {/* Include missing properties */}
+          {game.platforms && game.platforms.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-4">Platforms</h3>
+              <ul className="list-disc list-inside">
+                {game.platforms.map((platform, index) => (
+                  <li key={index}>{platform.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {game.genres && game.genres.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-4">Genres</h3>
+              <ul className="list-disc list-inside">
+                {game.genres.map((genre, index) => (
+                  <li key={index}>{genre.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {game.game_modes && game.game_modes.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-4">Game Modes</h3>
+              <ul className="list-disc list-inside">
+                {game.game_modes.map((gameMode, index) => (
+                  <li key={index}>{gameMode.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {game.standalone_expansions && game.standalone_expansions.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-4">Standalone Expansions</h3>
+              <ul className="list-disc list-inside">
+                {game.standalone_expansions.map((expansion, index) => (
+                  <li key={index}>{expansion.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* Display Screenshots */}
+          {game.screenshots && game.screenshots.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-4">Screenshots</h3>
+              <div className="flex flex-wrap">
+                {game.screenshots.map((screenshot, index) => (
+                  <Image
+                    height={500}
+                    width={500}
+                    key={index}
+                    src={`https:${screenshot.url.replace('t_thumb', 't_cover_big')}`}
+                    alt={`Screenshot ${index}`}
+                    className="w-1/2 md:w-1/4 p-2"
+                  />
+                ))}
               </div>
             </div>
-            <div className="md:w-2/3">
-              <h2 className="text-3xl font-semibold text-indigo-800 mb-4">{game.name}</h2>
-              <p className="text-gray-600 mb-2">
-                <span className="font-medium">Rating:</span> {Math.floor(game.rating)}
-              </p>
-              <p className="text-gray-600 mb-2">
-                <span className="font-medium">Ratings Count:</span> {game.rating_count}
-              </p>
-              <p className="text-sm text-gray-700 mb-4">{game.summary}</p>
-              <p className="text-gray-600 mb-2">
-                <span className="font-medium">Release Date:</span> {formatUnixTimestamp(game.first_release_date)}
-              </p>
-
-              {/* Include missing properties */}
-              {game.platforms && game.platforms.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Platforms</h3>
-                  <ul className="list-disc list-inside">
-                    {game.platforms.map((platform, index) => (
-                      <li key={index}>{platform.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {game.genres && game.genres.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Genres</h3>
-                  <ul className="list-disc list-inside">
-                    {game.genres.map((genre, index) => (
-                      <li key={index}>{genre.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {game.game_modes && game.game_modes.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Game Modes</h3>
-                  <ul className="list-disc list-inside">
-                    {game.game_modes.map((gameMode, index) => (
-                      <li key={index}>{gameMode.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {game.standalone_expansions && game.standalone_expansions.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Standalone Expansions</h3>
-                  <ul className="list-disc list-inside">
-                    {game.standalone_expansions.map((expansion, index) => (
-                      <li key={index}>{expansion.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Display Screenshots */}
-              {game.screenshots && game.screenshots.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Screenshots</h3>
-                  <div className="flex flex-wrap">
-                    {game.screenshots.map((screenshot, index) => (
-                      <Image
-                        height={500}
-                        width={500}
-                        key={index}
-                        src={`https:${screenshot.url.replace('t_thumb', 't_cover_big')}`}
-                        alt={`Screenshot ${index}`}
-                        className="w-1/2 md:w-1/4 p-2"
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Display Videos */}
-              {game.videos && game.videos.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Videos</h3>
-                  <div className="flex flex-wrap">
-                    {game.videos.map((video, index) => (
-                      <iframe
-                        key={index}
-                        src={`https://www.youtube.com/embed/${video.video_id}`}
-                        title={`Video ${index}`}
-                        className="w-1/2 md:w-1/4 p-2"
-                      ></iframe>
-                    ))}
-                  </div>
-                </div>
-              )}
+          )}
+          {/* Display Videos */}
+          {game.videos && game.videos.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-4">Videos</h3>
+              <div className="flex flex-wrap">
+                {game.videos.map((video, index) => (
+                  <iframe
+                    key={index}
+                    src={`https://www.youtube.com/embed/${video.video_id}`}
+                    title={`Video ${index}`}
+                    className="w-1/2 md:w-1/4 p-2"
+                  ></iframe>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          <p className="text-center text-lg text-gray-500 mt-4">Loading...</p>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    ) : (
+      <p className="text-center text-lg text-gray-500 mt-4">Loading...</p>
+    )}
+  </div>
+</div>
+
   );
 };
 
