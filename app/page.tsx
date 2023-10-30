@@ -1,7 +1,11 @@
+'use client'
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+
 
 const MyGameListHome: React.FC = () => {
+  const { data: session } = useSession();
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-500 flex flex-col justify-center items-center">
       <div className="bg-white mt-24 mb-10 p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-lg max-w-screen-md w-full">
@@ -85,8 +89,8 @@ const MyGameListHome: React.FC = () => {
         </div>
 
         {/* Call-to-Action Buttons */}
-        <div className="flex justify-between mt-6">
-          <Link
+       <div className="flex justify-between mt-6">
+        {!session &&(<><Link
             className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 md:px-8 lg:px-10 py-2 sm:py-3 md:py-4 lg:py-5 rounded transition duration-300 ease-in-out transform hover:scale-105"
             href="/login"
           >
@@ -97,7 +101,8 @@ const MyGameListHome: React.FC = () => {
             href="/register"
           >
             Register
-          </Link>
+          </Link></>)}
+          
         </div>
       </div>
     </div>
