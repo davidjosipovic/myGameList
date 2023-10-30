@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import DeleteGameButton from '@/components/DeleteGameButton';
 
 type Game = {
   id: number;
@@ -26,28 +27,87 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [review, setReview] = useState<string>('');
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const { data: session } = useSession()
+  const { data: session } = useSession();
+  const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false); // Add state to track if the game exists
+  const [isAddingToList, setIsAddingToList] = useState(false);
 
+  const checkGameInDatabase = () => {
+    fetch(`/api/gamelist/${session.user.name}/${params.id}`, { method: 'GET' })
+      .then((response) => {
+        response.json().then((data) => {
+          if (data.status === 404) {
+            setGameExistsInDatabase(false); // Set the state when the specific status message is received
+          } else {
+
+            setGameExistsInDatabase(true); // Set the state for other errors
+          }
+        });
+      })
+      .catch((error) => {
+        console.error('Error checking game in the database:', error);
+        setGameExistsInDatabase(false); // Handle the error by setting the state accordingly
+      });
+  };
+
+  // Function to fetch game details
+  const fetchGameDetails = () => {
+    fetch(`/api/game/${params.id}`, {
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setGame(data.data[0]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   useEffect(() => {
     if (params.id) {
-      fetch(`/api/game/${params.id}`, {
-        method: 'POST',
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          setGame(data.data[0]);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      // Check if the game exists in the database
+      checkGameInDatabase();
+
+      // Fetch game details
+      fetchGameDetails();
     }
-  }, [params.id]);
+  }, [params.id, session.user.name]);
 
   const handleRatingChange = (rating: number) => {
     setSelectedRating(rating);
     setIsDropdownOpen(false);
+
+    // Add a fetch call to update the rating in the database
+    const requestData = {
+      gameId: params.id,
+      rating: rating,
+    };
+
+    fetch(`/api/gamelist/${session.user.name}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Handle success (e.g., display a success message)
+        } else {
+          // Handle error (e.g., display an error message)
+          console.error('Error updating rating:', response.status);
+        }
+      })
+      .catch((error) => {
+        console.error('Error updating rating:', error);
+      });
+
+    // Update the rating in the local state (game object)
+    if (game) {
+      const updatedGame = { ...game, rating: rating };
+      setGame(updatedGame);
+    }
   };
 
   const renderRatingsDropdown = () => {
@@ -70,30 +130,59 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
 
   const handleAddToListClick = () => {
     if (game) {
+      setIsAddingToList(true); // Set loading state
       const requestData = {
         gameId: params.id,
         rating: selectedRating || 0,
         review: review,
       };
 
-      fetch(`/api/gamelist/${session.user.name}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      })
-        .then((response) => {
-          if (response.ok) {
-            // Handle success (e.g., display a success message)
-          } else {
-            // Handle error (e.g., display an error message)
-            console.error('Error adding to list:', response.status);
-          }
+      if (gameExistsInDatabase) {
+        // Remove the game from the user's list
+        fetch(`/api/gamelist/${session.user.name}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
         })
-        .catch((error) => {
-          console.error('Error adding to list:', error);
-        });
+          .then((response) => {
+            if (response.ok) {
+              // Handle success (e.g., display a success message)
+            } else {
+              // Handle error (e.g., display an error message)
+              console.error('Error removing from list:', response.status);
+            }
+          })
+          .catch((error) => {
+            console.error('Error removing from list:', error);
+          });
+      } else {
+        // Add the game to the user's list
+        fetch(`/api/gamelist/${session.user.name}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Handle success (e.g., display a success message)
+              checkGameInDatabase();
+            } else {
+              // Handle error (e.g., display an error message)
+              console.error('Error adding to list:', response.status);
+            }
+          })
+          .catch((error) => {
+            console.error('Error adding to list:', error);
+          })
+          .finally(() => {
+            setIsAddingToList(false); // Set loading state back to false
+            setGameExistsInDatabase(true); // Set the state for other errors
+          });
+      }
     }
   };
 
@@ -150,6 +239,26 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                 />
               )}
               <div className="mt-6 px-10">
+
+
+                {gameExistsInDatabase ? (
+
+                  <DeleteGameButton
+                    gameId={game.id}
+                    userId={session.user.name}
+                    onGameDeleted={checkGameInDatabase}
+                  />
+                ) : (
+                  <button
+                    className={`px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600
+  transition-opacity duration-300 ${isReviewOpen ? 'opacity-0 pointer-events-none' : ''}`}
+                    onClick={handleAddToListClick}
+                    disabled={isAddingToList}
+                  >
+                    {isAddingToList ? 'Adding to List...' : 'Add to List'}
+
+                  </button>
+                )}
                 <div className="relative  inline-block">
                   <button
                     className="px-4 py-2 bg-gray-300 text-black rounded-md"
@@ -159,13 +268,6 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   </button>
                   {renderRatingsDropdown()}
                 </div>
-
-                <button
-                  className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                  onClick={handleAddToListClick}
-                >
-                  Add to List
-                </button>
                 <button
                   className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
                   onClick={() => setIsReviewOpen(!isReviewOpen)}

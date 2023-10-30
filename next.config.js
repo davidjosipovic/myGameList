@@ -13,6 +13,12 @@ const nextConfig = {
             port: '',
             pathname: '/igdb/**',
           },
+          {
+            protocol: 'https',
+            hostname: 'via.placeholder.com',
+            port: '',
+            pathname: '/150/**',
+          },
         ],
       },
 };

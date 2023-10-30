@@ -7,14 +7,14 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string, gameid: string } }
 ) {
-  const gameIdToDelete = parseInt(params.gameid, 10); // Convert the string to a number
+  const gameIdToDelete = parseInt(params.gameid, 10); // Convert the string to an integer
   const name = params.id;
 
   try {
     // Fetch the user based on the name
-    const user = await prisma.user.findUnique ({
+    const user = await prisma.user.findUnique({
       where: {
-        name: name,  // assuming the user model has a 'name' field
+        name: name,
       },
     });
 
@@ -22,10 +22,10 @@ export async function DELETE(
       return NextResponse.json({ status: 404, statusText: 'User not found' });
     }
 
-    // Find the game by gameId and userId
+    // Find the game by gameId (parsed as an integer) and userId
     const gameToDelete = await prisma.game.findFirst({
       where: {
-        gameId: gameIdToDelete,
+        gameId: gameIdToDelete, // Now it's an integer
         userId: user.id,
       },
     });

@@ -43,7 +43,7 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string }, }
+  { params }: { params: { id: string } }
 ) {
   const name = params.id;
   const body = await request.json();
@@ -86,7 +86,7 @@ export async function POST(
       const newGame = await prisma.game.create({
         data: {
           gameId: parseInt(body.gameId, 10),
-          rating: body.rating,
+          rating: body.rating, // Include the rating from the request
           review: body.review,
           userId: user.id,
         },
