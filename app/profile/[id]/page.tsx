@@ -39,6 +39,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
   }
 
   return (
+    <div className=''>
     <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md flex flex-col items-center space-y-4">
       <Image width={500}
         height={500} className="w-32 h-32 rounded-full" src={user.pictureUrl} alt={`${user.name} profile`} />
@@ -64,6 +65,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
           {/* Add other statistics fields as needed */}
         </ul>
       </section>
+    </div>
     </div>
   );
 };

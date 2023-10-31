@@ -104,8 +104,8 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-5xl font-extrabold mb-8 text-gray-700">My Completed Games</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black to-purple-900">
+      <h1 className="text-5xl font-extrabold mb-8 text-white">My Completed Games</h1>
       <div className="w-full max-w-4xl">
         {userGames.length === 0 ? (
           <p className="text-gray-500">Please wait...</p>

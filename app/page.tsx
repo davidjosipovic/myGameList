@@ -7,11 +7,19 @@ import { useSession } from "next-auth/react";
 const MyGameListHome: React.FC = () => {
   const { data: session } = useSession();
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-500 flex flex-col justify-center items-center">
+    <div className="min-h-screen bg-gradient-to-b from-black to-purple-900 flex flex-col justify-center items-center">
       <div className="bg-white mt-24 mb-10 p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-lg max-w-screen-md w-full">
+      <Image
+                width={500}
+                height={500}
+                src="/hero.jpg"
+                alt="Game 1"
+                className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2"
+              />
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-600 mb-4">
           Welcome to MyGameList
         </h1>
+        
         <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 mb-6 transition-opacity hover:opacity-70">
           Discover a world of gaming. Track, showcase, and connect with fellow gamers.
         </p>
@@ -33,44 +41,7 @@ const MyGameListHome: React.FC = () => {
           <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800 mb-2">
             Popular Games
           </h2>
-          {/* Display some popular game cards here */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Game card 1 */}
-            <div className="bg-gray-100 p-2 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
-              {/* Game image */}
-              <Image
-                width={500}
-                height={500}
-                src="/game1.jpg"
-                alt="Game 1"
-                className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2"
-              />
-              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">
-                Game 1
-              </h3>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700">
-                Description of Game 1.
-              </p>
-            </div>
-
-            {/* Game card 2 */}
-            <div className="bg-gray-100 p-2 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
-              {/* Game image */}
-              <Image
-                width={500}
-                height={500}
-                src="/game2.jpg"
-                alt="Game 2"
-                className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2"
-              />
-              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">
-                Game 2
-              </h3>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700">
-                Description of Game 2.
-              </p>
-            </div>
-          </div>
+          
         </div>
 
         {/* Testimonials Section */}
