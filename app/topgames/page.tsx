@@ -11,7 +11,6 @@ type Game = {
   rating_count: number;
   cover: { id: number; url: string };
 };
-
 const GameComponent: React.FC = () => {
   const [data, setData] = useState<Game[] | null>(null);
 
