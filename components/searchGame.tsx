@@ -1,19 +1,24 @@
 'use client'
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+
+type Result = {
+  id: number;
+  name: string;
+  cover: { id: number; url: string };
+};
 
 const SearchGameComponent = () => {
   const [searchInput, setSearchInput] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<Result[] | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    // Define a function to fetch data when searchInput changes
     const fetchSearchResults = async () => {
       try {
-        // Only fetch data if there is text in the input field
         if (searchInput) {
           const response = await fetch(`/api/searchgame/${searchInput}`, {
             method: 'POST',
@@ -22,13 +27,13 @@ const SearchGameComponent = () => {
           if (response.ok) {
             const data = await response.json();
             setSearchResults(data.data);
-            setHasError(false); // Clear any previous errors
+            setHasError(false);
           } else {
             setHasError(true);
           }
         } else {
-          setSearchResults([]); // Clear search results when the field is empty
-          setHasError(false); // Clear any previous errors
+          setSearchResults([]);
+          setHasError(false);
         }
       } catch (error) {
         console.error('Error:', error);
@@ -36,71 +41,78 @@ const SearchGameComponent = () => {
       }
     };
 
-    // Call the fetchSearchResults function whenever searchInput changes (debounced for better performance)
-    const debounceTimeout = setTimeout(fetchSearchResults, 100); // Adjust the debounce delay as needed
+    const debounceTimeout = setTimeout(fetchSearchResults, 100);
 
-    return () => clearTimeout(debounceTimeout); // Cleanup the timeout on unmount or input change
+    return () => clearTimeout(debounceTimeout);
   }, [searchInput]);
 
-  // Function to close the dropdown
   const closeDropdown = () => {
     setIsDropdownOpen(false);
   };
 
-  // Function to handle clicks outside the component
-  const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
       setIsDropdownOpen(false);
     }
   };
 
   useEffect(() => {
-    // Add an event listener to handle clicks outside the component
     document.addEventListener('mousedown', handleClickOutside);
 
-    // Cleanup the event listener on unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // Function to handle link clicks
   const handleLinkClick = () => {
-    setIsDropdownOpen(false); // Close the dropdown
-    setSearchInput(''); // Clear the input field
+    setIsDropdownOpen(false);
+    setSearchInput('');
   };
 
   return (
     <div className="relative inline-block" ref={inputRef}>
+      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+        </svg>
+      </div>
       <input
-        className="w-full px-4 py-2 text-black rounded-md shadow-md focus:outline-none focus:ring focus:border-blue-300"
+        className="w-full px-8 lg:py-2 py-3 text-black rounded-md shadow-md focus:outline-none focus:ring focus:border-blue-300"
         type="text"
         placeholder="Search for a game"
         value={searchInput}
         onChange={(e) => {
           setSearchInput(e.target.value);
-          setIsDropdownOpen(!!e.target.value); // Open the dropdown if there is text in the field
+          setIsDropdownOpen(!!e.target.value);
         }}
       />
 
-      {isDropdownOpen && searchResults.length > 0 && (
+      {isDropdownOpen && searchResults && searchResults.length > 0 && (
         <ul className="absolute text-black left-0 mt-2 w-full bg-white border rounded-md shadow-md z-10">
           {searchResults.map((result) => (
-            <Link href={`/game/${result.id}`} key={result.id}>
+            <Link className='flex hover:bg-gray-100' href={`/game/${result.id}`} key={result.id}>
+              {result.cover && (
+                <Image
+                  height={200}
+                  width={200}
+                  src={`https:${result.cover.url}`}
+                  alt={`${result.name} cover`}
+                  className="w-20 h-20 object-cover rounded mr-0 shadow"
+                />
+              )}
+
               <li
                 onClick={handleLinkClick}
-                className="px-4 py-2 border-b hover:bg-gray-100 cursor-pointer"
+                className="px-4 py-2  hover:bg-gray-100 cursor-pointer"
               >
-                {result.name}
+                <div>{result.name.length > 25 ? `${result.name.substring(0, 32)}...` : result.name}</div>
               </li>
             </Link>
           ))}
         </ul>
       )}
 
-      {hasError && (
-        <p className="text-red-500">Error fetching data</p>
-      )}
+      {hasError && <p className="text-red-500">Error fetching data</p>}
     </div>
   );
 };

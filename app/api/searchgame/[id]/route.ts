@@ -18,7 +18,7 @@ export async function POST(req: Request,{ params }: { params: { id: string }}) {
         'Client-ID': process.env.CLIENT_ID ,
         'Authorization': process.env.BEARER_ACCESS_TOKEN
       },
-      body: `fields id, name; search "${id}";limit 10; where version_parent = null;`
+      body: `fields id, name, cover.url; search "${id}";limit 6; where version_parent = null;`
     });
 
     const data = await response.json();
