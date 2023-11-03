@@ -18,7 +18,7 @@ export async function POST(req: Request,{ params }: { params: { id: string }}) {
         'Client-ID': process.env.CLIENT_ID ,
         'Authorization': process.env.BEARER_ACCESS_TOKEN
       },
-      body: `fields name,rating,rating_count,cover.url,summary,screenshots.url, videos.video_id, standalone_expansions.name, platforms.name, genres.name, game_modes.name, first_release_date; where id=${id};`
+      body: `fields name,rating,rating_count,cover.url,summary,screenshots.url, involved_companies.company.name, videos.video_id, standalone_expansions.name, platforms.name, genres.name, game_modes.name, first_release_date; where id=${id};`
     });
 
     const data = await response.json();

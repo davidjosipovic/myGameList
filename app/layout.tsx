@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Provider from "@/app/context/client-provider"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -43,6 +44,7 @@ export default async function RootLayout({
         <Provider session={session}>
         <Navbar/>
         {children}
+        <Footer/>
         </Provider>
        
         
