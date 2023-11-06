@@ -315,14 +315,16 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               )}
 
             </div>
+            <div className='flex'>
+            <div className="md:w-2/3 ">
 
-            <div className="md:w-2/3">
 
-
-              <p className="text-sm text-gray-700 mb-4 font-semibold">{game.summary}</p>
+              <p className=" text-gray-700 mb-4 font-semibold">{game.summary}</p>
               <p className="text-gray-600 mb-2">
                 <span className="font-medium">Release Date:</span> {formatUnixTimestamp(game.first_release_date)}
               </p>
+
+              
               {/* Chunk 5: Platforms */}
               {game.platforms && game.platforms.length > 0 && (
 
@@ -336,22 +338,10 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                 </div>
               )}
 
-              {/*Chunk 8: Standalone Expansions*/}
-              {game.standalone_expansions && game.standalone_expansions.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Standalone Expansions</h3>
-                  <ul className="list-disc list-inside">
-                    {game.standalone_expansions.map((expansion, index) => (
-                      <li key={index}>{expansion.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
               {/*Chunk 8: Companies*/}
               {game.involved_companies && game.involved_companies.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Standalone Expansions</h3>
+                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Involved companies</h3>
                   <ul className="list-disc list-inside">
                     {game.involved_companies.map((company, index) => (
                       <li key={index}>{company.company.name}</li>
@@ -360,74 +350,73 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                 </div>
               )}
 
-<div className="mt-6 px-10">
-                {session ? (
-                  <>
-                    {gameExistsInDatabase ? (
-                      <DeleteGameButton
-                        gameId={game.id}
-                        userId={session.user.name}
-                        onGameDeleted={checkGameInDatabase}
-                      />
-                    ) : (
-                      <button
-                        className={`px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600
-                      transition-opacity duration-300 ${isReviewOpen ? 'opacity-0 pointer-events-none' : ''}`}
-                        onClick={handleAddToListClick}
-                        disabled={isAddingToList}
-                      >
-                        {isAddingToList ? 'Adding to List...' : 'Add to List'}
-                      </button>
-                    )}
-                    <div className="relative  inline-block">
-                      <button
-                        className="px-4 py-2 bg-gray-300 text-black rounded-md"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      >
-                        {selectedRating ? `Rate (${selectedRating})` : 'Rate'}
-                      </button>
-                      {renderRatingsDropdown()}
-                    </div>
+            </div>
+            <div className="">
+              {session ? (
+                <>
+                  {gameExistsInDatabase ? (
+                    <DeleteGameButton
+                      gameId={game.id}
+                      userId={session.user.name}
+                      onGameDeleted={checkGameInDatabase}
+                    />
+                  ) : (
                     <button
-                      className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                      onClick={() => setIsReviewOpen(!isReviewOpen)}
+                      className={`px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600
+                      transition-opacity duration-300 ${isReviewOpen ? 'opacity-0 pointer-events-none' : ''}`}
+                      onClick={handleAddToListClick}
+                      disabled={isAddingToList}
                     >
-                      Review
+                      {isAddingToList ? 'Adding to List...' : 'Add to List'}
                     </button>
-                    {/**/}
-                    {isReviewOpen && (
-                      // Chunk 3: Review Input and Submission
-                      <div className="mt-4">
-                        <textarea
-                          className="w-full px-3 py-2 border rounded-md"
-                          rows={4}
-                          placeholder="Write your review..."
-                          value={review}
-                          onChange={(e) => setReview(e.target.value)}
-                        ></textarea>
-                        <button
-                          className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                          onClick={handleSubmitReview}
-                        >
-                          Submit Review
-                        </button>
-                      </div>
-                    )}
-                  </>
-
-                ) : (
-
-                  /*Chunk 4: User Not Logged In (Login / Register)*/
+                  )}
+                  <div className="relative  inline-block">
+                    <button
+                      className="px-4 py-2 bg-gray-300 text-black rounded-md"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      {selectedRating ? `Rate (${selectedRating})` : 'Rate'}
+                    </button>
+                    {renderRatingsDropdown()}
+                  </div>
                   <button
-                    className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                    onClick={handleNotLoggedInAction}
+                    className="px-4 py-2  bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                    onClick={() => setIsReviewOpen(!isReviewOpen)}
                   >
-                    Login / Register
+                    Review
                   </button>
-                )}
-              </div>
+                  {/**/}
+                  {isReviewOpen && (
+                    // Chunk 3: Review Input and Submission
+                    <div className="mt-4">
+                      <textarea
+                        className="w-full px-3 py-2 border rounded-md"
+                        rows={4}
+                        placeholder="Write your review..."
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                      ></textarea>
+                      <button
+                        className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                        onClick={handleSubmitReview}
+                      >
+                        Submit Review
+                      </button>
+                    </div>
+                  )}
+                </>
 
+              ) : (
 
+                /*Chunk 4: User Not Logged In (Login / Register)*/
+                <button
+                  className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                  onClick={handleNotLoggedInAction}
+                >
+                  Login / Register
+                </button>
+              )}
+            </div>
             </div>
           </div>
         ) : (
