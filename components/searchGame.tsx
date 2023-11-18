@@ -100,7 +100,6 @@ const SearchGameComponent = () => {
                   className="w-20 h-20 object-cover rounded mr-0 shadow"
                 />
               )}
-
               <li
                 onClick={handleLinkClick}
                 className="px-4 py-2  hover:bg-gray-100 cursor-pointer"
