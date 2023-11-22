@@ -1,9 +1,10 @@
-'use client'
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useSession } from 'next-auth/react';
-import DeleteGameButton from '@/components/DeleteGameButton';
-import ScreenshotGallery from '@/components/ScreenshotGallery';
+"use client";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import DeleteGameButton from "@/components/DeleteGameButton";
+import ScreenshotGallery from "@/components/ScreenshotGallery";
+import VideoGallery from "@/components/VideoGallery";
 
 type Game = {
   id: number;
@@ -21,15 +22,13 @@ type Game = {
   game_modes: { name: string }[];
   first_release_date: number;
   involved_companies: { company: { name: string } }[];
-
 };
-
 
 const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const [game, setGame] = useState<Game | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [review, setReview] = useState<string>('');
+  const [review, setReview] = useState<string>("");
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const { data: session } = useSession();
   const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false); // Add state to track if the game exists
@@ -37,7 +36,10 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
 
   const checkGameInDatabase = () => {
     if (session) {
-      fetch(`/api/gamelist/${session.user ? session.user.name : ''}/${params.id}`, { method: 'GET' })
+      fetch(
+        `/api/gamelist/${session.user ? session.user.name : ""}/${params.id}`,
+        { method: "GET" }
+      )
         .then((response) => {
           response.json().then((data) => {
             if (data.status === 404) {
@@ -48,17 +50,16 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
           });
         })
         .catch((error) => {
-          console.error('Error checking game in the database:', error);
+          console.error("Error checking game in the database:", error);
           setGameExistsInDatabase(false); // Handle the error by setting the state accordingly
         });
     }
   };
 
-
   // Function to fetch game details
   const fetchGameDetails = () => {
     fetch(`/api/game/${params.id}`, {
-      method: 'POST',
+      method: "POST",
     })
       .then((response) => response.json())
       .then((data) => {
@@ -91,9 +92,9 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     };
 
     fetch(`/api/gamelist/${session.user.name}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(requestData),
     })
@@ -102,11 +103,11 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
           // Handle success (e.g., display a success message)
         } else {
           // Handle error (e.g., display an error message)
-          console.error('Error updating rating:', response.status);
+          console.error("Error updating rating:", response.status);
         }
       })
       .catch((error) => {
-        console.error('Error updating rating:', error);
+        console.error("Error updating rating:", error);
       });
 
     // Update the rating in the local state (game object)
@@ -120,7 +121,11 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     const ratings = Array.from({ length: 10 }, (_, i) => i + 1);
 
     return (
-      <ul className={`absolute left-0 mt-2 w-20 bg-white border rounded-md shadow-md z-10 ${isDropdownOpen ? '' : 'hidden'}`}>
+      <ul
+        className={`absolute left-0 mt-2 w-20 bg-white border rounded-md shadow-md z-10 ${
+          isDropdownOpen ? "" : "hidden"
+        }`}
+      >
         {ratings.map((rating) => (
           <li
             key={rating}
@@ -146,9 +151,9 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
       if (gameExistsInDatabase) {
         // Remove the game from the user's list
         fetch(`/api/gamelist/${session.user.name}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
         })
@@ -157,18 +162,18 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               // Handle success (e.g., display a success message)
             } else {
               // Handle error (e.g., display an error message)
-              console.error('Error removing from list:', response.status);
+              console.error("Error removing from list:", response.status);
             }
           })
           .catch((error) => {
-            console.error('Error removing from list:', error);
+            console.error("Error removing from list:", error);
           });
       } else {
         // Add the game to the user's list
         fetch(`/api/gamelist/${session.user.name}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
         })
@@ -178,11 +183,11 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               checkGameInDatabase();
             } else {
               // Handle error (e.g., display an error message)
-              console.error('Error adding to list:', response.status);
+              console.error("Error adding to list:", response.status);
             }
           })
           .catch((error) => {
-            console.error('Error adding to list:', error);
+            console.error("Error adding to list:", error);
           })
           .finally(() => {
             setIsAddingToList(false); // Set loading state back to false
@@ -201,9 +206,9 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
       };
 
       fetch(`/api/gamelist/${session.user.name}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(requestData),
       })
@@ -212,11 +217,11 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             // Handle success (e.g., display a success message)
           } else {
             // Handle error (e.g., display an error message)
-            console.error('Error submitting review:', response.status);
+            console.error("Error submitting review:", response.status);
           }
         })
         .catch((error) => {
-          console.error('Error submitting review:', error);
+          console.error("Error submitting review:", error);
         });
     }
 
@@ -225,7 +230,11 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
 
   function formatUnixTimestamp(unixTimestamp: number): string {
     const date = new Date(unixTimestamp * 1000); // Convert to milliseconds
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
     return date.toLocaleDateString(undefined, options);
   }
   const handleNotLoggedInAction = () => {
@@ -235,69 +244,149 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <div className="bg-gray-100 p-4 md:p-24">
-      <div className="container  mx-auto ">
+    <div className="bg-gray-200 mt-16">
+      <div className="container bg-white mx-auto ">
         {game ? (
-          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 md:flex flex-col ">
-            <div className='flex flex-row gap-5 text-center mb-3'>
+          <div className=" p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 md:flex flex-col ">
+            <div className="flex flex-row gap-5 text-center mb-3">
+              <h2 className="text-4xl font-semibold text-black mb-4">
+                {game.name}
+              </h2>
 
-              <h2 className="text-4xl font-semibold text-black mb-4">{game.name}</h2>
-
-              <div className='flex flex-col ml-auto'>
+              <div className="flex flex-col ml-auto">
                 <p className="text-gray-600 font-medium"> IGDB Rating </p>
-                <p className=' font-semibold text-xl'>{Math.floor(game.rating)}/100</p>
+                <p className=" font-semibold text-xl">
+                  {Math.floor(game.rating)}/100
+                </p>
               </div>
 
-              <div className='flex flex-col '>
-                <p className="text-gray-600 font-medium float-right"> Ratings Count</p>
-                <p className=' font-semibold text-xl'>{game.rating_count}</p>
+              <div className="flex flex-col ">
+                <p className="text-gray-600 font-medium float-right">
+                  {" "}
+                  Ratings Count
+                </p>
+                <p className=" font-semibold text-xl">{game.rating_count}</p>
               </div>
 
-              <div className='flex flex-col '>
-                <p className="text-gray-600 font-medium float-right"> Your Rating</p>
-                <p className=' font-semibold text-xl'>N/A</p>
+              <div className="flex flex-col ">
+                <p className="text-gray-600 font-medium float-right">
+                  {" "}
+                  Your Rating
+                </p>
+                <p className=" font-semibold text-xl">N/A</p>
               </div>
-
             </div>
 
-            <div className='flex flex-row gap-2'>
+            <div className="flex flex-wrap">
               {/* Chunk 1: Game Cover Image */}
               {game.cover && (
                 <Image
                   height={200}
                   width={200}
-                  src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`}
+                  src={`https:${game.cover.url.replace(
+                    "t_thumb",
+                    "t_cover_big"
+                  )}`}
                   alt={`${game.name} cover`}
-                  className=" object-cover w-1/6"
+                  className=" static  w-1/5 p-0.5 "
                 />
               )}
 
               {game.videos && game.videos.length > 0 && (
-                <div className=" w-full h-full max-w-2xl ">
-
+                <div className="  w-2/5">
                   <iframe
                     src={`https://www.youtube.com/embed/${game.videos[0].video_id}`}
                     title="Video 0"
-                    className="w-full aspect-video h-full"
+                    className="w-full aspect-video h-full p-0.5"
                   ></iframe>
-
                 </div>
               )}
 
               {/*Chunk 9: Screenshots*/}
-              <div className=''>
-                <ScreenshotGallery screenshots={game.screenshots} />
+              <div className=" text-center w-2/5 p-0.5">
+                <ScreenshotGallery  screenshots={game.screenshots}/>
+                <div className=" flex gap-0.5 mt-0.5">
+                  {session ? (
+                    <>
+                      {gameExistsInDatabase ? (
+                        <div className="w-1/3 py-3 bg-black bg-opacity-20"><DeleteGameButton
+                          gameId={game.id}
+                          userId={session.user.name}
+                          onGameDeleted={checkGameInDatabase}
+                        /></div>
+                      ) : (
+                        <div className="w-1/3 py-3 bg-black bg-opacity-30 hover:bg-opacity-20 active:bg-opacity-10"><button
+                          className={` px-4 py-2  text-white  ${
+                        isReviewOpen ? "opacity-0 pointer-events-none" : ""
+                      }`}
+                          onClick={handleAddToListClick}
+                          disabled={isAddingToList}
+                        >
+                          {isAddingToList ? "Adding to List..." : "Add to List"}
+                        </button></div>
+                        
+
+                      )}
+                      <div className="relative w-1/3 py-3 bg-black inline-block  bg-opacity-30 hover:bg-opacity-20 active:bg-opacity-10">
+                        <button
+                          className="px-4 py-2 text-black"
+                          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
+                          {selectedRating ? `Rate (${selectedRating})` : "Rate"}
+                        </button>
+                        {renderRatingsDropdown()}
+                      </div>
+                      <div className="w-1/3 py-3 bg-black  bg-opacity-30 hover:bg-opacity-20 active:bg-opacity-10"><button
+                        className="py-2  "
+                        onClick={() => setIsReviewOpen(!isReviewOpen)}
+                      >
+                        Review
+                      </button></div>
+                      
+                      {/**/}
+                      {isReviewOpen && (
+                        // Chunk 3: Review Input and Submission
+                        <div className="mt-4">
+                          <textarea
+                            className="w-full px-3 py-2 border rounded-md"
+                            rows={4}
+                            placeholder="Write your review..."
+                            value={review}
+                            onChange={(e) => setReview(e.target.value)}
+                          ></textarea>
+                          <button
+                            className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                            onClick={handleSubmitReview}
+                          >
+                            Submit Review
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    /*Chunk 4: User Not Logged In (Login / Register)*/
+                    <button
+                      className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                      onClick={handleNotLoggedInAction}
+                    >
+                      Login / Register
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-            <div className='flex flex-row mt-2'>
-
+            <div className="flex flex-row mt-2">
               {/*Chunk 6: Genres*/}
               {game.genres && game.genres.length > 0 && (
                 <div className="">
-
                   <ul className="flex gap-1 my-2">
                     {game.genres.map((genre, index) => (
-                      <li className='text-sm font-medium border rounded-3xl border-black p-0.5' key={index}>{genre.name}</li>
+                      <li
+                        className="text-sm font-medium border rounded-3xl border-black p-0.5"
+                        key={index}
+                      >
+                        {genre.name}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -305,118 +394,64 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               {/*Chunk 7: Game Modes*/}
               {game.game_modes && game.game_modes.length > 0 && (
                 <div className="pl-1">
-
                   <ul className="flex my-2 gap-1">
                     {game.game_modes.map((gameMode, index) => (
-                      <li className=' font-medium text-sm border rounded-3xl border-black p-0.5' key={index}>{gameMode.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-            </div>
-            <div className='flex'>
-            <div className="md:w-2/3 ">
-
-
-              <p className=" text-gray-700 mb-4 font-semibold">{game.summary}</p>
-              <p className="text-gray-600 mb-2">
-                <span className="font-medium">Release Date:</span> {formatUnixTimestamp(game.first_release_date)}
-              </p>
-
-              
-              {/* Chunk 5: Platforms */}
-              {game.platforms && game.platforms.length > 0 && (
-
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Platforms</h3>
-                  <ul className="list-disc list-inside">
-                    {game.platforms.map((platform, index) => (
-                      <li key={index}>{platform.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/*Chunk 8: Companies*/}
-              {game.involved_companies && game.involved_companies.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-indigo-800 mb-4">Involved companies</h3>
-                  <ul className="list-disc list-inside">
-                    {game.involved_companies.map((company, index) => (
-                      <li key={index}>{company.company.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-            </div>
-            <div className="">
-              {session ? (
-                <>
-                  {gameExistsInDatabase ? (
-                    <DeleteGameButton
-                      gameId={game.id}
-                      userId={session.user.name}
-                      onGameDeleted={checkGameInDatabase}
-                    />
-                  ) : (
-                    <button
-                      className={`px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600
-                      transition-opacity duration-300 ${isReviewOpen ? 'opacity-0 pointer-events-none' : ''}`}
-                      onClick={handleAddToListClick}
-                      disabled={isAddingToList}
-                    >
-                      {isAddingToList ? 'Adding to List...' : 'Add to List'}
-                    </button>
-                  )}
-                  <div className="relative  inline-block">
-                    <button
-                      className="px-4 py-2 bg-gray-300 text-black rounded-md"
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    >
-                      {selectedRating ? `Rate (${selectedRating})` : 'Rate'}
-                    </button>
-                    {renderRatingsDropdown()}
-                  </div>
-                  <button
-                    className="px-4 py-2  bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                    onClick={() => setIsReviewOpen(!isReviewOpen)}
-                  >
-                    Review
-                  </button>
-                  {/**/}
-                  {isReviewOpen && (
-                    // Chunk 3: Review Input and Submission
-                    <div className="mt-4">
-                      <textarea
-                        className="w-full px-3 py-2 border rounded-md"
-                        rows={4}
-                        placeholder="Write your review..."
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                      ></textarea>
-                      <button
-                        className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                        onClick={handleSubmitReview}
+                      <li
+                        className=" font-medium text-sm border rounded-3xl border-black p-0.5"
+                        key={index}
                       >
-                        Submit Review
-                      </button>
+                        {gameMode.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div className="flex">
+              <div className="md:w-2/3 ">
+                <p className=" text-gray-700 mb-4 font-semibold">
+                  {game.summary}
+                </p>
+                <p className="text-gray-600 mb-2">
+                  <span className="font-medium">Release Date:</span>{" "}
+                  {formatUnixTimestamp(game.first_release_date)}
+                </p>
+
+                {/* Chunk 5: Platforms */}
+                {game.platforms && game.platforms.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-xl font-semibold text-indigo-800 mb-4">
+                      Platforms
+                    </h3>
+                    <ul className="list-disc list-inside">
+                      {game.platforms.map((platform, index) => (
+                        <li key={index}>{platform.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/*Chunk 8: Companies*/}
+                {game.involved_companies &&
+                  game.involved_companies.length > 0 && (
+                    <div className="mt-6">
+                      <h3 className="text-xl font-semibold text-indigo-800 mb-4">
+                        Involved companies
+                      </h3>
+                      <ul className="list-disc list-inside">
+                        {game.involved_companies.map((company, index) => (
+                          <li key={index}>{company.company.name}</li>
+                        ))}
+
+                      </ul>
                     </div>
                   )}
-                </>
+                   <h3 className="text-xl font-semibold text-indigo-800 mt-5 mb-2">
+                        Videos
+                      </h3>
+                  <VideoGallery game={game}></VideoGallery>
 
-              ) : (
-
-                /*Chunk 4: User Not Logged In (Login / Register)*/
-                <button
-                  className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                  onClick={handleNotLoggedInAction}
-                >
-                  Login / Register
-                </button>
-              )}
-            </div>
+              </div>
             </div>
           </div>
         ) : (
