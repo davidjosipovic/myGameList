@@ -1,11 +1,16 @@
-import React from 'react';
+import React from "react";
+import Image from "next/image";
 
 const Footer: React.FC = () => {
   return (
     <div className="bg-black py-8">
       <div className="container mx-auto flex flex-col items-center">
         <div className="text-white text-center">
-          <p className="text-2xl font-semibold">myGameList</p>
+          <div className="flex">
+            <Image src="/logo.png" width={50} height={50} alt="Logo" />
+            <div className="text-3xl pl-2 font-bold">myGameList</div>
+          </div>
+
           <p className="mt-2">123 Main Street, City, Country</p>
           <p>myGameList.info@gmail.com</p>
         </div>
@@ -28,7 +33,9 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="mt-4">
-          <p className="text-gray-500">© 2023 myGameList. All rights reserved.</p>
+          <p className="text-gray-500">
+            © 2023 myGameList. All rights reserved.
+          </p>
         </div>
       </div>
     </div>

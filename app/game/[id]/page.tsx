@@ -244,18 +244,23 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <div className="bg-gray-200 mt-16">
-      <div className="container bg-white mx-auto ">
+    
+      <div className="container mt-24 bg-white mx-auto ">
         {game ? (
-          <div className=" p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 md:flex flex-col ">
-            <div className="flex flex-row gap-5 text-center mb-3">
-              <h2 className="text-4xl font-semibold text-black mb-4">
+          <div className=" p-1 md:flex flex-col ">
+            <div className="flex flex-row gap-5 mb-1">
+              <div><h2 className="text-5xl font-semibold text-black">
                 {game.name}
               </h2>
+              <p className="text-gray-600">
+                  <span className="font-medium">Release Date:</span>{" "}
+                  {formatUnixTimestamp(game.first_release_date)}
+                </p></div>
+              
 
               <div className="flex flex-col ml-auto">
                 <p className="text-gray-600 font-medium"> IGDB Rating </p>
-                <p className=" font-semibold text-xl">
+                <p className=" font-semibold text-xl text-center">
                   {Math.floor(game.rating)}/100
                 </p>
               </div>
@@ -265,15 +270,15 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   {" "}
                   Ratings Count
                 </p>
-                <p className=" font-semibold text-xl">{game.rating_count}</p>
+                <p className=" font-semibold text-xl text-center">{game.rating_count}</p>
               </div>
 
               <div className="flex flex-col ">
-                <p className="text-gray-600 font-medium float-right">
+                <p className="text-gray-600 font-medium  float-right">
                   {" "}
                   Your Rating
                 </p>
-                <p className=" font-semibold text-xl">N/A</p>
+                <p className=" font-semibold text-center text-xl">N/A</p>
               </div>
             </div>
 
@@ -309,14 +314,14 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   {session ? (
                     <>
                       {gameExistsInDatabase ? (
-                        <div className="w-1/3 py-3 bg-black bg-opacity-20"><DeleteGameButton
+                        <div className="w-1/3 py-3 bg-red-600"><DeleteGameButton
                           gameId={game.id}
                           userId={session.user.name}
                           onGameDeleted={checkGameInDatabase}
                         /></div>
                       ) : (
-                        <div className="w-1/3 py-3 bg-black bg-opacity-30 hover:bg-opacity-20 active:bg-opacity-10"><button
-                          className={` px-4 py-2  text-white  ${
+                        <div className="w-1/3 py-3 bg-emerald-400 hover:bg-opacity-50 active:bg-opacity-30"><button
+                          className={` px-4 py-2  text-black  ${
                         isReviewOpen ? "opacity-0 pointer-events-none" : ""
                       }`}
                           onClick={handleAddToListClick}
@@ -327,7 +332,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                         
 
                       )}
-                      <div className="relative w-1/3 py-3 bg-black inline-block  bg-opacity-30 hover:bg-opacity-20 active:bg-opacity-10">
+                      <div className="relative w-1/3 py-3 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10">
                         <button
                           className="px-4 py-2 text-black"
                           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -336,7 +341,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                         </button>
                         {renderRatingsDropdown()}
                       </div>
-                      <div className="w-1/3 py-3 bg-black  bg-opacity-30 hover:bg-opacity-20 active:bg-opacity-10"><button
+                      <div className="w-1/3 py-3 bg-gray-200 hover:bg-opacity-20 active:bg-opacity-10"><button
                         className="py-2  "
                         onClick={() => setIsReviewOpen(!isReviewOpen)}
                       >
@@ -375,14 +380,14 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row mt-2">
+            <div className="flex flex-row mt-1">
               {/*Chunk 6: Genres*/}
               {game.genres && game.genres.length > 0 && (
                 <div className="">
                   <ul className="flex gap-1 my-2">
                     {game.genres.map((genre, index) => (
                       <li
-                        className="text-sm font-medium border rounded-3xl border-black p-0.5"
+                        className="text-sm border rounded-3xl border-black text-black px-2 py-1"
                         key={index}
                       >
                         {genre.name}
@@ -397,7 +402,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                   <ul className="flex my-2 gap-1">
                     {game.game_modes.map((gameMode, index) => (
                       <li
-                        className=" font-medium text-sm border rounded-3xl border-black p-0.5"
+                        className=" text-sm border border-black rounded-3xl text-black  px-2 py-1"
                         key={index}
                       >
                         {gameMode.name}
@@ -409,21 +414,19 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             </div>
             <div className="flex">
               <div className="md:w-2/3 ">
-                <p className=" text-gray-700 mb-4 font-semibold">
+                <p className=" text-black mb-4">
                   {game.summary}
                 </p>
-                <p className="text-gray-600 mb-2">
-                  <span className="font-medium">Release Date:</span>{" "}
-                  {formatUnixTimestamp(game.first_release_date)}
-                </p>
+                
 
                 {/* Chunk 5: Platforms */}
                 {game.platforms && game.platforms.length > 0 && (
                   <div className="mt-6">
-                    <h3 className="text-xl font-semibold text-indigo-800 mb-4">
+                    <h3 className="text-2xl font-semibold text-black mb-4">
                       Platforms
+                      <hr className=" border-black" />
                     </h3>
-                    <ul className="list-disc list-inside">
+                    <ul className="list-disc text-gray-800 list-inside">
                       {game.platforms.map((platform, index) => (
                         <li key={index}>{platform.name}</li>
                       ))}
@@ -435,10 +438,13 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                 {game.involved_companies &&
                   game.involved_companies.length > 0 && (
                     <div className="mt-6">
-                      <h3 className="text-xl font-semibold text-indigo-800 mb-4">
+                      
+                      <h3 className="text-2xl font-semibold text-black mb-4">
                         Involved companies
+                        <hr className=" border-black" />
                       </h3>
-                      <ul className="list-disc list-inside">
+                      
+                      <ul className="list-disc text-gray-800 list-inside">
                         {game.involved_companies.map((company, index) => (
                           <li key={index}>{company.company.name}</li>
                         ))}
@@ -446,10 +452,13 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                       </ul>
                     </div>
                   )}
-                   <h3 className="text-xl font-semibold text-indigo-800 mt-5 mb-2">
+                  <div className="mb-10">
+                    <h3 className="text-2xl font-semibold text-black mt-5 mb-4">
                         Videos
+                        <hr className=" border-black" />
                       </h3>
-                  <VideoGallery game={game}></VideoGallery>
+                  <VideoGallery game={game}></VideoGallery></div>
+                   
 
               </div>
             </div>
@@ -459,7 +468,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
           <p className="text-center text-lg text-gray-500 mt-4">Loading...</p>
         )}
       </div>
-    </div>
+    
   );
 };
 

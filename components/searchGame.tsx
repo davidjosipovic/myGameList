@@ -77,7 +77,7 @@ const SearchGameComponent = () => {
         </svg>
       </div>
       <input
-        className="w-full px-8 lg:py-2 py-3 text-black rounded-md shadow-md focus:outline-none focus:ring focus:border-blue-300"
+        className="w-full px-8 lg:py-2 py-3 text-black rounded-3xl shadow-md focus:outline-none focus:ring focus:border-blue-300"
         type="text"
         placeholder="Search for a game"
         value={searchInput}

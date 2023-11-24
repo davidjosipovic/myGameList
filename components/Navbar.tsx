@@ -30,7 +30,7 @@ const Navbar: FC = () => {
   return (
 
     <div className='fixed top-0 w-full bg-gray-900 shadow-lg z-50'>
-      <nav className="flex items-center justify-between  py-4 text-white container mx-auto z-10">
+      <nav className="flex items-center justify-between  py-2 text-white container mx-auto z-10">
         <Link className='flex items-center' href="/"><Image
           src="/logo.png"
           width={50}
@@ -82,7 +82,7 @@ const Navbar: FC = () => {
         {/* Regular menu for larger screens */}
         <div className="hidden lg:flex items-center">
           <SearchGameComponent />
-          <Link href="/"><div className="hover:text-gray-300 px-2">Home</div></Link>
+          <Link href="/"><div className="hover:text-gray-300 pr-2 pl-4">Home</div></Link>
           <div>{!session && (<Link href="/login"><div className="hover:text-gray-300 px-2">Sign in</div></Link>)}</div>
           <div>{!session && (<Link href="/register"><div className="hover:text-gray-300 px-2">Sign up</div></Link>)}</div>
           <Link href="/topgames"><div className="hover:text-gray-300 px-2">Top Games</div></Link>

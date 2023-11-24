@@ -1,6 +1,6 @@
 // These styles apply to every route in the application
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Lato } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { Suspense } from "react";
 import './globals.css'
@@ -10,9 +10,10 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import Footer from "@/components/Footer";
 
-const inter = Inter({
-  variable: "--font-inter",
+const montserrat = Lato({
   subsets: ["latin"],
+  weight:"700"
+  
 });
 
 const title = "myGameList";
@@ -36,7 +37,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
      
-      <body className={inter.variable}>
+      <body className={montserrat.className}>
         
         <Toaster />
         <Suspense fallback="Loading...">
