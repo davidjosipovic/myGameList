@@ -25,7 +25,7 @@ const MyGameListHome: React.FC = () => {
             height={500}
             src="/hero.jpg"
             alt="Game 1"
-            className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2"
+            className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2 "
           />
 
           {/* Title */}
