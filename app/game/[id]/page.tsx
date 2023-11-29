@@ -306,7 +306,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
           )}
 
           {/*Chunk 9: Screenshots*/}
-          <div className=" text-center md:w-2/5 p-0.5 order-10">
+          <div className=" text-center md:w-2/5 p-0.5">
             <ScreenshotGallery screenshots={game.screenshots} />
             <div className=" flex gap-0.5 mt-0.5">
               {session ? (

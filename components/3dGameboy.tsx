@@ -1,37 +1,101 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useLoader } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Suspense } from "react";
-import React from "react";
+import React, { useRef } from "react";
 
-const Model = () => {
-  const gltf = useLoader(GLTFLoader, "./Videogame.glb");
-  const myMesh = React.useRef();
+const Model = ({ modelPath, position, scale, rotationSpeed }) => {
+  const gltf = useLoader(GLTFLoader, modelPath);
+  const myMesh = useRef();
 
   useFrame(({ clock }) => {
-    myMesh.current.rotation.y = clock.getElapsedTime();
+    myMesh.current.rotation.y = clock.getElapsedTime() * rotationSpeed;
   });
 
   return (
-    <mesh ref={myMesh}>
-      <primitive object={gltf.scene} scale={[0.4, 0.4, 0.4]} /> {/* Adjust the scale vector */}
-      <ambientLight intensity={1.5} />
+    <mesh ref={myMesh} position={position}>
+      <primitive object={gltf.scene} scale={scale} />
+      <primitive object={gltf.scene.clone()} scale={scale}/>
+      
     </mesh>
   );
 };
 
 export default function App() {
+  const modelSpacing = 6; // Adjust the spacing between models
+
   return (
-    <div className="absolute left-28 top-40">
+    <div className="">
+    <div className="absolute left-0">
       <Canvas
-        camera={{ position: [0, 0, 10], fov: 75 }} // Adjust camera position and fov
+        camera={{ position: [0, 0, 15], fov: 75 }} // Adjust camera position and fov
         style={{ width: "20vw", height: "100vh" }} // Adjust Canvas size
       >
         <Suspense fallback={null}>
-          <Model />
+          <ambientLight intensity={1.5} /> {/* Move the ambient light outside the models */}
+          <Model
+            modelPath="./Videogame.glb"
+            position={[0, 5, 0]}
+            scale={[0.3, 0.3, 0.3]}
+            rotationSpeed={0.5}
+          />
+          <Model
+            modelPath="./VideogameController.glb"
+            position={[0, 1, 0]}
+            scale={[0.1, 0.1, 0.1]}
+            rotationSpeed={0.5}
+          />
+          <Model
+            modelPath="./Videogame.glb"
+            position={[0, -6, 0]}
+            scale={[0.3, 0.3, 0.3]}
+            rotationSpeed={0.5}
+          />
+          <Model
+            modelPath="./VideogameController.glb"
+            position={[0, -10, 0]}
+            scale={[0.1, 0.1, 0.1]}
+            rotationSpeed={0.5}
+          />
+          
         </Suspense>
       </Canvas>
+    </div>
+    <div className="absolute right-0">
+      <Canvas
+        camera={{ position: [0, 0, 15], fov: 75 }} // Adjust camera position and fov
+        style={{ width: "20vw", height: "100vh" }} // Adjust Canvas size
+      >
+        <Suspense fallback={null}>
+          <ambientLight intensity={1.5} /> {/* Move the ambient light outside the models */}
+          <Model
+            modelPath="./Videogame.glb"
+            position={[0, 5, 0]}
+            scale={[0.3, 0.3, 0.3]}
+            rotationSpeed={0.5}
+          />
+          <Model
+            modelPath="./VideogameController.glb"
+            position={[0, 1, 0]}
+            scale={[0.1, 0.1, 0.1]}
+            rotationSpeed={0.5}
+          />
+          <Model
+            modelPath="./Videogame.glb"
+            position={[0, -6, 0]}
+            scale={[0.3, 0.3, 0.3]}
+            rotationSpeed={0.5}
+          />
+          <Model
+            modelPath="./VideogameController.glb"
+            position={[0, -10, 0]}
+            scale={[0.1, 0.1, 0.1]}
+            rotationSpeed={0.5}
+          />
+          
+        </Suspense>
+      </Canvas>
+    </div>
     </div>
   );
 }

@@ -15,6 +15,7 @@ const MyGameListHome: React.FC = () => {
 
         {/* 3D Gameboy Component */}
         <App />
+        
 
         {/* Content Container */}
         <div className="bg-white mt-12  sm:p-6 md:p-8  max-w-screen-lg ">
