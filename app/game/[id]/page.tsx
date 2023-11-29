@@ -244,231 +244,225 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    
-      <div className="container mt-24 bg-white mx-auto ">
-        {game ? (
-          <div className=" p-1 md:flex flex-col ">
-            <div className="flex flex-row gap-5 mb-1">
-              <div><h2 className="text-5xl font-semibold text-black">
-                {game.name}
-              </h2>
-              <p className="text-gray-600">
-                  <span className="font-medium">Release Date:</span>{" "}
-                  {formatUnixTimestamp(game.first_release_date)}
-                </p></div>
-              
-
-              <div className="flex flex-col ml-auto">
-                <p className="text-gray-600 font-medium"> IGDB Rating </p>
-                <p className=" font-semibold text-xl text-center">
-                  {Math.floor(game.rating)}/100
-                </p>
-              </div>
-
-              <div className="flex flex-col ">
-                <p className="text-gray-600 font-medium float-right">
-                  {" "}
-                  Ratings Count
-                </p>
-                <p className=" font-semibold text-xl text-center">{game.rating_count}</p>
-              </div>
-
-              <div className="flex flex-col ">
-                <p className="text-gray-600 font-medium  float-right">
-                  {" "}
-                  Your Rating
-                </p>
-                <p className=" font-semibold text-center text-xl">N/A</p>
-              </div>
+    <div className="container mt-24 bg-white mx-auto ">
+      {game ? (
+        <div className="flex flex-wrap p-1">
+          <div>
+            <h2 className="md:text-5xl text-2xl font-semibold text-black">
+              {game.name}
+            </h2>
+            <p className="text-gray-600">
+              <span className="font-medium">Release Date:</span>{" "}
+              {formatUnixTimestamp(game.first_release_date)}
+            </p>
+          </div>
+          <div className="flex ml-auto order-1 md:order-none">
+            <div className="flex flex-col ml-auto">
+              <p className="text-gray-600 font-medium"> IGDB Rating </p>
+              <p className=" font-semibold text-xl text-center">
+                {Math.floor(game.rating)}/100
+              </p>
             </div>
 
-            <div className="flex flex-wrap">
-              {/* Chunk 1: Game Cover Image */}
-              {game.cover && (
-                <Image
-                  height={200}
-                  width={200}
-                  src={`https:${game.cover.url.replace(
-                    "t_thumb",
-                    "t_cover_big"
-                  )}`}
-                  alt={`${game.name} cover`}
-                  className=" static  w-1/5 p-0.5 "
-                />
-              )}
-
-              {game.videos && game.videos.length > 0 && (
-                <div className="  w-2/5">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${game.videos[0].video_id}`}
-                    title="Video 0"
-                    className="w-full aspect-video h-full p-0.5"
-                  ></iframe>
-                </div>
-              )}
-
-              {/*Chunk 9: Screenshots*/}
-              <div className=" text-center w-2/5 p-0.5">
-                <ScreenshotGallery  screenshots={game.screenshots}/>
-                <div className=" flex gap-0.5 mt-0.5">
-                  {session ? (
-                    <>
-                      {gameExistsInDatabase ? (
-                        <div className="w-1/3 py-3 bg-red-600"><DeleteGameButton
-                          gameId={game.id}
-                          userId={session.user.name}
-                          onGameDeleted={checkGameInDatabase}
-                        /></div>
-                      ) : (
-                        <div className="w-1/3 py-3 bg-emerald-400 hover:bg-opacity-50 active:bg-opacity-30"><button
-                          className={` px-4 py-2  text-black  ${
-                        isReviewOpen ? "opacity-0 pointer-events-none" : ""
-                      }`}
-                          onClick={handleAddToListClick}
-                          disabled={isAddingToList}
-                        >
-                          {isAddingToList ? "Adding to List..." : "Add to List"}
-                        </button></div>
-                        
-
-                      )}
-                      <div className="relative w-1/3 py-3 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10">
-                        <button
-                          className="px-4 py-2 text-black"
-                          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        >
-                          {selectedRating ? `Rate (${selectedRating})` : "Rate"}
-                        </button>
-                        {renderRatingsDropdown()}
-                      </div>
-                      <div className="w-1/3 py-3 bg-gray-200 hover:bg-opacity-20 active:bg-opacity-10"><button
-                        className="py-2  "
-                        onClick={() => setIsReviewOpen(!isReviewOpen)}
-                      >
-                        Review
-                      </button></div>
-                      
-                      {/**/}
-                      {isReviewOpen && (
-                        // Chunk 3: Review Input and Submission
-                        <div className="mt-4">
-                          <textarea
-                            className="w-full px-3 py-2 border rounded-md"
-                            rows={4}
-                            placeholder="Write your review..."
-                            value={review}
-                            onChange={(e) => setReview(e.target.value)}
-                          ></textarea>
-                          <button
-                            className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                            onClick={handleSubmitReview}
-                          >
-                            Submit Review
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    /*Chunk 4: User Not Logged In (Login / Register)*/
-                    <button
-                      className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                      onClick={handleNotLoggedInAction}
-                    >
-                      Login / Register
-                    </button>
-                  )}
-                </div>
-              </div>
+            <div className="flex flex-col ">
+              <p className="text-gray-600 font-medium float-right">
+                {" "}
+                Ratings Count
+              </p>
+              <p className=" font-semibold text-xl text-center">
+                {game.rating_count}
+              </p>
             </div>
-            <div className="flex flex-row mt-1">
-              {/*Chunk 6: Genres*/}
-              {game.genres && game.genres.length > 0 && (
-                <div className="">
-                  <ul className="flex gap-1 my-2">
-                    {game.genres.map((genre, index) => (
-                      <li
-                        className="text-sm border rounded-3xl border-black text-black px-2 py-1"
-                        key={index}
-                      >
-                        {genre.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {/*Chunk 7: Game Modes*/}
-              {game.game_modes && game.game_modes.length > 0 && (
-                <div className="pl-1">
-                  <ul className="flex my-2 gap-1">
-                    {game.game_modes.map((gameMode, index) => (
-                      <li
-                        className=" text-sm border border-black rounded-3xl text-black  px-2 py-1"
-                        key={index}
-                      >
-                        {gameMode.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-            <div className="flex">
-              <div className="md:w-2/3 ">
-                <p className=" text-black mb-4">
-                  {game.summary}
-                </p>
-                
 
-                {/* Chunk 5: Platforms */}
-                {game.platforms && game.platforms.length > 0 && (
-                  <div className="mt-6">
-                    <h3 className="text-2xl font-semibold text-black mb-4">
-                      Platforms
-                      <hr className=" border-black" />
-                    </h3>
-                    <ul className="list-disc text-gray-800 list-inside">
-                      {game.platforms.map((platform, index) => (
-                        <li key={index}>{platform.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/*Chunk 8: Companies*/}
-                {game.involved_companies &&
-                  game.involved_companies.length > 0 && (
-                    <div className="mt-6">
-                      
-                      <h3 className="text-2xl font-semibold text-black mb-4">
-                        Involved companies
-                        <hr className=" border-black" />
-                      </h3>
-                      
-                      <ul className="list-disc text-gray-800 list-inside">
-                        {game.involved_companies.map((company, index) => (
-                          <li key={index}>{company.company.name}</li>
-                        ))}
-
-                      </ul>
-                    </div>
-                  )}
-                  <div className="mb-10">
-                    <h3 className="text-2xl font-semibold text-black mt-5 mb-4">
-                        Videos
-                        <hr className=" border-black" />
-                      </h3>
-                  <VideoGallery game={game}></VideoGallery></div>
-                   
-
-              </div>
+            <div className="flex flex-col ">
+              <p className="text-gray-600 font-medium  float-right">
+                {" "}
+                Your Rating
+              </p>
+              <p className=" font-semibold text-center text-xl">N/A</p>
             </div>
           </div>
-        ) : (
-          // Chunk 11: Loading Message
-          <p className="text-center text-lg text-gray-500 mb-8">Loading...</p>
-        )}
-      </div>
-    
+          <div className="basis-full h-0"></div>
+
+          {/* Chunk 1: Game Cover Image */}
+          {game.cover && (
+            <Image
+              height={200}
+              width={200}
+              src={`https:${game.cover.url.replace("t_thumb", "t_cover_big")}`}
+              alt={`${game.name} cover`}
+              className=" static w-1/3  md:w-1/5 p-0.5 "
+            />
+          )}
+
+          {game.videos && game.videos.length > 0 && (
+            <div className="w-2/3 md:w-2/5">
+              <iframe
+                src={`https://www.youtube.com/embed/${game.videos[0].video_id}`}
+                title="Video 0"
+                className="w-full aspect-video h-full p-0.5"
+              ></iframe>
+            </div>
+          )}
+
+          {/*Chunk 9: Screenshots*/}
+          <div className=" text-center md:w-2/5 p-0.5 order-10">
+            <ScreenshotGallery screenshots={game.screenshots} />
+            <div className=" flex gap-0.5 mt-0.5">
+              {session ? (
+                <>
+                  {gameExistsInDatabase ? (
+                    <div className="md:w-1/3 py-3 bg-red-600">
+                      <DeleteGameButton
+                        gameId={game.id}
+                        userId={session.user.name}
+                        onGameDeleted={checkGameInDatabase}
+                      />
+                    </div>
+                  ) : (
+                    <div className="md:w-1/3 py-3 bg-emerald-400 hover:bg-opacity-50 active:bg-opacity-30">
+                      <button
+                        className={` px-4 py-2  text-black  ${
+                          isReviewOpen ? "opacity-0 pointer-events-none" : ""
+                        }`}
+                        onClick={handleAddToListClick}
+                        disabled={isAddingToList}
+                      >
+                        {isAddingToList ? "Adding to List..." : "Add to List"}
+                      </button>
+                    </div>
+                  )}
+                  <div className="relative md:w-1/3 py-3 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10">
+                    <button
+                      className="px-4 py-2 text-black"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      {selectedRating ? `Rate (${selectedRating})` : "Rate"}
+                    </button>
+                    {renderRatingsDropdown()}
+                  </div>
+                  <div className="md:w-1/3 py-3 bg-gray-200 hover:bg-opacity-20 active:bg-opacity-10">
+                    <button
+                      className="py-2  "
+                      onClick={() => setIsReviewOpen(!isReviewOpen)}
+                    >
+                      Review
+                    </button>
+                  </div>
+
+                  {/**/}
+                  {isReviewOpen && (
+                    // Chunk 3: Review Input and Submission
+                    <div className="mt-4">
+                      <textarea
+                        className="w-full px-3 py-2 border rounded-md"
+                        rows={4}
+                        placeholder="Write your review..."
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                      ></textarea>
+                      <button
+                        className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                        onClick={handleSubmitReview}
+                      >
+                        Submit Review
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                /*Chunk 4: User Not Logged In (Login / Register)*/
+                <button
+                  className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                  onClick={handleNotLoggedInAction}
+                >
+                  Login / Register
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-row flex-wrap mt-1">
+            {/*Chunk 6: Genres*/}
+            {game.genres && game.genres.length > 0 && (
+              <div className="">
+                <ul className="flex gap-1 my-2">
+                  {game.genres.map((genre, index) => (
+                    <li
+                      className="text-sm border rounded-3xl border-black text-black px-2 py-1 whitespace-nowrap"
+                      key={index}
+                    >
+                      {genre.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {/*Chunk 7: Game Modes*/}
+            {game.game_modes && game.game_modes.length > 0 && (
+              <div className="pl-1">
+                <ul className="flex my-2 gap-1">
+                  {game.game_modes.map((gameMode, index) => (
+                    <li
+                      className=" text-sm border border-black rounded-3xl text-black  px-2 py-1 whitespace-nowrap"
+                      key={index}
+                    >
+                      {gameMode.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div className="basis-full h-0"></div>
+
+          <p className=" text-black mb-4">{game.summary}</p>
+
+          {/* Chunk 5: Platforms */}
+          {game.platforms && game.platforms.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-2xl font-semibold text-black mb-4">
+                Platforms
+                <hr className=" border-black" />
+              </h3>
+              <ul className="list-disc text-gray-800 list-inside">
+                {game.platforms.map((platform, index) => (
+                  <li key={index}>{platform.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="basis-full h-0"></div>
+          {/*Chunk 8: Companies*/}
+          {game.involved_companies && game.involved_companies.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-2xl font-semibold text-black mb-4">
+                Involved companies
+                <hr className=" border-black" />
+              </h3>
+
+              <ul className="list-disc text-gray-800 list-inside">
+                {game.involved_companies.map((company, index) => (
+                  <li key={index}>{company.company.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="basis-full h-0"></div>
+          <div className="mb-10">
+            <h3 className="text-2xl font-semibold text-black mt-5 mb-4">
+              Videos
+              <hr className=" border-black" />
+            </h3>
+            <VideoGallery game={game}></VideoGallery>
+          </div>
+          <div className="basis-full h-0"></div>
+        </div>
+      ) : (
+        // Chunk 11: Loading Message
+        <p className="text-center text-lg text-gray-500 mb-8">Loading...</p>
+      )}
+    </div>
   );
 };
 

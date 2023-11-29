@@ -19,10 +19,10 @@ const VideoGallery = ({ game }) => {
 
   return (
     <div>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap flex-col md:flex-row">
         {visibleVideos &&
           visibleVideos.map((video, index) => (
-            <div key={index} className="w-1/2  relative">
+            <div key={index} className="md:w-1/2  relative">
               <iframe
                 src={`https://www.youtube.com/embed/${video.video_id}`}
                 title={`Video ${index}`}
