@@ -25,10 +25,10 @@ export default function App() {
 
   return (
     <div className="">
-    <div className="absolute left-0">
+    <div className="absolute  left-0">
       <Canvas
         camera={{ position: [0, 0, 15], fov: 75 }} // Adjust camera position and fov
-        style={{ width: "20vw", height: "100vh" }} // Adjust Canvas size
+        style={{ width: "20vw", height: "60rem" }} // Adjust Canvas size
       >
         <Suspense fallback={null}>
           <ambientLight intensity={1.5} /> {/* Move the ambient light outside the models */}
@@ -63,7 +63,7 @@ export default function App() {
     <div className="absolute right-0">
       <Canvas
         camera={{ position: [0, 0, 15], fov: 75 }} // Adjust camera position and fov
-        style={{ width: "20vw", height: "100vh" }} // Adjust Canvas size
+        style={{ width: "20vw", height: "60rem" }} // Adjust Canvas size
       >
         <Suspense fallback={null}>
           <ambientLight intensity={1.5} /> {/* Move the ambient light outside the models */}
