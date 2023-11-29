@@ -36,25 +36,25 @@ export default function App() {
             modelPath="./Videogame.glb"
             position={[0, 5, 0]}
             scale={[0.3, 0.3, 0.3]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           <Model
             modelPath="./VideogameController.glb"
             position={[0, 1, 0]}
             scale={[0.1, 0.1, 0.1]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           <Model
             modelPath="./Videogame.glb"
             position={[0, -6, 0]}
             scale={[0.3, 0.3, 0.3]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           <Model
             modelPath="./VideogameController.glb"
             position={[0, -10, 0]}
             scale={[0.1, 0.1, 0.1]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           
         </Suspense>
@@ -71,25 +71,25 @@ export default function App() {
             modelPath="./Videogame.glb"
             position={[0, 5, 0]}
             scale={[0.3, 0.3, 0.3]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           <Model
             modelPath="./VideogameController.glb"
             position={[0, 1, 0]}
             scale={[0.1, 0.1, 0.1]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           <Model
             modelPath="./Videogame.glb"
             position={[0, -6, 0]}
             scale={[0.3, 0.3, 0.3]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           <Model
             modelPath="./VideogameController.glb"
             position={[0, -10, 0]}
             scale={[0.1, 0.1, 0.1]}
-            rotationSpeed={0.5}
+            rotationSpeed={0.6}
           />
           
         </Suspense>
