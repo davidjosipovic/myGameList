@@ -465,7 +465,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
           </div>
         ) : (
           // Chunk 11: Loading Message
-          <p className="text-center text-lg text-gray-500 mt-4">Loading...</p>
+          <p className="text-center text-lg text-gray-500 mb-8">Loading...</p>
         )}
       </div>
     
