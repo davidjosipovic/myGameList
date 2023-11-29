@@ -22,7 +22,6 @@ const Model = ({ modelPath, position, scale, rotationSpeed }) => {
 };
 
 export default function App() {
-  const modelSpacing = 6; // Adjust the spacing between models
 
   return (
     <div className="">
