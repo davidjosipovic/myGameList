@@ -24,8 +24,8 @@ const Model = ({ modelPath, position, scale, rotationSpeed }) => {
 export default function App() {
 
   return (
-    <div className="">
-    <div className="absolute  left-0">
+    <div className="opacity-0 lg:opacity-100 z-1 ">
+    <div className="absolute  lg:-left-16 2xl:left-0">
       <Canvas
         camera={{ position: [0, 0, 15], fov: 75 }} // Adjust camera position and fov
         style={{ width: "20vw", height: "60rem" }} // Adjust Canvas size
@@ -60,7 +60,7 @@ export default function App() {
         </Suspense>
       </Canvas>
     </div>
-    <div className="absolute right-0">
+    <div className="absolute lg:-right-16 2xl:right-0">
       <Canvas
         camera={{ position: [0, 0, 15], fov: 75 }} // Adjust camera position and fov
         style={{ width: "20vw", height: "60rem" }} // Adjust Canvas size
