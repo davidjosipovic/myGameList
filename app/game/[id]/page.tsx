@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import DeleteGameButton from "@/components/DeleteGameButton";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import VideoGallery from "@/components/VideoGallery";
+import { useRouter } from "next/navigation";
 
 type Game = {
   id: number;
@@ -33,6 +34,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const { data: session } = useSession();
   const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false); // Add state to track if the game exists
   const [isAddingToList, setIsAddingToList] = useState(false);
+  const router = useRouter(); 
 
   const checkGameInDatabase = () => {
     if (session) {
@@ -238,17 +240,19 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     return date.toLocaleDateString(undefined, options);
   }
   const handleNotLoggedInAction = () => {
-    // You can customize this function based on your requirements.
-    // For example, you can show a modal to prompt the user to log in or register.
-    alert("Please log in or register to use this feature.");
+    
+  // You can customize this function based on your requirements.
+  // For example, you can show a modal to prompt the user to log in or register.
+  // Here, we'll use the router to navigate to the "/login" route.
+  router.push("/login");
   };
 
   return (
-    <div className="container mt-24 bg-white mx-auto ">
+    <div className="container mt-16 sm:mt-20 md:mt-24  bg-white mx-auto ">
       {game ? (
         <div className="flex flex-wrap p-1">
-          <div>
-            <h2 className="md:text-5xl text-2xl font-semibold text-black">
+          <div className="order-1 mb-2">
+            <h2 className="md:text-5xl sm:text-3xl text-2xl font-semibold text-black">
               {game.name}
             </h2>
             <p className="text-gray-600">
@@ -256,7 +260,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               {formatUnixTimestamp(game.first_release_date)}
             </p>
           </div>
-          <div className="flex ml-auto order-1 md:order-none">
+          <div className="flex  order-5 sm:order-2 mt-4 sm:mt-0  gap-10 sm:gap-4 mx-auto sm:ml-auto sm:mx-0 pb-4">
             <div className="flex flex-col ml-auto">
               <p className="text-gray-600 font-medium"> IGDB Rating </p>
               <p className=" font-semibold text-xl text-center">
@@ -265,7 +269,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             </div>
 
             <div className="flex flex-col ">
-              <p className="text-gray-600 font-medium float-right">
+              <p className="text-gray-600 font-medium ">
                 {" "}
                 Ratings Count
               </p>
@@ -275,14 +279,14 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             </div>
 
             <div className="flex flex-col ">
-              <p className="text-gray-600 font-medium  float-right">
+              <p className="text-gray-600 font-medium ">
                 {" "}
                 Your Rating
               </p>
               <p className=" font-semibold text-center text-xl">N/A</p>
             </div>
           </div>
-          <div className="basis-full h-0"></div>
+          <div className="basis-full h-0 order-2"></div>
 
           {/* Chunk 1: Game Cover Image */}
           {game.cover && (
@@ -291,28 +295,28 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               width={200}
               src={`https:${game.cover.url.replace("t_thumb", "t_cover_big")}`}
               alt={`${game.name} cover`}
-              className=" static w-1/3  md:w-1/5 p-0.5 "
+              className=" static w-1/3  md:w-1/5 p-0.5 order-3 "
             />
           )}
 
           {game.videos && game.videos.length > 0 && (
-            <div className="w-2/3 md:w-2/5">
+            <div className="w-2/3 md:w-2/5 order-4">
               <iframe
                 src={`https://www.youtube.com/embed/${game.videos[0].video_id}`}
                 title="Video 0"
-                className="w-full aspect-video h-full p-0.5"
+                className="w-full aspect-video h-full p-0.5 "
               ></iframe>
             </div>
           )}
 
           {/*Chunk 9: Screenshots*/}
-          <div className=" text-center md:w-2/5 p-0.5">
+          <div className=" text-center md:w-2/5 p-0.5 order-9 md:order-5">
             <ScreenshotGallery screenshots={game.screenshots} />
             <div className=" flex gap-0.5 mt-0.5">
               {session ? (
                 <>
                   {gameExistsInDatabase ? (
-                    <div className="md:w-1/3 py-3 bg-red-600">
+                    <div className="w-1/3 py-3 bg-red-600">
                       <DeleteGameButton
                         gameId={game.id}
                         userId={session.user.name}
@@ -320,7 +324,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                       />
                     </div>
                   ) : (
-                    <div className="md:w-1/3 py-3 bg-emerald-400 hover:bg-opacity-50 active:bg-opacity-30">
+                    <div className="w-1/3 py-3 bg-emerald-400 hover:bg-opacity-50 active:bg-opacity-30">
                       <button
                         className={` px-4 py-2  text-black  ${
                           isReviewOpen ? "opacity-0 pointer-events-none" : ""
@@ -332,7 +336,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                       </button>
                     </div>
                   )}
-                  <div className="relative md:w-1/3 py-3 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10">
+                  <div className="relative w-1/3 py-3 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10">
                     <button
                       className="px-4 py-2 text-black"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -341,47 +345,59 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
                     </button>
                     {renderRatingsDropdown()}
                   </div>
-                  <div className="md:w-1/3 py-3 bg-gray-200 hover:bg-opacity-20 active:bg-opacity-10">
+                  <div className="w-1/3 py-3 bg-gray-200 hover:bg-opacity-20 active:bg-opacity-10">
                     <button
-                      className="py-2  "
+                      className="py-2"
                       onClick={() => setIsReviewOpen(!isReviewOpen)}
                     >
                       Review
                     </button>
                   </div>
 
-                  {/**/}
                   {isReviewOpen && (
-                    // Chunk 3: Review Input and Submission
-                    <div className="mt-4">
-                      <textarea
-                        className="w-full px-3 py-2 border rounded-md"
-                        rows={4}
-                        placeholder="Write your review..."
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                      ></textarea>
-                      <button
-                        className="mt-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-                        onClick={handleSubmitReview}
-                      >
-                        Submit Review
-                      </button>
+                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md shadow-md">
+                      {/* Popup Content */}
+                      <div className="mb-4">
+                        <textarea
+                          className="w-full px-3 py-2 border rounded-md"
+                          rows={4}
+                          placeholder="Write your review..."
+                          value={review}
+                          onChange={(e) => setReview(e.target.value)}
+                        ></textarea>
+                      </div>
+
+                      <div>
+                        <button
+                          className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 mr-2"
+                          onClick={handleSubmitReview}
+                        >
+                          Submit Review
+                        </button>
+                        <button
+                          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                          onClick={() => setIsReviewOpen(false)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   )}
                 </>
               ) : (
                 /*Chunk 4: User Not Logged In (Login / Register)*/
                 <button
-                  className="px-4 py-2 ml-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                  className="relative w-full py-5 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10"
                   onClick={handleNotLoggedInAction}
                 >
-                  Login / Register
+                  Sign In to Proceed
                 </button>
               )}
             </div>
           </div>
-          <div className="flex flex-row flex-wrap mt-1">
+          <div className="basis-full h-0 order-10"></div>
+
+          <div className="flex flex-row flex-wrap mt-1 order-7 md:order-6">
             {/*Chunk 6: Genres*/}
             {game.genres && game.genres.length > 0 && (
               <div className="">
@@ -414,13 +430,13 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             )}
           </div>
 
-          <div className="basis-full h-0"></div>
+          <div className="basis-full h-0 order-8"></div>
 
-          <p className=" text-black mb-4">{game.summary}</p>
+          <p className=" text-black mb-4 order-6 sm:mt-5 md:mt-0">{game.summary}</p>
 
           {/* Chunk 5: Platforms */}
           {game.platforms && game.platforms.length > 0 && (
-            <div className="mt-6">
+            <div className="mt-6 order-11">
               <h3 className="text-2xl font-semibold text-black mb-4">
                 Platforms
                 <hr className=" border-black" />
@@ -432,10 +448,10 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               </ul>
             </div>
           )}
-          <div className="basis-full h-0"></div>
+          <div className="basis-full h-0 order-12"></div>
           {/*Chunk 8: Companies*/}
           {game.involved_companies && game.involved_companies.length > 0 && (
-            <div className="mt-6">
+            <div className="mt-6 order-[13]">
               <h3 className="text-2xl font-semibold text-black mb-4">
                 Involved companies
                 <hr className=" border-black" />
@@ -448,15 +464,15 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               </ul>
             </div>
           )}
-          <div className="basis-full h-0"></div>
-          <div className="mb-10">
+          <div className="basis-full h-0 order-[14]"></div>
+          <div className="mb-10 order-[15]">
             <h3 className="text-2xl font-semibold text-black mt-5 mb-4">
               Videos
               <hr className=" border-black" />
             </h3>
             <VideoGallery game={game}></VideoGallery>
           </div>
-          <div className="basis-full h-0"></div>
+          <div className="basis-full h-0 order-[16]"></div>
         </div>
       ) : (
         // Chunk 11: Loading Message

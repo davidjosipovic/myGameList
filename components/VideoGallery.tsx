@@ -22,11 +22,14 @@ const VideoGallery = ({ game }) => {
       <div className="flex flex-wrap flex-col md:flex-row">
         {visibleVideos &&
           visibleVideos.map((video, index) => (
-            <div key={index} className="md:w-1/2  relative">
+            <div
+              key={index}
+              className={`md:w-${visibleVideos.length === 1 ? 'full' : '1/2'} relative aspect-video-container`}
+            >
               <iframe
                 src={`https://www.youtube.com/embed/${video.video_id}`}
                 title={`Video ${index}`}
-                className="w-full aspect-video h-full p-0.5"
+                className="w-full h-full p-0.5"
               ></iframe>
               {game.videos.length > 2 && (
                 <div className="absolute inset-0 flex items-center">

@@ -41,14 +41,12 @@ const SearchGameComponent = () => {
       }
     };
 
-    const debounceTimeout = setTimeout(fetchSearchResults, 100);
+    const debounceTimeout = setTimeout(fetchSearchResults, 300);
 
     return () => clearTimeout(debounceTimeout);
   }, [searchInput]);
 
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
-  };
+  
 
   const handleClickOutside = (event: MouseEvent) => {
     if (inputRef.current && !inputRef.current.contains(event.target as Node)) {

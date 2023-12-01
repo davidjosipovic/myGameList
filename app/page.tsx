@@ -18,7 +18,7 @@ const MyGameListHome: React.FC = () => {
         
 
         {/* Content Container */}
-        <div className="bg-white mt-12  sm:p-6 md:p-8  max-w-screen-lg z-0 ">
+        <div className="bg-white mt-12 p-4  sm:p-6 md:p-8  max-w-screen-lg z-0 ">
           
           {/* Hero Image */}
           <Image
