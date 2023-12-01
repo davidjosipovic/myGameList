@@ -124,7 +124,7 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
         {userGames.length === 0 ? (
           <p className="text-gray-500">Please wait...</p>
         ) : completedGames.length === 0 ? (
-          <p className="text-gray-500">No games in the list</p>
+          <div></div>
         ) : (
           completedGames.map((game, index) =>
             renderGame(game, userGames[index],index)
