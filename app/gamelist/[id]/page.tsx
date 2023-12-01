@@ -1,9 +1,9 @@
 "use client";
-"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import DeleteGameButton from "@/components/DeleteGameButton";
 import Image from "next/image";
+import ThreeJSModels from "@/components/ThreeJSModels";
 
 interface UserGame {
   id: number;
@@ -76,14 +76,14 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
     }
   }, [userGames]);
 
-  const renderGame = (game: Game, userGame: UserGame, index:number) =>
+  const renderGame = (game: Game, userGame: UserGame, index: number) =>
     userGame && ( // Conditional rendering starts here
       <div
         key={game.id}
         className="bg-white m-2 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 flex items-center"
       >
-    <span className="text-gray-500 mr-2 text-xl">{index + 1}.</span> {/* Index number */}
-
+        <span className="text-gray-500 mr-2 text-xl">{index + 1}.</span>{" "}
+        {/* Index number */}
         {game.cover && (
           <Image
             width={500}
@@ -95,9 +95,11 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
         )}
         <div className="w-full">
           <Link href={`/game/${game.id}`}>
-            <h2 className="text-xl font-semibold text-gray-700 inline">{game.name}</h2>
+            <h2 className="text-xl font-semibold text-gray-700 inline">
+              {game.name}
+            </h2>
           </Link>
-          
+
           {userGame.userId && (
             <div className=" bg-red-500  rounded-3xl float-right hover:bg-red-600 active:bg-red-700 ">
               <DeleteGameButton
@@ -106,7 +108,6 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
                 onGameDeleted={fetchUserGames}
               />
             </div>
-            
           )}
           <p className="text-gray-500">
             {userGame.rating ? `Rating: ${userGame.rating}` : "No rating"}
@@ -116,18 +117,18 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
     ); // Conditional rendering ends here
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black to-purple-900">
-      <h1 className="text-5xl font-extrabold mb-8 text-white">
+    <div className="flex flex-col  items-center mt-10 min-h-screen bg-gradient-to-b from-black to-purple-900">
+      <h1 className="text-5xl text-center font-extrabold mb-8 mt-10 text-white ">
         My Completed Games
       </h1>
       <div className="w-full max-w-4xl">
         {userGames.length === 0 ? (
-          <p className="text-gray-500">Please wait...</p>
+          <div></div>
         ) : completedGames.length === 0 ? (
           <div></div>
         ) : (
           completedGames.map((game, index) =>
-            renderGame(game, userGames[index],index)
+            renderGame(game, userGames[index], index)
           )
         )}
       </div>

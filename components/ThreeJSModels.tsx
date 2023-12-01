@@ -21,7 +21,7 @@ const Model = ({ modelPath, position, scale, rotationSpeed }) => {
   );
 };
 
-export default function App() {
+export default function ThreeJSModels() {
 
   return (
     <div className="opacity-0 lg:opacity-100 z-1 ">
