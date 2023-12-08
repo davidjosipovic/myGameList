@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import DeleteGameButton from "@/components/DeleteGameButton";
 import Image from "next/image";
-import ThreeJSModels from "@/components/ThreeJSModels";
 
 interface UserGame {
   id: number;
