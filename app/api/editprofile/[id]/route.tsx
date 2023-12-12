@@ -27,7 +27,8 @@ export async function PUT(
     const updateData = {
       info: body.info,
       name: body.name,
-      password:user.password
+      password:user.password,
+      picture:body.picture
     };
 
     // Conditionally update the password only if it's not empty
