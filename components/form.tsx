@@ -46,6 +46,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
               name: name,  // Send name for registration
               password: password,
             }),
+            
           }).then(async (res) => {
             setLoading(false);
             if (res.status === 200) {
