@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 
 const dummyData = {
-  pictureUrl: 'https://via.placeholder.com/150',
+  picture: '/Default_pfp.png',
   name: 'DemoUser',
   info: 'This is a short bio for a demo user.',
   gamesPlayed: 150,
@@ -49,7 +49,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
     <div className=''>
     <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md flex flex-col items-center space-y-4">
       <Image width={500}
-        height={500} className="w-32 h-32 rounded-full" src={user.picture} alt={`${user.name} profile`} />
+        height={500} className="w-32 h-32 rounded-full" src={user.picture} alt='Profile picture'  />
      
       <h1 className="text-3xl font-semibold text-blue-500 ">{user.name}</h1>
       <p className="text-center text-gray-600">{user.info}</p>

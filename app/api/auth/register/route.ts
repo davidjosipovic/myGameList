@@ -24,6 +24,7 @@ export async function POST(req: Request) {
         email,
         name,
         password: await hash(password, 10),
+        picture:'/Default_pfp.png'
       },
     });
     return NextResponse.json(user);

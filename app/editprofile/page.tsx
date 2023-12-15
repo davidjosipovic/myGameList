@@ -1,7 +1,7 @@
 'use client'
-import { useSession } from 'next-auth/react';
 import React, { useState, useEffect } from 'react';
-import { UploadButton } from "@/src/utils/uploadthing";
+import { useSession } from 'next-auth/react';
+import { UploadButton } from '@/src/utils/uploadthing';
 import Image from 'next/image';
 
 const EditProfilePage: React.FC = () => {
@@ -9,40 +9,40 @@ const EditProfilePage: React.FC = () => {
   const [userPassword, setUserPassword] = useState<string>('');
   const [userInfo, setUserInfo] = useState<string>('');
   const { data: session, update } = useSession();
-  const [userNameError, setUserNameError] = useState<string>(''); // Added userNameError state
-  const [pictureUrl,setPictureUrl] = useState("")
+  const [userNameError, setUserNameError] = useState<string>('');
+  const [pictureUrl, setPictureUrl] = useState<string>('');
 
+  const extractFileKey = (url) => {
+    const parts = url.split('/');
+    return parts[parts.length - 1];
+  };
 
   useEffect(() => {
-    // Fetch user data from the API when the component mounts
-    if (session) {
+    const fetchUserProfile = async (username: string) => {
+      try {
+        const response = await fetch(`/api/user/${encodeURIComponent(username)}`);
+        if (response.ok) {
+          const userData = await response.json();
+          setUserName(userData.name);
+          setUserInfo(userData.info);
+          setPictureUrl(userData.picture);
+        } else {
+          console.error('Failed to fetch user profile');
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    if (session && !userName) {
       fetchUserProfile(session.user.name);
     }
-  }, [session]);
-
-  const fetchUserProfile = async (username: string) => {
-    try {
-      const response = await fetch(`/api/user/${encodeURIComponent(username)}`);
-      if (response.ok) {
-        const userData = await response.json();
-        // Fill the state variables with data from the API response
-        setUserName(userData.name);
-        setUserInfo(userData.info);
-        setPictureUrl(userData.picture)
-        // You can choose whether or not to fill the password field from the API
-        // setUserPassword(userData.password);
-      } else {
-        console.error('Failed to fetch user profile');
-      }
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-    }
-  };
+  }, [session, userName]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!userName.trim()) {
-      // If userName is empty or contains only whitespace, set an error message
       setUserNameError('Username cannot be empty');
       return;
     }
@@ -50,14 +50,14 @@ const EditProfilePage: React.FC = () => {
     try {
       const response = await fetch(`/api/editprofile/${encodeURIComponent(session.user.name)}`, {
         method: 'PUT',
-        body: JSON.stringify({ name: userName, password: userPassword, info: userInfo , picture:pictureUrl }),
+        body: JSON.stringify({ name: userName, password: userPassword, info: userInfo, picture: pictureUrl }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
+
       if (response.ok) {
-        // Profile updated successfully
-        setUserNameError(''); // Clear the error message
+        setUserNameError('');
       } else {
         console.error('Failed to update profile');
       }
@@ -66,10 +66,58 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
+  const handleDeletePicture = async () => {
+    try {
+      const fileKey = extractFileKey(pictureUrl);
+      console.log(fileKey)
+      const deleteResponse = await fetch(`/api/deletepicture/${encodeURIComponent(fileKey)}`, {
+        method: 'GET',
+      });
+
+      if (deleteResponse.ok) {
+        setPictureUrl('/Default_pfp.png'); // Clear pictureUrl after deletion
+        console.log('Picture deleted successfully');
+      } else {
+        console.error('Failed to delete picture');
+      }
+    } catch (error) {
+      console.error('Error deleting picture:', error);
+    }
+
+    
+  };
+  const handlePictureUploadComplete = async (res) => {
+    // Do something with the response
+    setPictureUrl(res[0].url);
+    console.log('Files: ', res);
+    alert('Upload Completed');
+  
+
+    try {
+      const response = await fetch(`/api/editprofile/${encodeURIComponent(session.user.name)}`, {
+        method: 'PUT',
+        body: JSON.stringify({  picture: res[0].url  }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('It works ');
+      } else {
+        console.error('Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+
+  };
+    
   return (
     <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md">
       <h1 className="text-3xl font-semibold">Edit Profile</h1>
       <form onSubmit={handleFormSubmit} className="mt-4">
+        {/* Name input */}
         <div className="mb-4">
           <label className="block text-gray-600">Name</label>
           <input
@@ -85,6 +133,8 @@ const EditProfilePage: React.FC = () => {
             <p className="text-red-500 text-sm mt-1">{userNameError}</p>
           )}
         </div>
+
+        {/* Password input */}
         <div className="mb-4">
           <label className="block text-gray-600">Password</label>
           <input
@@ -94,6 +144,8 @@ const EditProfilePage: React.FC = () => {
             onChange={(e) => setUserPassword(e.target.value)}
           />
         </div>
+
+        {/* Info textarea */}
         <div className="mb-4">
           <label className="block text-gray-600">Info</label>
           <textarea
@@ -103,26 +155,31 @@ const EditProfilePage: React.FC = () => {
             onChange={(e) => setUserInfo(e.target.value)}
           />
         </div>
-        <Image width={500}
-        height={500} className="w-32 h-32 rounded-full" src={pictureUrl} alt={`${userName} profile`} />
-        <UploadButton
-        endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          // Do something with the response
-          setPictureUrl(res[0].url)
-          console.log("Files: ", res);
-          alert("Upload Completed");
-        }}
-        onUploadError={(error: Error) => {
-          // Do something with the error.
-          alert(`ERROR! ${error.message}`);
-        }}
-        
-      />
 
+        {/* Image and UploadButton */}
+        <div className='flex gap-6'>
+          <Image width={500} height={500} className="w-32 h-32 rounded-full" src={pictureUrl} alt={`${userName} profile`} />
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={handlePictureUploadComplete}
+            onUploadError={(error: Error) => {
+              // Do something with the error.
+              alert(`ERROR! ${error.message}`);
+            }}
+          />
+          <button
+          type="button"
+          className="relative mt-8 flex h-10 w-36 cursor-pointer items-center justify-center overflow-hidden rounded-md text-white after:transition-[width] after:duration-500 focus-within:ring-2 focus-within:ring-red-600 focus-within:ring-offset-2 bg-red-600"
+          onClick={handleDeletePicture}
+        >
+          Delete Picture
+        </button>
+        </div>
+
+        {/* Save button */}
         <button
           type="submit"
-          className={`bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 ${!userName.trim() ? 'cursor-not-allowed' : ''}`}
+          className={`bg-blue-500 text-white py-2 mt-8 px-4 rounded hover:bg-blue-600 ${!userName.trim() ? 'cursor-not-allowed' : ''}`}
           disabled={!userName.trim()} // Disable the button if userName is empty
           onClick={() =>
             update({
@@ -137,10 +194,8 @@ const EditProfilePage: React.FC = () => {
           Save Profile
         </button>
       </form>
-      
     </div>
   );
 };
 
 export default EditProfilePage;
-
