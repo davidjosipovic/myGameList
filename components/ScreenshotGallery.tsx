@@ -54,7 +54,6 @@ const ScreenshotGallery: React.FC<{ screenshots: any[] }> = ({ screenshots }) =>
 
         </button>
       </div>
-
       <Image
         height={400}
         width={400}
