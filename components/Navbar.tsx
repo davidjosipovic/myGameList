@@ -2,9 +2,9 @@
 import Link from "next/link";
 import React, { FC, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import SignOut from "./sign-out";
+import SignOut from "./SignOut";
 import { useSession } from "next-auth/react";
-import SearchGameComponent from "./searchGame";
+import SearchGameComponent from "./SearchGame";
 
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);

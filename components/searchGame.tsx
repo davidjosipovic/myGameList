@@ -9,7 +9,7 @@ type Result = {
   cover: { id: number; url: string };
 };
 
-const SearchGameComponent = () => {
+const SearchGame = () => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<Result[] | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -114,4 +114,4 @@ const SearchGameComponent = () => {
   );
 };
 
-export default SearchGameComponent;
+export default SearchGame;

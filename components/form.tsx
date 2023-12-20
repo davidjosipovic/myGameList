@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import LoadingDots from "@/components/loading-dots";
+import LoadingDots from "@/components/LoadingDots";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // changed `navigation` to `router`

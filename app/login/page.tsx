@@ -1,5 +1,5 @@
 
-import Form from "@/components/form";
+import Form from "@/components/Form";
 
 
 export default function Login() {
