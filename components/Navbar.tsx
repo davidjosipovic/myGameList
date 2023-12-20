@@ -21,6 +21,7 @@ const Navbar: FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
   }, []);
 
+  
   return (
     <div className="fixed top-0 w-full bg-gray-900 shadow-lg z-50">
       <nav className="flex items-center justify-between  py-2 text-white container mx-auto z-10">
