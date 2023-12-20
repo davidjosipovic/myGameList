@@ -12,7 +12,6 @@ export default function Login() {
             Use your email and password to sign in
           </p>
         </div>
-        
         <Form type="login" />
         
       </div>
