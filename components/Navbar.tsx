@@ -18,7 +18,6 @@ const Navbar: FC = () => {
         setIsUserMenuOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
   }, []);
 
