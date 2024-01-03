@@ -9,8 +9,7 @@ const dummyData = {
   picture: '/Default_pfp.png',
   name: 'DemoUser',
   info: 'This is a short bio for a demo user.',
-  gamesPlayed: 150,
-  games:0
+  games:[]
 };
 
 const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
@@ -29,21 +28,26 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
         const fetchedData = await response.json();
         setUser((prev) => ({ ...dummyData, ...fetchedData }));
         setLoading(false);
+        console.log('Fetched Data:', fetchedData);
       } catch (error) {
         console.error('Error fetching user:', error);
         setLoading(false);
-        
       }
     }
-    if (user.games) {
-    const countCompletedGames = user.games.length;
-    setCompletedGamesCount(countCompletedGames);}
+    
     fetchUserData();
   }, [params.id]);
+
+  useEffect(() => {
+    // Count completed games when user.games changes
+    const countCompletedGames = user.games.length;
+    setCompletedGamesCount(countCompletedGames);
+  }, [user.games]);
 
   if (isLoading) {
     return <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md">Loading...</div>;
   }
+
 
   return (
     <div className=''>
