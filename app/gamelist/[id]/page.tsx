@@ -30,6 +30,7 @@ interface GameListProps {
 const GameList: React.FC<GameListProps> = ({ params }) => {
   const [userGames, setUserGames] = useState<UserGame[]>([]);
   const [completedGames, setCompletedGames] = useState<Game[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserGames = async () => {
     try {
@@ -45,44 +46,62 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
     }
   };
 
-  const fetchGameDetails = (games: UserGame[]) => {
-    const fetchPromises = games.map((game) =>
-      fetch(`/api/game/${game.gameId}`, { method: "POST" }).then((res) =>
-        res.json()
-      )
-    );
+  const fetchGameDetails = async (games: UserGame[]) => {
+    try {
+      const fetchPromises = games.map((game) =>
+        fetch(`/api/game/${game.gameId}`, { method: "POST" }).then((res) =>
+          res.json()
+        )
+      );
 
-    Promise.all(fetchPromises)
-      .then((gamesData) => {
-        const allGames = gamesData
-          .map((responseData) =>
-            responseData && responseData.data ? responseData.data[0] : null
-          )
-          .filter(Boolean);
+      const gamesData = await Promise.all(fetchPromises);
 
-        setCompletedGames(allGames);
-      })
-      .catch(console.error);
+      const allGames = gamesData
+        .map((responseData) =>
+          responseData && responseData.data ? responseData.data[0] : null
+        )
+        .filter(Boolean);
+
+      setCompletedGames(allGames);
+    } catch (error) {
+      console.error("Error fetching game details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGameDeleted = () => {
+    // Refetch user games after deletion
+    fetchUserGames();
   };
 
   useEffect(() => {
+    // Set loading to false after 3 seconds even if no games are fetched
+    const loadingTimeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    // Fetch user games
     fetchUserGames();
+
+    // Clear the loading timeout if games are fetched before 3 seconds
+    return () => clearTimeout(loadingTimeout);
   }, [params.id]);
 
   useEffect(() => {
+    // Call fetchGameDetails with the updated userGames
     if (userGames.length > 0) {
       fetchGameDetails(userGames);
     }
-  }, [userGames]);
-
-  const renderGame = (game: Game, userGame: UserGame, index: number) =>
-    userGame && ( // Conditional rendering starts here
+  }, [userGames]); // Now using userGames as a dependency
+  
+  const renderGame = (game: Game, userGame: UserGame, index: number) => (
+    userGame && (
       <div
         key={game.id}
         className="bg-white m-2 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 flex items-center"
       >
-        <span className="text-gray-500 mr-2 text-xl">{index + 1}.</span>{" "}
-        {/* Index number */}
+        <span className="text-gray-500 mr-2 text-xl">{index + 1}.</span>
         {game.cover && (
           <Image
             width={500}
@@ -104,7 +123,7 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
               <DeleteGameButton
                 gameId={game.id}
                 userId={params.id}
-                onGameDeleted={fetchUserGames}
+                onGameDeleted={handleGameDeleted}
               />
             </div>
           )}
@@ -113,18 +132,19 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
           </p>
         </div>
       </div>
-    ); // Conditional rendering ends here
+    )
+  );
 
   return (
-    <div className="flex flex-col  items-center mt-10 min-h-screen bg-gradient-to-b from-black to-purple-900">
-      <h1 className="text-5xl text-center font-extrabold mb-8 mt-10 text-white ">
+    <div className="flex flex-col items-center mt-10 min-h-screen bg-gradient-to-b from-black to-purple-900">
+      <h1 className="text-5xl text-center font-extrabold mb-8 mt-10 text-white">
         My Completed Games
       </h1>
       <div className="w-full max-w-4xl">
-        {userGames.length === 0 ? (
-          <div></div>
-        ) : completedGames.length === 0 ? (
-          <div></div>
+        {isLoading ? (
+          <div className="text-white text-center">Loading...</div>
+        ) : completedGames.length === 0 && !isLoading ? (
+          <div className="text-white text-center">No games in the list</div>
         ) : (
           completedGames.map((game, index) =>
             renderGame(game, userGames[index], index)
