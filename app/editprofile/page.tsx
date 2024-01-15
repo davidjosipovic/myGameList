@@ -159,7 +159,8 @@ const EditProfilePage: React.FC = () => {
         {/* Image and UploadButton */}
         <div className='flex gap-6'>
           <Image width={500} height={500} className="w-32 h-32 rounded-full" src={pictureUrl} alt={`${userName} profile`} />
-          <UploadButton
+          <div className='flex flex-col md:flex-row md:gap-6 '>
+             <UploadButton
             endpoint="imageUploader"
             onClientUploadComplete={handlePictureUploadComplete}
             onUploadError={(error: Error) => {
@@ -173,7 +174,8 @@ const EditProfilePage: React.FC = () => {
           onClick={handleDeletePicture}
         >
           Delete Picture
-        </button>
+        </button></div>
+         
         </div>
 
         {/* Save button */}
