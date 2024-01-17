@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 type Result = {
   id: number;
@@ -15,6 +16,7 @@ const SearchGame = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hasError, setHasError] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -79,6 +81,11 @@ const SearchGame = () => {
         type="text"
         placeholder="Search for a game"
         value={searchInput}
+        onKeyDown={(e)=>{
+          if(e.key==="Enter"){
+            router.push('/search/'+searchInput);
+          }
+        }}
         onChange={(e) => {
           setSearchInput(e.target.value);
           setIsDropdownOpen(!!e.target.value);
