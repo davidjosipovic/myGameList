@@ -13,7 +13,8 @@ export function AppWrapper({children}:{
         picture:'/Default_pfp.png'
     })
     const { data: session } = useSession();
-    useEffect(() => {
+    if(session){
+      useEffect(() => {
         async function fetchUserData() {
           try {
             const response = await fetch(`/api/user/${encodeURIComponent(session.user.name)}`);
@@ -29,7 +30,8 @@ export function AppWrapper({children}:{
         }
         
         fetchUserData();
-      }, [session.user.name]);
+      }, [session.user.name]);}
+    
 
 
 
