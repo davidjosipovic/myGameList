@@ -47,8 +47,7 @@ export default async function RootLayout({
         <Footer/>
         </AppWrapper>
         </Provider>
-       
-        
+    
       </body>
     </html>
   );
