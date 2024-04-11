@@ -2,97 +2,100 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import ThreeJSModels from "@/components/ThreeJSModels";
+import { useEffect, useState } from "react";
+import Button from "@/components/Button";
 
 const MyGameListHome: React.FC = () => {
   // Check user session
   const { data: session } = useSession();
+  const [isDesktop, setDesktop] = useState(false);
+  const games=["","",""]
+
+  useEffect(() => {
+    if (window.innerWidth > 600) {
+      setDesktop(true);
+    } else {
+      setDesktop(false);
+    }
+
+    const updateMedia = () => {
+      if (window.innerWidth > 600) {
+        setDesktop(true);
+      } else {
+        setDesktop(false);
+      }
+    };
+    window.addEventListener('resize', updateMedia);
+    return () => window.removeEventListener('resize', updateMedia);
+  }, []);
 
   return (
-    <div className="bg-gradient-to-b from-black to-purple-900 flex flex-col justify-center items-center">
-      {/* 3D Gameboy Component */}
-      <ThreeJSModels />
+    <div className="my-12">
+      <div className=" ">
+        {isDesktop ? (
+          <Image  src={"/hero-big.svg"}
+            width={500}
+            height={500}
+            alt="Hero Image"
+            layout="responsive"
 
-      {/* Content Container */}
-      <div className="bg-white mt-12 p-4  sm:p-6 md:p-8  max-w-screen-lg z-0 ">
-        {/* Hero Image */}
-        <Image
-          width={500}
-          height={500}
-          src="/hero.jpg"
-          alt="Game 1"
-          className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover rounded-md mb-2 "
-        />
+          />
+        ) : (
+          <Image className="" src={"/hero-small.svg"}
+            width={500}
+            height={500}
+            layout="responsive"
+            alt="Hero Image"
 
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-purple-900 mb-4">
-          Welcome to MyGameList
-        </h1>
-
-        {/* Description */}
-        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 mb-6 transition-opacity hover:opacity-70">
-          Discover a world of gaming. Track, showcase, and connect with fellow
-          gamers.
-        </p>
-
-        {/* Features Section */}
-        <div className="mb-6">
-          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800 mb-2">
-            Key Features
-          </h2>
-          <ul className="list-disc list-inside text-gray-700">
-            <li>Track your favorite games and progress.</li>
-            <li>Discover new games based on your interests.</li>
-            <li>Connect with gamers from around the world.</li>
-          </ul>
-        </div>
-
-        {/* Popular Games Section */}
-        <div className="mb-6">
-          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800 mb-2">
-            Popular Games
-          </h2>
-          {/* Add your popular games content here */}
-        </div>
-
-        {/* Testimonials Section */}
-        <div>
-          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800 mb-2">
-            What Our Users Say
-          </h2>
-          <div className="bg-gray-100 p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-md ">
-            <blockquote className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 italic">
-              {
-                '"MyGameList has made it easy for me to keep track of my game collection and connect with friends who share my gaming interests."'
-              }
-            </blockquote>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-800 mt-2">
-              - John Doe, Gamer
-            </p>
-          </div>
-        </div>
-
-        {/* Call-to-Action Buttons */}
-        <div className="flex justify-between mt-6">
-          {!session && (
-            <>
-              <Link
-                className="bg-emerald-500 hover:bg-emerald-700 text-white px-4 sm:px-6 md:px-8 lg:px-10 py-2 sm:py-3 md:py-4 lg:py-5 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                href="/login"
-              >
-                Sign In
-              </Link>
-              <Link
-                className="bg-purple-600 hover:bg-purple-800 text-white px-4 sm:px-6 md:px-8 lg:px-10 py-2 sm:py-3 md:py-4 lg:py-5 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                href="/register"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
+          />
+        )}
       </div>
+
+
+      <div className=" border m-4 my-8 p-5 border-white bg-grey-dark text-white rounded-lg text-center">
+        <p>Discover a world of GAMING.</p>
+        <p>Track, showcase, and connect with fellow gamers.</p></div>
+
+      <section className="px-4">
+
+        <div className="inline-flex items-center  w-full mb-2">
+          <h1 className="w-40 font-medium text-gray-900  bg-grey-light  text-white">New Releases</h1>
+          <hr className="w-full h-px bg-white border-0 " />
+          {/*Carusel*/}
+        </div>
+
+        <div className='flex gap-4 mb-8'>
+        {games.map((game)=>
+        <div className='bg-white w-full h-40'></div>
+       )}
+       </div>
+
+
+        <div className="inline-flex items-center  w-full mb-2">
+          <h1 className="w-40 font-medium text-gray-900  bg-grey-light  text-white">Top Games</h1>
+          <hr className="w-full h-px bg-white border-0 " />
+          {/*Carusel*/}
+        </div>
+        <div className='flex gap-4'>
+        {games.map((game)=>
+        <div className='bg-white w-full h-40'></div>
+       )}
+       </div>
+      </section>
+
+      <div className=" border m-4 my-8 p-5 border-white bg-grey-dark text-white rounded-lg text-center">
+        <p>If you want to be part of this.</p>
+        <p>You can chose your button.</p>
+      </div>
+
+      <div className="flex gap-8 justify-center">
+        <Button label="Login" color="green" />
+        <Button label="Register" color="green"/>
+      </div>
+
     </div>
+
+
   );
 };
 

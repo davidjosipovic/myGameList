@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import slidesearch from "./SlidingSearch.module.css"
 
 type Result = {
   id: number;
@@ -10,7 +11,7 @@ type Result = {
   cover: { id: number; url: string };
 };
 
-const SearchGame = () => {
+const SearchGame = (props) => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<Result[] | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -48,7 +49,7 @@ const SearchGame = () => {
     return () => clearTimeout(debounceTimeout);
   }, [searchInput]);
 
-  
+
 
   const handleClickOutside = (event: MouseEvent) => {
     if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
@@ -70,20 +71,21 @@ const SearchGame = () => {
   };
 
   return (
-    <div className="relative inline-block" ref={inputRef}>
-      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path stroke="currentColor" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+    <div className={`fixed   ${props.isSearchOpen ? slidesearch.open : slidesearch.close} w-full  px-4 py-2 left-0 flex lg:w-1/3 bg-grey-light  lg:left-1/3     z-20`} ref={inputRef}>
+      <div className="absolute  top-4 left-4 flex items-center pl-3 pointer-events-none">
+        <svg className="w-4 h-4 text-grey-dark dark:text-grey-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="#1A1A1A" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
         </svg>
       </div>
+
       <input
-        className="w-full px-8 lg:py-2 py-3 text-black rounded-3xl shadow-md focus:outline-none focus:ring focus:border-blue-300"
+        className="w-full text-grey-dark  text-center  lg:py-1 py-1 rounded-3xl focus:outline-none "
         type="text"
         placeholder="Search for a game"
         value={searchInput}
-        onKeyDown={(e)=>{
-          if(e.key==="Enter"){
-            router.push('/search/'+searchInput);
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            router.push('/search/' + searchInput);
           }
         }}
         onChange={(e) => {
@@ -92,10 +94,16 @@ const SearchGame = () => {
         }}
       />
 
+
+
+      <button onClick={() => {
+        props.setIsSearchOpen(false)
+      }} className='  w-10 text-xl lg:hidden  text-center'>X</button>
+
       {isDropdownOpen && searchResults && searchResults.length > 0 && (
-        <ul className="absolute text-black left-0 mt-2 w-full bg-white border rounded-md shadow-md z-10">
+        <ul className="absolute text-white top-20  left-1/2 lg:left-0 -translate-x-1/2 lg:translate-x-0  lg:w-full bg-grey-dark border border-white  rounded-lg ">
           {searchResults.map((result) => (
-            <Link className='flex hover:bg-gray-100' href={`/game/${result.id}`} key={result.id}>
+            <Link className='flex hover:bg-gray-100 '  href={`/game/${result.id}`} key={result.id}>
               {result.cover && (
                 <Image
                   height={200}

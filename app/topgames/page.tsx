@@ -25,60 +25,26 @@ const GameComponent: React.FC = () => {
       });
   }, []);
   return (
-    <div className="flex bg-black justify-center items-center">
-      <div className="container bg-white mx-auto md:px-10 px-2   ">
+    <div className="flex bg-black justify-center lg:items-center z-0">
+      <div className=" bg-grey-light mx-auto md:px-10 px-2   ">
 
-        <h1 className="text-3xl font-bold mt-24 text-gray-700">mGL Charts</h1>
-        <h2 className="text-4xl mb-10 text-gray-700">mGL Top 100 Video Games</h2>
+        <h1 className=" lg: text-3xl font-bold mt-20 mb-8   lg:text-center  text-white">Charts</h1>
+        <div className="text-lg mb-10 w-fit border border-white rounded-lg
+         p-1 lg:object-center bg-grey-dark lg:mx-auto text-white">Top 100 Games</div>
 
-
-        <div className="hidden md:px-5 md:flex md:mb-6 space-x-4">
-          <div className="w-1/6 text-center py-2 font-bold text-gray-600 border-b-2 border-gray-400">Rank</div>
-          <div className="w-5/6 py-2 font-bold pl-8 text-gray-600 border-b-2 border-gray-400">Title</div>
-          <div className="w-1/6 text-center py-2 font-bold text-gray-600 border-b-2 border-gray-400">Rating</div>
-          <div className="w-1/6 text-center py-2 font-bold text-gray-600 border-b-2 border-gray-400">Your score</div>
-          <div className="w-1/6 text-center py-2 font-bold text-gray-600 border-b-2 border-gray-400">Status</div>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-1 gap-1">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
           {data?.map((game, index) => (
-            <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className="bg-white p-0 mx-0 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 relative md:flex md:space-x-4">
-
-              <Link href={`/game/${game.id}`}><div className="md:hidden">
+            <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className=" relative  ">
+              
                 {game.cover && (
-                  <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover rounded " />
+                  <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
                 )}
-                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 rounded-b">
-                  <h2 className="text-sm  font-semibold underline text-white whitespace-nowrap overflow-hidden truncate">{index+1+". "+game.name}</h2>
-                  <p className="text-white text-sm ">Rating: {Math.floor(game.rating)}</p>
-                  <p className="text-white text-sm">Ratings Count: {game.rating_count}</p>
-                </div>
-              </div></Link>
-
-              <div className="hidden md:block w-1/6 text-center py-6 text-4xl text-gray-600">
-                {index + 1}
+                  <div className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
+                  <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
               </div>
-              <div className=" hidden md:flex w-5/6 items-center">
-                {game.cover && (
-                  <Image height={500} width={500}  src={`https:${game.cover.url}`} alt={`${game.name} cover`} className="w-24 h-24 object-cover rounded mr-4 shadow" />
-                )}
-                <div className=''>
-                  <h2 className="text-xl  font-semibold text-gray-700">{game.name}</h2>
-                  <p className="text-gray-500">Ratings: {game.rating_count}</p>
-                </div>
-              </div>
-
-              <div className="hidden md:block w-1/6 text-center py-6 text-2xl font-semibold text-gray-700">
-              {Math.floor(game.rating)}
-              </div>
-              <div className="hidden md:block w-1/6 text-center py-7 text-lg text-gray-600">
-                N/A
-              </div>
-              <div className="hidden md:block w-1/6 text-center py-7 text-lg text-indigo-500 font-semibold">
-                In work
-              </div>
-
-            </div></Link>
+              
+      
+            </Link>
           ))}
         </div>
       </div>

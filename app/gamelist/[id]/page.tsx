@@ -15,6 +15,7 @@ interface UserGame {
 interface Game {
   id: number;
   name: string;
+  rating: number | null;
   cover: {
     id: number;
     url: string;
@@ -70,11 +71,6 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
     }
   };
 
-  const handleGameDeleted = () => {
-    // Refetch user games after deletion
-    fetchUserGames();
-  };
-
   useEffect(() => {
     // Set loading to false after 3 seconds even if no games are fetched
     const loadingTimeout = setTimeout(() => {
@@ -94,62 +90,38 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
       fetchGameDetails(userGames);
     }
   }, [userGames]); // Now using userGames as a dependency
-  
-  const renderGame = (game: Game, userGame: UserGame, index: number) => (
-    userGame && (
-      <div
-        key={game.id}
-        className="bg-white m-2 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 flex items-center"
-      >
-        <span className="text-gray-500 mr-2 text-xl">{index + 1}.</span>
-        {game.cover && (
-          <Image
-            width={500}
-            height={500}
-            src={`https:${game.cover.url.replace("t_thumb", "t_cover_big")}`}
-            alt={`${game.name} cover`}
-            className="w-24 h-24 object-cover rounded mr-4"
-          />
-        )}
-        <div className="w-full">
-          <Link href={`/game/${game.id}`}>
-            <h2 className="text-xl font-semibold text-gray-700 inline">
-              {game.name}
-            </h2>
-          </Link>
 
-          {userGame.userId && (
-            <div className=" bg-red-500  rounded-3xl float-right hover:bg-red-600 active:bg-red-700 ">
+
+
+  return (
+    <div className=" mx-4 mt-20 ">
+
+      <h1 className=" lg:text-3xl font-bold mb-8 text-2xl  lg:text-center  text-white">Game List</h1>
+      <div className="text-lg border border-white rounded-lg
+         px-2 w-52 lg:object-center mb-6 bg-grey-dark text-white lg:mx-auto">Completed
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
+        {completedGames?.map((game, index) => (
+          <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className=" relative  ">
+
+            {game.cover && (
+              <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+            )}
+            <div className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
+            <div  className="absolute top-0 left-0 ">
               <DeleteGameButton
                 gameId={game.id}
                 userId={params.id}
-                onGameDeleted={handleGameDeleted}
+                onGameDeleted={fetchUserGames}
               />
             </div>
-          )}
-          <p className="text-gray-500">
-            {userGame.rating ? `Rating: ${userGame.rating}` : "No rating"}
-          </p>
-        </div>
-      </div>
-    )
-  );
+            <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
+          </div>
 
-  return (
-    <div className="flex flex-col items-center mt-10 min-h-screen bg-gradient-to-b from-black to-purple-900">
-      <h1 className="text-5xl text-center font-extrabold mb-8 mt-10 text-white">
-        My Completed Games
-      </h1>
-      <div className="w-full max-w-4xl">
-        {isLoading ? (
-          <div className="text-white text-center">Loading...</div>
-        ) : completedGames.length === 0 && !isLoading ? (
-          <div className="text-white text-center">No games in the list</div>
-        ) : (
-          completedGames.map((game, index) =>
-            renderGame(game, userGames[index], index)
-          )
-        )}
+
+          </Link>
+        ))}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { UploadButton } from '@/src/utils/uploadthing';
 import Image from 'next/image';
+import ProfilePicture from '@/components/ProfilePicture';
 
 const EditProfilePage: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
@@ -84,19 +85,19 @@ const EditProfilePage: React.FC = () => {
       console.error('Error deleting picture:', error);
     }
 
-    
+
   };
   const handlePictureUploadComplete = async (res) => {
     // Do something with the response
     setPictureUrl(res[0].url);
     console.log('Files: ', res);
     alert('Upload Completed');
-  
+
 
     try {
       const response = await fetch(`/api/editprofile/${encodeURIComponent(session.user.name)}`, {
         method: 'PUT',
-        body: JSON.stringify({  picture: res[0].url  }),
+        body: JSON.stringify({ picture: res[0].url }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -112,17 +113,50 @@ const EditProfilePage: React.FC = () => {
     }
 
   };
-    
+
   return (
-    <div className="p-6 mt-24 max-w-2xl mx-auto bg-white rounded-xl shadow-md">
-      <h1 className="text-3xl font-semibold">Edit Profile</h1>
+    <div className=" mt-20 mx-4   ">
+      <h1 className="lg:text-3xl font-bold mb-8 text-2xl  lg:text-center  text-white">Edit Profile</h1>
       <form onSubmit={handleFormSubmit} className="mt-4">
+
+        {/* Image and UploadButton */}
+        <div className='flex gap-6'>
+          <div className='hidden sm:inline'><ProfilePicture size="big" /></div>
+          <div className=' sm:hidden'><ProfilePicture size="medium" /></div>
+
+          <div className='flex w-2/3 flex-col md:flex-row md:gap-6 items-center gap-2 mb-8  '>
+            <p className='text-white'>Image must be in jpg file format. File size must be less than 4MB.</p>
+            <div className='flex gap-4'>
+              <UploadButton
+                appearance={{
+                  button: "hover:bg-green-dark hover:shadow-xl h-fit w-28 p-2 text-center text-md rounded-lg font-bold bg-green-light shadow-lg  shadow-grey-dark  text-grey-dark",
+                  allowedContent: "hidden"
+                }}
+
+                endpoint="imageUploader"
+                onClientUploadComplete={handlePictureUploadComplete}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
+              <button
+                type="button"
+                className=" hover:bg-opacity-50 hover:shadow-xl h-fit w-28 p-2 text-center text-md rounded-lg font-bold bg-red shadow-lg  shadow-grey-dark  text-grey-dark"
+                onClick={handleDeletePicture}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Name input */}
         <div className="mb-4">
-          <label className="block text-gray-600">Name</label>
+          <label className="block text-white">Name</label>
           <input
             type="text"
-            className={`w-full p-2 border rounded ${userNameError ? 'border-red-500' : ''}`}
+            className={`w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl ${userNameError ? 'border-red-500' : ''}`}
             value={userName}
             onChange={(e) => {
               setUserName(e.target.value);
@@ -136,52 +170,32 @@ const EditProfilePage: React.FC = () => {
 
         {/* Password input */}
         <div className="mb-4">
-          <label className="block text-gray-600">Password</label>
+          <label className="block text-white ">Password</label>
           <input
             type="password"
-            className="w-full p-2 border rounded"
+            className="w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl"
             value={userPassword}
             onChange={(e) => setUserPassword(e.target.value)}
           />
         </div>
 
-        {/* Info textarea */}
-        <div className="mb-4">
-          <label className="block text-gray-600">Info</label>
+        {/* Biography textarea */}
+        <div className="">
+          <label className="block text-white">Biography</label>
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl"
             rows={4}
             value={userInfo}
             onChange={(e) => setUserInfo(e.target.value)}
           />
         </div>
 
-        {/* Image and UploadButton */}
-        <div className='flex gap-6'>
-          <Image width={500} height={500} className="w-32 h-32 rounded-full" src={pictureUrl} alt={`${userName} profile`} />
-          <div className='flex flex-col md:flex-row md:gap-6 '>
-             <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={handlePictureUploadComplete}
-            onUploadError={(error: Error) => {
-              // Do something with the error.
-              alert(`ERROR! ${error.message}`);
-            }}
-          />
-          <button
-          type="button"
-          className="relative mt-8 flex h-10 w-36 cursor-pointer items-center justify-center overflow-hidden rounded-md text-white after:transition-[width] after:duration-500 focus-within:ring-2 focus-within:ring-red-600 focus-within:ring-offset-2 bg-red-600"
-          onClick={handleDeletePicture}
-        >
-          Delete Picture
-        </button></div>
-         
-        </div>
+
 
         {/* Save button */}
         <button
           type="submit"
-          className={`bg-blue-500 text-white py-2 mt-8 px-4 rounded hover:bg-blue-600 ${!userName.trim() ? 'cursor-not-allowed' : ''}`}
+          className={`my-12 hover:bg-green-dark w-full bg-green-light hover:shadow-xl p-2 text-center text-lg rounded-lg font-bold shadow-lg  shadow-grey-dark  text-grey-dark ${!userName.trim() ? 'cursor-not-allowed' : ''}`}
           disabled={!userName.trim()} // Disable the button if userName is empty
           onClick={() =>
             update({

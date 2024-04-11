@@ -51,39 +51,28 @@ const SearchGame = ({ params }: { params: { id: string } }) => {
 
   // JSX structure for the SearchGame component
   return (
-    <div className="container mx-auto my-8 p-8 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-semibold mb-4 text-gray-800">Game Search</h1>
-      
-      {/* Display search results */}
-      {searchResults && searchResults.length > 0 && (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
-          {searchResults.map((result) => (
-            <li key={result.id} className="mb-4">
-              <Link className="block bg-white hover:shadow-lg rounded-lg overflow-hidden" href={`/game/${result.id}`}>
-            
-                  {result.cover && (
-                    <Image
-                      height={200}
-                      width={200}
-                      src={`https:${result.cover.url}`}
-                      alt={`${result.name} cover`}
-                      className="w-full h-40 object-cover"
-                    />
-                  )}
-                  <div className="p-4">
-                    <h3 className="text-xl font-semibold text-gray-800">
-                      {result.name.length > 25 ? `${result.name.substring(0, 32)}...` : result.name}
-                    </h3>
-                  </div>
-                
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="flex bg-black justify-center items-center z-0">
+      <div className=" bg-grey-light mx-auto md:px-10 px-2   ">
 
-      {/* Display error message */}
-      {hasError && <p className="text-red-500 mt-4">Error fetching data</p>}
+        <h1 className=" lg: text-3xl font-bold mt-20 lg:text-center  text-white">Search Results for "{params.id}"</h1>
+        <div className="text-lg mb-10 w-fit p-1 lg:object-center  mx-auto text-white text-opacity-50">{searchResults ? searchResults.length+" Results":"Loading..."} </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
+          {searchResults?.map((game, index) => (
+            <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className=" relative  ">
+              
+                {game.cover && (
+                  <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+                )}
+                  <div className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
+                  <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
+              </div>
+              
+      
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

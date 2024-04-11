@@ -33,11 +33,11 @@ console.log("OK")
 
   return (
     <button
-      className={` text-white px-4 py-2 rounded-md ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`rounded-lg text-lg font-bold px-2 bg-red m-1 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
       onClick={handleDeleteGame}
       disabled={isDeleting}
     >
-      {isDeleting ? 'Deleting...' : 'Delete Game'}
+      {isDeleting ? 'Deleting...' : 'Delete'}
     </button>
   );
 };
