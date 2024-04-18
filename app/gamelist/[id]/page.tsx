@@ -103,24 +103,32 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
         {completedGames?.map((game, index) => (
-          <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className=" relative  ">
-
-            {game.cover && (
-              <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
-            )}
-            <div className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
-            <div  className="absolute top-0 left-0 ">
+          <div key={game.id}>
+            <div className="relative top-10 left-0 z-10 ">
               <DeleteGameButton
                 gameId={game.id}
                 userId={params.id}
-                onGameDeleted={fetchUserGames}
+                onGameDeleted={()=>{
+                  fetchUserGames();
+                }}
+
               />
             </div>
-            <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
+          <Link  href={`/game/${game.id}`}>
+            <div  className=" relative  ">
+
+            {game.cover && (
+              <Image  height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+            )}
+            <div  className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
+            
+            <p  className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
           </div>
 
 
           </Link>
+          
+          </div>
         ))}
       </div>
     </div>

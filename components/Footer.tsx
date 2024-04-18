@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
 
       <div className="text-white text-center">
         <div className="flex">
-          <Image src="/logo.png" width={50} height={50} alt="Logo" />
+          <Image priority src="/logo.png" width={50} height={50} alt="Logo" className="w-auto h-auto" />
           <div className="text-3xl pl-2 font-bold">myGameList</div>
         </div>
 

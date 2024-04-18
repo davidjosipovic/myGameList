@@ -81,6 +81,7 @@ const SearchGame = (props) => {
       <input
         className="w-full text-grey-dark  text-center  lg:py-1 py-1 rounded-3xl focus:outline-none "
         type="text"
+        name='Search Input'
         placeholder="Search for a game"
         value={searchInput}
         onKeyDown={(e) => {

@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 const MyGameListHome: React.FC = () => {
   // Check user session
   const { data: session } = useSession();
-  const [isDesktop, setDesktop] = useState(false);
+  const [isDesktop, setDesktop] = useState(true);
   const games=["","",""]
 
   useEffect(() => {
@@ -31,25 +31,26 @@ const MyGameListHome: React.FC = () => {
 
   return (
     <div className="my-12">
-      <div className=" ">
+      
         {isDesktop ? (
           <Image  src={"/hero-big.svg"}
             width={500}
             height={500}
             alt="Hero Image"
-            layout="responsive"
+            className="w-full h-auto"
+            priority
 
           />
         ) : (
-          <Image className="" src={"/hero-small.svg"}
+          <Image className="w-full h-auto" src={"/hero-small.svg"}
             width={500}
             height={500}
-            layout="responsive"
             alt="Hero Image"
+            priority
 
           />
         )}
-      </div>
+      
 
 
       <div className=" border m-4 my-8 p-5 border-white bg-grey-dark text-white rounded-lg text-center">
@@ -65,8 +66,8 @@ const MyGameListHome: React.FC = () => {
         </div>
 
         <div className='flex gap-4 mb-8'>
-        {games.map((game)=>
-        <div className='bg-white w-full h-40'></div>
+        {games.map((game, index)=>
+        <div key={index} className='bg-white w-full h-40'></div>
        )}
        </div>
 
@@ -77,8 +78,8 @@ const MyGameListHome: React.FC = () => {
           {/*Carusel*/}
         </div>
         <div className='flex gap-4'>
-        {games.map((game)=>
-        <div className='bg-white w-full h-40'></div>
+        {games.map((game,index)=>
+        <div key={index} className='bg-white w-full h-40'></div>
        )}
        </div>
       </section>

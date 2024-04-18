@@ -61,42 +61,43 @@ export default function Form({ type }: { type: "login" | "register" }) {
           });
         }
       }}
-      className="flex flex-col z-0 space-y-4 bg-gray-50 px-4 py-8 sm:px-16"
+      className=" flex flex-col z-0 gap-4  py-12 "
     >
+      
       <div>
-        <label htmlFor="email" className="block text-xs text-gray-600 uppercase">
+      <p className="text-sm text-white mb-2">{type==="login"?"Use your email and password to sign in":"Create an account with your email, username and password"}</p>
+
+        <label htmlFor="email" className="block text-md text-white ">
           Email Address
         </label>
         <input
           id="email"
           name="email"
           type="email"
-          placeholder="example@email.com"
           autoComplete="email"
           required
-          className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+          className="mt-1 block w-full appearance-none  border px-3 py-2 rounded-lg text-white  border-white bg-grey-dark shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
         />
       </div>
       {type === "register" && (
         <div>
-          <label htmlFor="name" className="block text-xs text-gray-600 uppercase">
-            name
+          <label htmlFor="name" className=" block text-md text-white">
+            Username
           </label>
           <input
             id="name"
             name="name"
             type="text"
-            placeholder="name"
             autoComplete="name"
             required
-            className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            className="mt-1 block px-3 py-2  w-full appearance-none rounded-lg text-white border border-white bg-grey-dark shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
           />
         </div>
       )}
       <div>
         <label
           htmlFor="password"
-          className="block text-xs text-gray-600 uppercase"
+          className="block text-md text-white"
         >
           Password
         </label>
@@ -105,16 +106,17 @@ export default function Form({ type }: { type: "login" | "register" }) {
           name="password"
           type="password"
           required
-          className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+          className="mt-1 block w-full appearance-none text-white rounded-lg border border-white bg-grey-dark px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
         />
       </div>
-      <button
+      <div className="flex items-center">
+        <button
         disabled={loading}
         className={`${
           loading
-            ? "cursor-not-allowed border-gray-200 bg-gray-100"
-            : "border-black bg-black text-white hover:bg-white hover:text-black"
-        } flex h-10 w-full items-center justify-center rounded-md border text-sm transition-all focus:outline-none`}
+            ? "cursor-not-allowed  bg-grey-dark"
+            : "border-black bg-black text-grey-dark hover:bg-green-dark hover:text-black"
+        } bg-green-light font-bold w-1/3  mr-4  flex h-10  items-center  justify-center rounded-lg border text-xl transition-all focus:outline-none`}
       >
         {loading ? (
           <LoadingDots color="#808080" />
@@ -123,17 +125,19 @@ export default function Form({ type }: { type: "login" | "register" }) {
         )}
       </button>
       {type === "login" ? (
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-sm text-white  w-2/3">
           Don&apos;t have an account?{" "}
-          <Link className="font-semibold text-gray-800" href="/register">Sign up</Link>{" "}
+          <Link className=" underline text-white" href="/register">Sign up</Link>{" "}
           for free.
         </p>
       ) : (
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-sm text-white w-2/3">
           Already have an account?{" "}
-          <Link className="font-semibold text-gray-800" href="/login">Sign in</Link>{" "}instead.
+          <Link className=" underline text-white" href="/login">Sign in</Link>{" "}instead.
         </p>
       )}
+      </div>
+      
     </form>
   );
 }

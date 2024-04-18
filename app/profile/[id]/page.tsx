@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProfilePicture from '@/components/ProfilePicture';
 import Button from '@/components/Button';
+import RecentGames from './RecentGames';
 
 
 const userData = {
@@ -74,8 +75,8 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
           <div className="  bg-grey-dark w-40 h-8"></div>
 
             <div className='flex gap-4'>
-              {games.map((map) =>
-                <div className='bg-grey-dark w-full h-28'></div>
+              {games.map((_,index) =>
+                < div className ='bg-grey-dark w-full h-28' key={index}></div>
               )}
             </div>
 
@@ -123,17 +124,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
         </Link>
       </section>
 
-      <section className="flex flex-col gap-2 my-8">
-        <h1 className="text-3xl font-semibold text-white ">Your Recent Games</h1>
-
-        <div className='flex gap-4'>
-          {games.map((map) =>
-            <div className='bg-white w-full h-28'></div>
-          )}
-        </div>
-
-
-      </section>
+      <RecentGames id={params.id}/>
 
       <section className="flex flex-col gap-2 my-8">
         <h1 className="text-3xl font-semibold text-white ">Statistics</h1>

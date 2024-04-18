@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 interface DeleteGameButtonProps {
   gameId: number;
   userId: string;
-  onGameDeleted: () => void;
+  onGameDeleted: any;
 }
 
 const DeleteGameButton: React.FC<DeleteGameButtonProps> = ({ gameId, userId, onGameDeleted }) => {

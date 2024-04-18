@@ -59,12 +59,12 @@ const SearchGame = ({ params }: { params: { id: string } }) => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
           {searchResults?.map((game, index) => (
-            <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className=" relative  ">
+            <Link key={index} href={`/game/${game.id}`}>
+              <div className=" relative  ">
               
-                {game.cover && (
-                  <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
-                )}
-                  <div className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
+                {game.cover ? (
+                  <Image priority height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+                ):<div className='bg-grey-dark w-auto h-64 object-cover'></div>}
                   <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
               </div>
               

@@ -30,7 +30,7 @@ const Navbar: FC = () => {
 
       {/* Logo and Name */}
       <Link className="flex items-center" href="/">
-        <Image src="/logo.png" width={50} height={50} alt="Logo" />
+        <Image priority src="/logo.png" width={50} height={50} alt="Logo" className="w-auto h-auto" />
         <div className="text-3xl lg:hidden pl-2 font-bold">mGL</div>
         <div className="text-3xl hidden lg:inline  pl-2 font-bold">myGameList</div>
       </Link>
@@ -47,7 +47,7 @@ const Navbar: FC = () => {
           className="focus:outline-none  "
         >
           <Image
-            src={"searchIcon.svg"}
+            src={"/searchIcon.svg"}
             alt="Search Button"
             width={30}
             height={30}
@@ -72,7 +72,7 @@ const Navbar: FC = () => {
           }}
           className="focus:outline-none "
         >
-          <Image src={"hamburgerMenuIcon.svg"}
+          <Image src={"/hamburgerMenuIcon.svg"}
             alt="Hamburger Menu Button"
             width={35}
             height={35}></Image>

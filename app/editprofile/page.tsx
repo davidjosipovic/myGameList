@@ -153,9 +153,10 @@ const EditProfilePage: React.FC = () => {
 
         {/* Name input */}
         <div className="mb-4">
-          <label className="block text-white">Name</label>
+          <label htmlFor='Name input' className="block text-white">Name</label>
           <input
             type="text"
+            id='Name input'
             className={`w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl ${userNameError ? 'border-red-500' : ''}`}
             value={userName}
             onChange={(e) => {
@@ -170,9 +171,10 @@ const EditProfilePage: React.FC = () => {
 
         {/* Password input */}
         <div className="mb-4">
-          <label className="block text-white ">Password</label>
+          <label htmlFor='Password input' className="block text-white ">Password</label>
           <input
             type="password"
+            id='Password input'
             className="w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl"
             value={userPassword}
             onChange={(e) => setUserPassword(e.target.value)}
@@ -181,8 +183,9 @@ const EditProfilePage: React.FC = () => {
 
         {/* Biography textarea */}
         <div className="">
-          <label className="block text-white">Biography</label>
+          <label className="block text-white" htmlFor="Biography input">Biography</label>
           <textarea
+            id='Biography input'
             className="w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl"
             rows={4}
             value={userInfo}
