@@ -124,12 +124,12 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
         </Link>
       </section>
 
-      <RecentGames id={params.id}/>
+      <RecentGames id={params.id} setCompletedGamesCount={setCompletedGamesCount}/>
 
       <section className="flex flex-col gap-2 my-8">
         <h1 className="text-3xl font-semibold text-white ">Statistics</h1>
         <ul className='bg-grey-dark border-2 border-white text-white rounded-xl p-2'>
-          <li>Games Completed: </li>
+          <li>Games Completed:{completedGamesCount} </li>
           <li>Games Playing: </li>
           <li>Games Droped: </li>
           <li>Games In The Backlog: </li>
