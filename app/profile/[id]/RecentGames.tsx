@@ -85,7 +85,7 @@ export default function RecentGames(props){
     </div>
 
     <div className='hidden xl:grid  grid-cols-5 gap-1 content-evenly justify-items-center justify-evenly items-center mx-28'>
-      {games.slice(Math.max(games.length-5,0)).toReversed().map((game) =>
+      {games.slice(Math.max(games.length-5,0)).reverse().map((game) =>
         <Image priority  alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={250} height={250}/>
       )}
     </div>
