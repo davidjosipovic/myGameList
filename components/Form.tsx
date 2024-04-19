@@ -72,7 +72,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
         </label>
         <input
           id="email"
-          name="email"
+          
           type="email"
           autoComplete="email"
           required
@@ -86,7 +86,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
           </label>
           <input
             id="name"
-            name="name"
+            
             type="text"
             autoComplete="name"
             required
@@ -103,7 +103,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
         </label>
         <input
           id="password"
-          name="password"
+          
           type="password"
           required
           className="mt-1 block w-full appearance-none text-white rounded-lg border border-white bg-grey-dark px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
