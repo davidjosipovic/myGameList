@@ -41,6 +41,7 @@ export default function RecentGames(props){
         .filter(Boolean);
 
       setGames(allGames);
+      games.slice(Math.max(games.length-4,0)).reverse()
     } catch (error) {
       console.error("Error fetching game details:", error);
     } finally {
