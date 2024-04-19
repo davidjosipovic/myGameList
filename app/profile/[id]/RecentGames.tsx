@@ -40,7 +40,7 @@ export default function RecentGames(props){
         )
         .filter(Boolean);
 
-      setGames(allGames.slice(Math.max(games.length-5,0)).reverse());
+      setGames(allGames.slice(Math.max(allGames.length-5,0)).reverse());
     } catch (error) {
       console.error("Error fetching game details:", error);
     } finally {
@@ -64,7 +64,7 @@ export default function RecentGames(props){
     };
 
     fetchUserGames();
-  });
+  }, []); // Empty dependency array to ensure it runs only once when component mounts
 
   useEffect(() => {
     // Call fetchGameDetails with the updated userGames
@@ -92,4 +92,3 @@ export default function RecentGames(props){
 
   </section>)
 }
-
