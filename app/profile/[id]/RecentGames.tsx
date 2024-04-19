@@ -40,8 +40,7 @@ export default function RecentGames(props){
         )
         .filter(Boolean);
 
-      setGames(allGames);
-      games.slice(Math.max(games.length-4,0)).reverse()
+      setGames(allGames.slice(Math.max(games.length-5,0)).reverse());
     } catch (error) {
       console.error("Error fetching game details:", error);
     } finally {
@@ -80,13 +79,13 @@ export default function RecentGames(props){
     <h1 className="text-3xl font-semibold text-white ">Your Recent Games</h1>
 
     <div className='xl:hidden grid gap-2 grid-cols-4 sm:w-3/4 lg:w-auto content-evenly justify-items-center justify-evenly items-center lg:mx-28'>
-      {games.slice(Math.max(games.length-4,0)).reverse().map((game) =>
+      {games.slice(Math.max(games.length-4,0)).map((game) =>
         <Image priority key={game.id}  alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={200} height={200}/>
       )}
     </div>
 
     <div className='hidden xl:grid  grid-cols-5 gap-1 content-evenly justify-items-center justify-evenly items-center mx-28'>
-      {games.slice(Math.max(games.length-5,0)).reverse().map((game) =>
+      {games.map((game) =>
         <Image priority key={game.id}  alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={250} height={250}/>
       )}
     </div>
