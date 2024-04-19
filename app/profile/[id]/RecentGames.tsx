@@ -79,7 +79,7 @@ export default function RecentGames(props){
     <h1 className="text-3xl font-semibold text-white ">Your Recent Games</h1>
 
     <div className='xl:hidden grid gap-2 grid-cols-4 sm:w-3/4 lg:w-auto content-evenly justify-items-center justify-evenly items-center lg:mx-28'>
-      {games.slice(Math.max(games.length-4,0)).toReversed().map((game) =>
+      {games.slice(Math.max(games.length-4,0)).reverse().map((game) =>
         <Image priority  alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={200} height={200}/>
       )}
     </div>
