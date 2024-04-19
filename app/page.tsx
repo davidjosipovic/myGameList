@@ -90,8 +90,10 @@ const MyGameListHome: React.FC = () => {
       </div>
 
       <div className="flex gap-8 justify-center">
-        <Button label="Login" color="green" />
-        <Button label="Register" color="green"/>
+        <Link href={"/"}><Button label="Login" color="green" /></Link>
+        <Link href={"/"}><Button label="Register" color="green"/></Link>
+        
+        
       </div>
 
     </div>

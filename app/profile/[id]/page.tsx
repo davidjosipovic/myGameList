@@ -100,18 +100,18 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
   return (
     <div className="mt-24 mx-4">
 
-      <section className='flex gap-6 my-8'>
-        <ProfilePicture size="big" />
-        <div className='mt-1'>
+      <section className='flex gap-6 my-8 lg:justify-center xl:mx-80 '>
+        <ProfilePicture className=" " size="big" />
+        <div className='mt-1 w-2/3  lg:w-2/4  '>
           <h1 className="text-3xl font-semibold text-white ">{user.name}</h1>
           <p className=" text-sm text-white mb-2 mt-1 ">mGl Member Since {user.createdAt.slice(0, 7)}</p>
-          <p className="text-white text-lg ">{user.info}</p>
+          <p className="text-white text-md  ">{user.info}</p>
         </div>
       </section>
 
 
       {/* Add an "Edit Profile" button, but require a session for editing */}
-      <section className='flex flex-col gap-4 my-8 '>
+      <section className='flex flex-col gap-4 lg:flex-row lg:justify-center lg:gap-16   my-8 '>
         {session ? (
           <Link href="/editprofile" >
             <Button label="Edit Profile" color="green"></Button>
@@ -126,9 +126,9 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
       <RecentGames id={params.id} setCompletedGamesCount={setCompletedGamesCount}/>
 
-      <section className="flex flex-col gap-2 my-8">
+      <section className="flex flex-col gap-4 lg:my-12 lg:items-center">
         <h1 className="text-3xl font-semibold text-white ">Statistics</h1>
-        <ul className='bg-grey-dark border-2 border-white text-white rounded-xl p-2'>
+        <ul className='bg-grey-dark border-2 border-white sm:w-2/3 xl:w-1/3 text-white rounded-xl p-2'>
           <li>Games Completed:{completedGamesCount} </li>
           <li>Games Playing: </li>
           <li>Games Droped: </li>

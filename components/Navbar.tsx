@@ -26,11 +26,11 @@ const Navbar: FC = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between fixed top-0 w-full  text-white bg-grey-light  z-10 py-2 px-4">
+    <nav className="flex items-center justify-between fixed top-0 w-full  text-white bg-grey-light  z-20 py-2 px-4">
 
       {/* Logo and Name */}
       <Link className="flex items-center" href="/">
-        <Image priority src="/logo.png" width={50} height={50} alt="Logo" className="w-auto h-auto" />
+        <Image priority src="/logo.png" width={40} height={40} alt="Logo" className="w-auto h-auto" />
         <div className="text-3xl lg:hidden pl-2 font-bold">mGL</div>
         <div className="text-3xl hidden lg:inline  pl-2 font-bold">myGameList</div>
       </Link>
@@ -91,6 +91,9 @@ const Navbar: FC = () => {
             if (link.key === 'profile') {
               link.href = `/profile/${session.user.name}`
             }
+            else if (link.key === 'gamelist') {
+              link.href = `/gamelist/${session.user.name}`
+            }
             else if (link.key === 'signout') {
               return(<Link href={link.href} key={link.key} onClick={() => {setIsHamburgerMenuOpen(false)
                 signOut()
@@ -139,18 +142,22 @@ const Navbar: FC = () => {
         {/* User Menu Dropdown*/}
         <div className="relative">
           {isUserMenuOpen && (
-            <div ref={userMenuRef} className="absolute flex flex-col top-10 items-end right-6 mt-2 w-40 bg-grey-light text-white rounded-lg shadow-xl">
+            <div ref={userMenuRef} className="absolute flex flex-col top-10 items-end right-2 mt-2 w-40 bg-grey-light border text-white rounded-lg shadow-xl ">
               {session? SESSION_USER_MENU_DROPDOWN.map((link)=>{
                  if (link.key === 'profile') {
                   link.href = `/profile/${session.user.name}`
                 }
+                else if (link.key === 'gamelist') {
+                  link.href = `/gamelist/${session.user.name}`
+                }
+
                 else if (link.key === 'signout') {
-                  return(<Link className="p-2" href={link.href} key={link.key} onClick={() => {setIsUserMenuOpen(false)
+                  return(<Link className="p-2 hover:bg-grey-dark w-full text-right" href={link.href} key={link.key} onClick={() => {setIsUserMenuOpen(false)
                     signOut()
                   }} >{link.label}</Link>)
                 }
-                return(<Link className="p-2" href={link.href} key={link.key} onClick={()=>setIsUserMenuOpen(false)}>{link.label}</Link>)}):
-                USER_MENU_DROPDOWN.map((link) => (<Link className="p-2" href={link.href} key={link.key} onClick={() => setIsUserMenuOpen(false)}>{link.label}</Link>))
+                return(<Link className="p-2 hover:bg-grey-dark w-full text-right" href={link.href} key={link.key} onClick={()=>setIsUserMenuOpen(false)}>{link.label}</Link>)}):
+                USER_MENU_DROPDOWN.map((link) => (<Link className="p-2 hover:bg-grey-dark w-full text-right" href={link.href} key={link.key} onClick={() => setIsUserMenuOpen(false)}>{link.label}</Link>))
                 }
             </div>
           )}

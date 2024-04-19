@@ -54,7 +54,7 @@ const SearchGame = ({ params }: { params: { id: string } }) => {
       <div className="flex bg-black justify-center items-center z-0">
       <div className=" bg-grey-light mx-auto md:px-10 px-2   ">
 
-        <h1 className=" lg: text-3xl font-bold mt-20 lg:text-center  text-white">Search Results for "{params.id}"</h1>
+        <h1 className=" lg: text-3xl font-bold mt-20 lg:text-center  text-white">Search Results for "{params.id.replace(/%20/g,' ')}"</h1>
         <div className="text-lg mb-10 w-fit p-1 lg:object-center  mx-auto text-white text-opacity-50">{searchResults ? searchResults.length+" Results":"Loading..."} </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
@@ -63,7 +63,7 @@ const SearchGame = ({ params }: { params: { id: string } }) => {
               <div className=" relative  ">
               
                 {game.cover ? (
-                  <Image priority height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+                  <Image priority height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className=" border-2 border-hidden border-white hover:border-solid w-full  object-cover" />
                 ):<div className='bg-grey-dark w-auto h-64 object-cover'></div>}
                   <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
               </div>

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { UploadButton } from '@/src/utils/uploadthing';
-import Image from 'next/image';
 import ProfilePicture from '@/components/ProfilePicture';
 
 const EditProfilePage: React.FC = () => {

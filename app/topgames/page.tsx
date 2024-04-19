@@ -37,7 +37,7 @@ const GameComponent: React.FC = () => {
             <Link key={game.id} href={`/game/${game.id}`}><div key={game.id} className=" relative  ">
               
                 {game.cover && (
-                  <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+                  <Image height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className=" border-2 border-hidden border-white hover:border-solid w-full  object-cover" />
                 )}
                   <div className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
                   <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>

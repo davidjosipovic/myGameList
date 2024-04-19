@@ -118,7 +118,7 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
             <div  className=" relative  ">
 
             {game.cover && (
-              <Image  height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`} className="w-full  object-cover " />
+              <Image className=" border-2 border-hidden border-white hover:border-solid w-full  object-cover"  height={500} width={500} src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} alt={`${game.name} cover`}  />
             )}
             <div  className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
             

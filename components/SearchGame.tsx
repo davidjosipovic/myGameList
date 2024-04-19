@@ -86,7 +86,11 @@ const SearchGame = (props) => {
         value={searchInput}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
+            setIsDropdownOpen(false);
+            setSearchInput("")
             router.push('/search/' + searchInput);
+            
+            
           }
         }}
         onChange={(e) => {
@@ -104,7 +108,7 @@ const SearchGame = (props) => {
       {isDropdownOpen && searchResults && searchResults.length > 0 && (
         <ul className="absolute text-white top-20  left-1/2 lg:left-0 -translate-x-1/2 lg:translate-x-0  lg:w-full bg-grey-dark border border-white  rounded-lg ">
           {searchResults.map((result) => (
-            <Link className='flex hover:bg-gray-100 '  href={`/game/${result.id}`} key={result.id}>
+            <Link className='flex hover:bg-grey-light '  href={`/game/${result.id}`} key={result.id}>
               {result.cover && (
                 <Image
                   height={200}
