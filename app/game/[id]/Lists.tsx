@@ -2,39 +2,42 @@ export default function Lists(props) {
     const game = props.game
 
     return (
-        <section className="order-11">
+        <section className="">
+            <h1 className='text-2xl text-white mb-2'>Lists</h1>
+
+            <div className="flex  text-white my-2  rounded-xl text-sm p-2 gap-2 bg-grey-dark border border-white ">
+                {game.platforms && game.platforms.length > 0 && (
+                    <div className="">
+                        <h2 className="text-lg  mb-2">
+                            Platforms
+                        </h2>
+                        <ul className="list-disc  list-inside pl-1">
+                            {game.platforms.map((platform, index) => (
+                                <li key={index}>{platform.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+
+                {/*Chunk 8: Companies*/}
+                {game.involved_companies && game.involved_companies.length > 0 && (
+                    <div className="">
+                        <h3 className="text-lg mb-2">
+                            Involved companies
+                            
+                        </h3>
+
+                        <ul className="list-disc list-inside pl-1">
+                            {game.involved_companies.map((company, index) => (
+                                <li key={index}>{company.company.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
             {/* Chunk 5: Platforms */}
-            {game.platforms && game.platforms.length > 0 && (
-                <div className="mt-6 ">
-                    <h3 className="text-2xl font-semibold text-black mb-4">
-                        Platforms
-                        <hr className=" border-black" />
-                    </h3>
-                    <ul className="list-disc text-gray-800 list-inside">
-                        {game.platforms.map((platform, index) => (
-                            <li key={index}>{platform.name}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-            
-            <div className="basis-full h-0 "></div>
 
-            {/*Chunk 8: Companies*/}
-            {game.involved_companies && game.involved_companies.length > 0 && (
-                <div className="mt-6 ">
-                    <h3 className="text-2xl font-semibold text-black mb-4">
-                        Involved companies
-                        <hr className=" border-black" />
-                    </h3>
-
-                    <ul className="list-disc text-gray-800 list-inside">
-                        {game.involved_companies.map((company, index) => (
-                            <li key={index}>{company.company.name}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
         </section>
     )
 }

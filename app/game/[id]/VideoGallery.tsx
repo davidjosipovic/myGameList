@@ -1,63 +1,57 @@
-'use client'
 import React, { useState } from 'react';
 
 const VideoGallery = ({ game }) => {
-  const videosPerPage = 2;
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
-  const startIndex = (currentPage - 1) * videosPerPage;
-  const endIndex = startIndex + videosPerPage;
-  const visibleVideos = game.videos && game.videos.slice(startIndex, endIndex);
-
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % game.videos.length);
   };
 
-  const handlePrevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
+  const handlePrevVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === 0 ? game.videos.length - 1 : prevIndex - 1
+    );
   };
 
   return (
-    <section className=''>
-      <h3 className="text-2xl font-semibold text-black mt-5 mb-4">
-        Videos
-        <hr className=" border-black" />
-      </h3>
-      <div className="flex flex-wrap flex-col md:flex-row">
-        {visibleVideos &&
-          visibleVideos.map((video, index) => (
-            <div
-              key={index}
-              className={`md:w-${visibleVideos.length === 1 ? 'full' : '1/2'} relative aspect-video-container`}
-            >
-              <iframe
-                src={`https://www.youtube.com/embed/${video.video_id}`}
-                title={`Video ${index}`}
-                className="w-full h-full p-0.5"
-              ></iframe>
-              {game.videos.length > 2 && (
-                <div className="absolute inset-0 flex items-center">
-                  {index === 0 && currentPage > 1 && (
-                    <button
-                      onClick={handlePrevPage}
-                      disabled={currentPage === 1}
-                      className="px-4 py-2 "
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 256 512" className='fill-emerald-400'><path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z" /></svg>
-                    </button>
-                  )}
-                  {index === 1 && endIndex < game.videos.length && (
-                    <button
-                      onClick={handleNextPage}
-                      className="ml-auto px-4 py-2"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 256 512" className='fill-emerald-400'><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z" /></svg>
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
+    <section className="w-full my-4">
+      <h3 className="text-2xl text-white mt-5 mb-2">Videos</h3>
+      <div className="relative">
+        <div className="aspect-w-16 aspect-h-9">
+          <iframe
+            src={`https://www.youtube.com/embed/${game.videos[currentVideoIndex].video_id}`}
+            title={`Video ${currentVideoIndex}`}
+            className="w-full h-full p-0.5 aspect-video"
+          ></iframe>
+        </div>
+        {game.videos.length > 1 && (
+          <div className="absolute inset-0 flex items-center">
+            {currentVideoIndex !== 0 && (
+              <button onClick={handlePrevVideo} className="px-4 py-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="3em"
+                  viewBox="0 0 256 512"
+                  className="fill-emerald-400"
+                >
+                  <path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z" />
+                </svg>
+              </button>
+            )}
+            {currentVideoIndex !== game.videos.length - 1 && (
+              <button onClick={handleNextVideo} className="ml-auto px-4 py-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="3em"
+                  viewBox="0 0 256 512"
+                  className="fill-emerald-400"
+                >
+                  <path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

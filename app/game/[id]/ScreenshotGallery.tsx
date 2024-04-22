@@ -31,7 +31,8 @@ const ScreenshotGallery: React.FC<{ screenshots: any[] }> = ({ screenshots }) =>
   }, [currentImageIndex]);
 
   return (
-    <div className="">
+    <div className="my-8">
+      <h1 className='text-2xl text-white mb-2'>Photos</h1>
       <div className="relative">
         {screenshots.length > 1 && (
           <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-2 pb-4">

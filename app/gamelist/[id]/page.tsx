@@ -122,7 +122,7 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
             )}
             <div  className='absolute top-0 right-0 m-1  px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg  border-white' >{Math.floor(game.rating)}</div>
             
-            <p  className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
+            <p className="text-md  text-white whitespace-nowrap overflow-hidden truncate">{index + 1 + ". " + game.name}</p>
           </div>
 
 

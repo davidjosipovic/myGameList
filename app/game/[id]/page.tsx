@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import DeleteGameButton from "@/components/DeleteGameButton";
 import ScreenshotGallery from "@/app/game/[id]/ScreenshotGallery";
 import VideoGallery from "@/app/game/[id]/VideoGallery";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,8 @@ import Lists from "./Lists";
 import Rating from "./Rating";
 import Heading from "./Heading";
 import Summary from "./Summary";
+import Button from "@/components/Button";
+import UpdateGame from "./UpdateGame";
 
 type Game = {
   id: number;
@@ -38,6 +39,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const { data: session } = useSession();
   const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false); // Add state to track if the game exists
   const [isAddingToList, setIsAddingToList] = useState(false);
+  const [isUpdateGameOpen, setIsUpdateGameOpen] = useState(false); // State to control UpdateGame component visibility
   const router = useRouter();
 
   const checkGameInDatabase = () => {
@@ -242,11 +244,18 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     router.push("/login");
   };
 
+  const handleUpdateGameClick = () => {
+    setIsUpdateGameOpen(true); // Open the UpdateGame component
+    console.log("kaka")
+  };
+
   return (
-    <div className="mt-20">
+    <div className="mt-20 ">
+
       {game && (
         <div className="flex flex-wrap p-1">
           <Heading game={game} />
+
           {game.videos && game.videos.length > 0 && (
             <div className="w-full md:w-2/5 ">
               <iframe
@@ -257,50 +266,28 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
             </div>
           )}
           
-          {/* Chunk 1: Game Cover Image */}
           {game.cover && (
             <Image
               height={200}
               width={200}
               src={`https:${game.cover.url.replace("t_thumb", "t_cover_big")}`}
               alt={`${game.name} cover`}
-              className="  w-1/4  md:w-1/5 p-0.5  "
+              className="  w-1/4  md:w-1/5 px-0.5 my-2   "
             />
           )}
 
           <Summary game={game} />
 
-          {/*Chunk 9: Screenshots*/}
-          <div className=" text-center md:w-2/5 p-0.5 md:order-5">
-            <ScreenshotGallery screenshots={game.screenshots} />
-            <div className=" flex gap-0.5 mt-0.5">
-              {session ? (
-                <>
-                </>
-              ) : (
-                /*Chunk 4: User Not Logged In (Login / Register)*/
-                <button
-                  className="relative w-full py-5 bg-gray-200 inline-block hover:bg-opacity-20 active:bg-opacity-10"
-                  onClick={handleNotLoggedInAction}
-                >
-                  Sign In to Proceed
-                </button>
-              )}
-            </div>
+          <div className="flex w-full gap-8 items-center mx-1">
+            <Rating game={game} />
+            <Button onClick={handleUpdateGameClick} className="w-1/2 h-fit text-md  " color="green" label="Add to mGL" />
           </div>
-          <div className="basis-full h-0 "></div>
 
-
-
-
-
-
-          <Rating game={game} />
-
+          <ScreenshotGallery screenshots={game.screenshots} />
           <Lists game={game} />
           <VideoGallery game={game}></VideoGallery>
 
-
+          {isUpdateGameOpen && <UpdateGame setIsUpdateGameOpen={setIsUpdateGameOpen} game={game} />}
         </div>
       )}
     </div>

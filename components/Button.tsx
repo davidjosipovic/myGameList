@@ -7,8 +7,8 @@ export default function Button(props){
     }
     
     return(
-    <button 
-    className={`hover:bg-green-dark hover:shadow-xl w-32 p-2 text-center text-lg rounded-lg font-bold ${bgColor} hover:bg-green-dark hover:shadow-xl w-32 p-2 text-center text-lg rounded-lg font-bold`}>
+    <button onClick={props.onClick}
+    className={`hover:bg-green-dark   hover:shadow-xl w-32 p-2 text-center text-lg rounded-lg font-bold ${bgColor} hover:bg-green-dark hover:shadow-xl w-32 p-2 text-center text-lg rounded-lg font-bold ${props.className}`}>
         {props.label} 
     </button>)
 }
