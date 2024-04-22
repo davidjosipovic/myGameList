@@ -128,7 +128,7 @@ const EditProfilePage: React.FC = () => {
             <div className='flex gap-4'>
               <UploadButton
                 appearance={{
-                  button: "hover:bg-green-dark hover:shadow-xl h-fit w-28 p-2 text-center text-md rounded-lg font-bold bg-green-light shadow-lg  shadow-grey-dark  text-grey-dark",
+                  button: "hover:bg-green-dark hover:shadow-xl h-fit w-28 py-2 text-center text-md rounded-lg font-bold bg-green-light shadow-lg  shadow-grey-dark  text-grey-dark",
                   allowedContent: "hidden"
                 }}
 
