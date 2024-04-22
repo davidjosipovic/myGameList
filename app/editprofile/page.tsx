@@ -114,7 +114,7 @@ const EditProfilePage: React.FC = () => {
   };
 
   return (
-    <div className=" mt-20 mx-4   ">
+    <div className=" mt-20 px-4 md:w-4/5 lg:container lg:mx-auto  lg:px-48 xl:px-72   ">
       <h1 className="lg:text-3xl font-bold mb-8 text-2xl  lg:text-center  text-white">Edit Profile</h1>
       <form onSubmit={handleFormSubmit} className="mt-4">
 
@@ -123,7 +123,7 @@ const EditProfilePage: React.FC = () => {
           <div className='hidden sm:inline'><ProfilePicture size="big" /></div>
           <div className=' sm:hidden'><ProfilePicture size="medium" /></div>
 
-          <div className='flex w-2/3 flex-col md:flex-row md:gap-6 items-center gap-2 mb-8  '>
+          <div className='flex w-2/3 flex-col md:gap-6 items-center gap-2 mb-8  '>
             <p className='text-white'>Image must be in jpg file format. File size must be less than 4MB.</p>
             <div className='flex gap-4'>
               <UploadButton
