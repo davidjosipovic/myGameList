@@ -1,5 +1,6 @@
 // DeleteGameButton.tsx
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface DeleteGameButtonProps {
   gameId: number;
@@ -33,11 +34,11 @@ console.log("OK")
 
   return (
     <button
-      className={`rounded-lg text-lg font-bold px-2 bg-red m-1 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`rounded-lg text-lg shadow-xl font-bold px-2 bg-red m-1 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
       onClick={handleDeleteGame}
       disabled={isDeleting}
     >
-      {isDeleting ? 'Deleting...' : 'Delete'}
+      <Image width={30} height={30} alt='Delete Button' src={isDeleting?"/trash-deleting.svg":"/trash-bin.svg"}/>
     </button>
   );
 };
