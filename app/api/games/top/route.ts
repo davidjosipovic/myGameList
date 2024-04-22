@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 
 
 
-export async function POST(req: Request,) {
-  if (req.method !== 'POST') {
-    return NextResponse.json({ error: "error" }, { status: 405 });  // Method Not Allowed if not POST
+export async function GET(req: Request,) {
+  if (req.method !== 'GET') {
+    return NextResponse.json({ error: "error" }, { status: 405 });  // Method Not Allowed if not GET
   }
 
   try {

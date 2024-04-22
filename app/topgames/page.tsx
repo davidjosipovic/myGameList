@@ -15,7 +15,7 @@ const GameComponent: React.FC = () => {
   const [data, setData] = useState<Game[] | null>(null);
 
   useEffect(() => {
-    fetch("api/games", {
+    fetch("api/games/top", {
       method: 'POST',
     })
       .then(response => response.json())
