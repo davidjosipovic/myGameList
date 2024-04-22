@@ -32,7 +32,7 @@ export function AppWrapper({children}:{
         
         fetchUserData();
       }
-      }, [session.user.name]);
+      }, [session?.user.name]);
     
 
 
