@@ -114,7 +114,7 @@ const EditProfilePage: React.FC = () => {
   };
 
   return (
-    <div className=" mt-20 px-4 md:w-4/5 lg:container lg:mx-auto  lg:px-48 xl:px-72   ">
+    <div className=" mt-20 px-4 sm:w-4/5 lg:container lg:mx-auto  lg:px-48 xl:px-72    ">
       <h1 className="lg:text-3xl font-bold mb-8 text-2xl  lg:text-center  text-white">Edit Profile</h1>
       <form onSubmit={handleFormSubmit} className="mt-4">
 
