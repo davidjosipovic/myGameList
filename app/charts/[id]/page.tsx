@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Dropdown from './Dropdown';
 
 type Game = {
   id: number;
@@ -11,11 +12,18 @@ type Game = {
   rating_count: number;
   cover: { id: number; url: string };
 };
-const GameComponent: React.FC = () => {
+interface GameListProps {
+  params: {
+    id: string;
+  };
+}
+
+const GameComponent: React.FC<GameListProps> = ({params}) => {
+  const [id,setId]=useState(params.id)
   const [data, setData] = useState<Game[] | null>(null);
 
   useEffect(() => {
-    fetch("api/games/top", {
+    fetch(`/api/games/${id}`, {
       method: 'GET',
     })
       .then(response => response.json())
@@ -23,14 +31,13 @@ const GameComponent: React.FC = () => {
       .catch(err => {
         console.error(err);
       });
-  }, []);
+  }, [id]);
   return (
     <div className="flex bg-black justify-center lg:items-center z-0">
       <div className=" bg-grey-light mx-auto md:px-10 px-2   ">
 
-        <h1 className=" lg: text-3xl font-bold mt-20 mb-8   lg:text-center  text-white">Charts</h1>
-        <div className="text-lg mb-10 w-fit border border-white rounded-lg
-         p-1 lg:object-center bg-grey-dark lg:mx-auto text-white">Top 100 Games</div>
+        <h1 className=" lg: text-3xl font-bold mt-20 mb-4   lg:text-center  text-white">Charts</h1>
+        <Dropdown filter={params.id} setId={setId} />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-20 lg:gap-y-10 mb-20 xl:px-40">
           {data?.map((game, index) => (
