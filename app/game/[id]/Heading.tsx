@@ -13,8 +13,8 @@ export default function Heading(props) {
 
     return (
 
-        <div className="mb-2 text-white">
-            <h2 className="md:text-5xl sm:text-3xl text-2xl font-semibold text-black">
+        <div className="mb-2 w-full text-white sm:order-1 lg:w-5/6 lg:mx-4 ">
+            <h2 className="md:text-5xl sm:text-3xl text-2xl font-semibold ">
                 {game.name}
             </h2>
             <p className="text-white text-sm">

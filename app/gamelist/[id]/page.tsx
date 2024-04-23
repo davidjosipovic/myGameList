@@ -111,6 +111,7 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
                 onGameDeleted={()=>{
                   fetchUserGames();
                 }}
+                text={false}
 
               />
             </div>

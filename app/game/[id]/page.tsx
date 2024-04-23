@@ -17,7 +17,6 @@ type Game = {
   name: string;
   rating: number;
   rating_count: number;
-  your_rating: number;
   summary: string;
   cover: { id: number; url: string };
   screenshots: { url: string }[];
@@ -32,13 +31,13 @@ type Game = {
 
 const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
   const [game, setGame] = useState<Game | null>(null);
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [review, setReview] = useState<string>("");
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const { data: session } = useSession();
   const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false); // Add state to track if the game exists
-  const [isAddingToList, setIsAddingToList] = useState(false);
+  const [myRating, setMyRating] = useState<number | null>(null);
+  
+
   const [isUpdateGameOpen, setIsUpdateGameOpen] = useState(false); // State to control UpdateGame component visibility
   const router = useRouter();
 
@@ -54,6 +53,7 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
               setGameExistsInDatabase(false); // Set the state when the specific status message is received
             } else {
               setGameExistsInDatabase(true); // Set the state for other errors
+              setMyRating(data.rating)
             }
           });
         })
@@ -71,7 +71,6 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setGame(data.data[0]);
       })
       .catch((err) => {
@@ -88,127 +87,19 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
       fetchGameDetails();
     }
   }, [params.id]);
-
-  const handleRatingChange = (your_rating: number) => {
-    setSelectedRating(your_rating);
-    setIsDropdownOpen(false);
-
-    // Add a fetch call to update the rating in the database
-    const requestData = {
-      gameId: params.id,
-      rating: your_rating,
-    };
-
-    fetch(`/api/gamelist/${session.user.name}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          // Handle success (e.g., display a success message)
-        } else {
-          // Handle error (e.g., display an error message)
-          console.error("Error updating rating:", response.status);
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating rating:", error);
-      });
-
-    // Update the rating in the local state (game object)
-    if (game) {
-      const updatedGame = { ...game, your_rating: your_rating };
-      setGame(updatedGame);
+  useEffect(() => {
+    if (params.id) {
+      // Check if the game exists in the database
+      checkGameInDatabase();
     }
-  };
+  }, [isUpdateGameOpen]);
 
-  const renderRatingsDropdown = () => {
-    const ratings = Array.from({ length: 10 }, (_, i) => i + 1);
-
-    return (
-      <ul
-        className={`absolute left-0 mt-2 w-20 bg-white border rounded-md shadow-md z-10 ${isDropdownOpen ? "" : "hidden"
-          }`}
-      >
-        {ratings.map((rating) => (
-          <li
-            key={rating}
-            onClick={() => handleRatingChange(rating)}
-            className="px-2 py-1 hover:bg-gray-100 cursor-pointer"
-          >
-            {rating}
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  const handleAddToListClick = () => {
-    if (game) {
-      setIsAddingToList(true); // Set loading state
-      const requestData = {
-        gameId: params.id,
-        rating: selectedRating || 0,
-        review: review,
-      };
-
-      if (gameExistsInDatabase) {
-        // Remove the game from the user's list
-        fetch(`/api/gamelist/${session.user.name}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        })
-          .then((response) => {
-            if (response.ok) {
-              // Handle success (e.g., display a success message)
-            } else {
-              // Handle error (e.g., display an error message)
-              console.error("Error removing from list:", response.status);
-            }
-          })
-          .catch((error) => {
-            console.error("Error removing from list:", error);
-          });
-      } else {
-        // Add the game to the user's list
-        fetch(`/api/gamelist/${session.user.name}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        })
-          .then((response) => {
-            if (response.ok) {
-              // Handle success (e.g., display a success message)
-              checkGameInDatabase();
-            } else {
-              // Handle error (e.g., display an error message)
-              console.error("Error adding to list:", response.status);
-            }
-          })
-          .catch((error) => {
-            console.error("Error adding to list:", error);
-          })
-          .finally(() => {
-            setIsAddingToList(false); // Set loading state back to false
-            setGameExistsInDatabase(true); // Set the state for other errors
-          });
-      }
-    }
-  };
 
   const handleSubmitReview = () => {
     if (game) {
       const requestData = {
         gameId: params.id,
-        rating: selectedRating || 0,
+        rating: myRating || 0,
         review: review,
       };
 
@@ -235,7 +126,6 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
     setIsReviewOpen(false);
   };
 
-
   const handleNotLoggedInAction = () => {
 
     // You can customize this function based on your requirements.
@@ -246,48 +136,49 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
 
   const handleUpdateGameClick = () => {
     setIsUpdateGameOpen(true); // Open the UpdateGame component
-    console.log("kaka")
   };
 
   return (
-    <div className="mt-20 ">
+    <div className="my-20">
 
       {game && (
-        <div className="flex flex-wrap p-1">
-          <Heading game={game} />
+        <div className="flex flex-wrap p-1 lg:justify-center">
+          <Heading  game={game} />
 
           {game.videos && game.videos.length > 0 && (
-            <div className="w-full md:w-2/5 ">
+            <div className="w-full sm:pl-2 lg:px-2 sm:w-4/6 sm:order-2 lg:w-2/6 ">
               <iframe
                 src={`https://www.youtube.com/embed/${game.videos[0].video_id}`}
                 title="Video 0"
-                className="w-full aspect-video h-full p-0.5 "
+                className="w-full aspect-video h-full   "
+                  
               ></iframe>
             </div>
           )}
           
           {game.cover && (
             <Image
+            priority
               height={200}
               width={200}
               src={`https:${game.cover.url.replace("t_thumb", "t_cover_big")}`}
               alt={`${game.name} cover`}
-              className="  w-1/4  md:w-1/5 px-0.5 my-2   "
+              className="  w-1/4  sm:w-2/6 sm:order-1  my-2 sm:my-0 lg:w-1/6   "
             />
           )}
 
           <Summary game={game} />
 
-          <div className="flex w-full gap-8 items-center mx-1">
-            <Rating game={game} />
-            <Button onClick={handleUpdateGameClick} className="w-1/2 h-fit text-md  " color="green" label="Add to mGL" />
+          <div className="flex w-full sm:w-1/3   items-center sm:items-start mx-2 sm:mx-0 sm:order-3 lg:order-4 sm:flex-col">
+            <Rating game={game} myRating={myRating} />
+            <Button onClick={handleUpdateGameClick} className=" h-fit text-md ml-auto sm:ml-0 " color="green" label={gameExistsInDatabase?"Update":"Add to mGL"} />
           </div>
 
           <ScreenshotGallery screenshots={game.screenshots} />
           <Lists game={game} />
           <VideoGallery game={game}></VideoGallery>
 
-          {isUpdateGameOpen && <UpdateGame setIsUpdateGameOpen={setIsUpdateGameOpen} game={game} />}
+          {isUpdateGameOpen && <UpdateGame setIsUpdateGameOpen={setIsUpdateGameOpen} game={game} userId={session.user.name} />}
         </div>
       )}
     </div>

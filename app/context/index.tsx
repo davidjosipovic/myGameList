@@ -24,7 +24,7 @@ export function AppWrapper({children}:{
             }
             const fetchedData = await response.json();
             setState((prev) => ({ ...state, ...fetchedData }));
-            console.log('Fetched Data:', fetchedData);
+           
           } catch (error) {
             console.error('Error fetching user:', error);
           }

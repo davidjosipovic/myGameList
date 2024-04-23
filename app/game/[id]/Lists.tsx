@@ -2,12 +2,12 @@ export default function Lists(props) {
     const game = props.game
 
     return (
-        <section className="">
+        <section className="w-full sm:order-7 lg:order-8 md:w-4/5  lg:w-2/6  lg:mt-8 ">
             <h1 className='text-2xl text-white mb-2'>Lists</h1>
 
             <div className="flex  text-white my-2  rounded-xl text-sm p-2 gap-2 bg-grey-dark border border-white ">
                 {game.platforms && game.platforms.length > 0 && (
-                    <div className="">
+                    <div className="w-1/2">
                         <h2 className="text-lg  mb-2">
                             Platforms
                         </h2>
@@ -22,7 +22,7 @@ export default function Lists(props) {
 
                 {/*Chunk 8: Companies*/}
                 {game.involved_companies && game.involved_companies.length > 0 && (
-                    <div className="">
+                    <div className=" w-1/2">
                         <h3 className="text-lg mb-2">
                             Involved companies
                             
