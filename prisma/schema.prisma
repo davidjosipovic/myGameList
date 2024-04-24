@@ -28,6 +28,7 @@ model Game {
   gameId    Int
   rating    Int?
   review    String?
+  status    String?
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())

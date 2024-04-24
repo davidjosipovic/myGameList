@@ -79,6 +79,7 @@ export async function POST(
           gameId: parseInt(body.gameId, 10),
           rating: body.rating, // Include the rating from the request
           review: body.review,
+          status: body.status,
           userId: user.id,
         },
       });
@@ -128,6 +129,7 @@ export async function PUT(
         data: {
           rating: body.rating,
           review: body.review,
+          status: body.status,
         },
       });
 
