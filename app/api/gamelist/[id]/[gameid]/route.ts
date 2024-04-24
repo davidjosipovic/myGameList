@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function GET(request: Request, { params }: { params: { id: string; gameid: string } }) {
-  const userId = params.id;
+  const userId = params.id.replace(/%C4%87/g, 'ć').replace(/%20/g, ' ');
   const gameId = parseInt(params.gameid, 10); // Parse gameId as an integer
 
   try {

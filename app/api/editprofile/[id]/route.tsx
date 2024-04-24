@@ -8,7 +8,7 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string }, }
 ) {
-  const username = params.id;
+  const username = params.id.replace(/%C4%87/g, 'ć').replace(/%20/g, ' ');
   const body = await request.json();
 
   try {

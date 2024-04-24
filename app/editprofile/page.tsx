@@ -37,7 +37,7 @@ const EditProfilePage: React.FC = () => {
     if (session && !userName) {
       fetchUserProfile(session.user.name);
     }
-  }, [session, userName]);
+  }, []);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,7 +187,7 @@ const EditProfilePage: React.FC = () => {
             id='Biography input'
             className="w-full px-2 py-1 border text-white bg-grey-dark border-white rounded-xl shadow-xl"
             rows={4}
-            value={userInfo}
+            value={userInfo?userInfo:""}
             onChange={(e) => setUserInfo(e.target.value)}
           />
         </div>

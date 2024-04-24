@@ -4,7 +4,7 @@ export default function Login() {
   return (
     <div className=" mt-24 mx-4">
 
-      <h3 className="lg: text-3xl font-bold text-white ">Sign In</h3>
+      <h3 className="lg: text-3xl lg:text-center font-bold text-white mx-auto sm:w-2/3 xl:w-1/3 ">Sign In</h3>
       <Form type="login" />
 
     </div>

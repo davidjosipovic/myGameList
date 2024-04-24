@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import { compare } from "bcrypt";
 import TwitchProvider from "next-auth/providers/twitch";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
@@ -14,11 +15,59 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: session.user.email,
+        },
+      });
+      token.name=user.name
       session.user = token as any;
       return session;
     },
+    async signIn({ account, profile }) {
+      if (account.provider === "google") {
+        console.log(profile)
+        const user = await prisma.user.findUnique({
+          where: {
+            email: profile.email,
+          },
+        });
+        if(user){
+          
+          
+        }
+        else{
+          fetch("http://localhost:3000/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: profile.email,
+            name: profile.name, 
+            iss: profile.iss, 
+          }),
+        }).then(async (res) => {
+          if (res.status === 200) {
+            console.log("Account created! Redirecting to login...");
+            
+          } else {
+            const { error } = await res.json();
+            console.error(error);
+          }
+        });
+        }
+        
+
+      }
+      return true // Do different verification for other providers that don't have `email_verified`
+    },
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    }),
     TwitchProvider({
       clientId: process.env.TWITCH_ID,
       clientSecret: process.env.TWITCH_SECRET
@@ -37,7 +86,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check if the provided email/username is actually an email or a username
-        let user;
+        let user:any;
         if (email.includes("@")) { // If it includes '@', we treat it as an email
           user = await prisma.user.findUnique({
             where: {

@@ -7,7 +7,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const name = params.id;
+  const name = params.id.replace(/%C4%87/g, 'ć').replace(/%20/g, ' ');
 
   try {
     // Fetch the user based on the email
