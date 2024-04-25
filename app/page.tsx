@@ -34,7 +34,7 @@ const MyGameListHome: React.FC = () => {
     <div className="my-12">
 
       {isDesktop ? (
-        <Image src={"/hero-big.svg"}
+        <Image src="/hero-big.svg"
           width={500}
           height={500}
           alt="Hero Image"
@@ -43,7 +43,7 @@ const MyGameListHome: React.FC = () => {
 
         />
       ) : (
-        <Image className="w-full h-auto" src={"/hero-small.svg"}
+        <Image className="w-full h-auto" src="/hero-small.svg"
           width={500}
           height={500}
           alt="Hero Image"
