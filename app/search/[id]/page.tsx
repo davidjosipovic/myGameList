@@ -51,7 +51,7 @@ const SearchGame = ({ params }: { params: { id: string } }) => {
 
   // JSX structure for the SearchGame component
   return (
-      <div className="flex bg-black justify-center items-center z-0">
+      <div className="flex  justify-center items-center z-0">
       <div className=" bg-grey-light mx-auto md:px-10 px-2   ">
 
         <h1 className=" lg: text-3xl font-bold mt-20 lg:text-center  text-white">Search Results for "{params.id.replace(/%20/g,' ')}"</h1>

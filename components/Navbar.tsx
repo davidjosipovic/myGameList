@@ -13,6 +13,7 @@ const Navbar: FC = () => {
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isChartsMenuOpen, setIsChartsMenuOpen] = useState(false);
   const { data: session } = useSession();
   const userMenuRef = useRef(null);
 
@@ -20,6 +21,7 @@ const Navbar: FC = () => {
     function handleClickOutside(event: any) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setIsUserMenuOpen(false);
+        setIsChartsMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -116,7 +118,10 @@ const Navbar: FC = () => {
           <div className="hover:text-gray-300 pr-2 pl-4">Home</div>
         </Link>
 
-        <div className="hover:text-gray-300 px-2">Charts</div>
+        <div onClick={()=>{
+          if(!isChartsMenuOpen){
+          setIsChartsMenuOpen(!isChartsMenuOpen)}
+          }} className="hover:text-gray-300 px-2 cursor-pointer">Charts</div>
 
         {/* Welcome message and dropdown button*/}
         {session ? <div
@@ -139,6 +144,16 @@ const Navbar: FC = () => {
               }
             }}>Hello, user<ProfilePicture  size="small" /></div>}
         
+            {/* Charts Menu Dropdown*/}
+        <div className="relative">
+          {isChartsMenuOpen && (
+            <div ref={userMenuRef} className="absolute flex flex-col top-10 items-end right-2 mt-2 w-40 bg-grey-light border text-white rounded-lg shadow-xl ">
+             <Link className="p-2 hover:bg-grey-dark w-full text-right" href={"/charts/top"}>Top 100 Games</Link>
+             <Link className="p-2 hover:bg-grey-dark w-full text-right" href={"/charts/popular"}>Most Popular Games</Link>
+            </div>
+          )}
+        </div>
+
         {/* User Menu Dropdown*/}
         <div className="relative">
           {isUserMenuOpen && (

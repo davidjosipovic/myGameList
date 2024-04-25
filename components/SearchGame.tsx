@@ -120,7 +120,7 @@ const SearchGame = (props) => {
               )}
               <li
                 onClick={handleLinkClick}
-                className="px-4 py-2  hover:bg-gray-100 cursor-pointer"
+                className="px-4 py-2   cursor-pointer"
               >
                 <div>{result.name.length > 25 ? `${result.name.substring(0, 32)}...` : result.name}</div>
               </li>

@@ -82,7 +82,7 @@ export default function RecentGames(props) {
 
       <div className='xl:hidden grid gap-2 grid-cols-4 sm:w-3/4 lg:w-auto content-evenly justify-items-center justify-evenly items-center lg:mx-28'>
         {games.slice(Math.max(games.length - 4, 0)).reverse().map((game) =>
-          <Link href={`/game/${game.id}`}>
+          <Link key={game.id} href={`/game/${game.id}`}>
             <Image priority key={game.id} alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={200} height={200} />
           </Link>
         )}
@@ -90,7 +90,7 @@ export default function RecentGames(props) {
 
       <div className='hidden xl:grid  grid-cols-5 gap-1 content-evenly justify-items-center justify-evenly items-center mx-28'>
         {games.slice().reverse().map((game) =>
-        <Link href={`/game/${game.id}`}>
+        <Link key={game.id} href={`/game/${game.id}`}>
           <Image className=" border-2 border-hidden border-white hover:border-solid" 
           priority key={game.id} alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={250} height={250} />
           </Link>

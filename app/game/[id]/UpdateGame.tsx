@@ -5,7 +5,7 @@ import DeleteGameButton from "@/components/DeleteGameButton";
 export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
     const { data: session } = useSession();
     const [isAddingToList, setIsAddingToList] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState(""); // State for selected status
+    const [selectedStatus, setSelectedStatus] = useState("Playing"); // State for selected status
     const [selectedRating, setSelectedRating] = useState<number>(0); // State for selected rating with initial value
     const [review, setReview] = useState("");
     const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false);

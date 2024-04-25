@@ -33,7 +33,7 @@ const GameComponent: React.FC<GameListProps> = ({params}) => {
       });
   }, [id]);
   return (
-    <div className="flex bg-black justify-center lg:items-center z-0">
+    <div className="flex  justify-center lg:items-center z-0">
       <div className=" bg-grey-light mx-auto md:px-10 px-2   ">
 
         <h1 className=" lg: text-3xl font-bold mt-20 mb-4   lg:text-center  text-white">Charts</h1>

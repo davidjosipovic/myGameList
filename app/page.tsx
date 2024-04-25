@@ -60,8 +60,8 @@ const MyGameListHome: React.FC = () => {
         </div>
 
         {!session && <div className="lg:flex hidden flex-col gap-8 justify-center lg:w-1/5 text-center  ">
-          <Link href={"/"}><Button label="Login" color="green" /></Link>
-          <Link href={"/"}><Button label="Register" color="green" /></Link>
+          <Link href={"/login"}><Button label="Login" color="green" /></Link>
+          <Link href={"/register"}><Button label="Register" color="green" /></Link>
         </div>}
 
         <div className="lg:block hidden border m-4 lg:mr-16 my-8 p-5 lg:ml-auto border-white  bg-grey-dark text-white rounded-lg text-center lg:w-2/5">

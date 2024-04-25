@@ -52,9 +52,9 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
     return (
       <div>
 
-        <div className="mt-24 mx-4">
+        <div className="mt-24 mx-4 ">
 
-          <section className='flex gap-6 my-8'>
+          <section className='flex gap-6 my-8 lg:justify-center xl:mx-80'>
           <div  className="block relative  ">
             <div className={` object-cover rounded-full w-32 h-32 bg-grey-dark  `}   />
         </div>
@@ -66,7 +66,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
           </section>
 
 
-          <section className='flex flex-col gap-4 my-10 '>
+          <section className='flex flex-col gap-4 lg:flex-row lg:justify-center lg:gap-16   my-8 '>
             <div className='bg-grey-dark w-32 h-10'></div>
             <div className='bg-grey-dark w-32 h-10'></div>
           </section>
@@ -76,14 +76,14 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
             <div className='flex gap-4'>
               {games.map((_,index) =>
-                < div className ='bg-grey-dark w-full h-28' key={index}></div>
+                < div className ='bg-grey-dark w-full h-28 lg:h-60' key={index}></div>
               )}
             </div>
 
 
           </section>
 
-          <section className="flex flex-col gap-2 my-8">
+          <section className="flex flex-col gap-4 lg:my-12 lg:items-center">
           <div className="  bg-grey-dark w-40 h-8"></div>
             <ul className='bg-grey-dark  w-full h-40  p-2'>
              
