@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           
         }
         else{
-          fetch("http://localhost:3000/api/auth/register", {
+          fetch(`${process.env.DOMAIN}/api/auth/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
