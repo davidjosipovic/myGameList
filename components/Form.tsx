@@ -96,7 +96,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
       }}
       className="flex flex-col gap-4 py-12 mx-auto sm:w-2/3 xl:w-1/3"
     >
-      <button onClick={()=>signIn("google")} className="bg-grey-dark rounded-lg lg:w-1/2 border lg:mx-auto text-white flex items-center " ><Image src="/google-logo.png" width={50} height={50} alt="Google Logo"  />Continue with google</button>
+      <div onClick={()=>signIn("google")} className="bg-grey-dark rounded-lg lg:w-1/2 border lg:mx-auto text-white flex items-center cursor-pointer " ><Image src="/google-logo.png" width={50} height={50} alt="Google Logo"  />Continue with Google</div>
       <div>
         <p className="text-sm text-white mb-2">
           {type === "login"

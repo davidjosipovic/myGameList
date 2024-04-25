@@ -9,6 +9,7 @@ export default function RecentGames(props) {
     gameId: string;
     rating: number | null;
     review: string | null;
+    status:string | null;
     userId: string;
   }
 
@@ -41,7 +42,8 @@ export default function RecentGames(props) {
           responseData && responseData.data ? responseData.data[0] : null
         )
         .filter(Boolean);
-      props.setCompletedGamesCount(allGames.length)
+        
+      
       setGames(allGames.slice(Math.max(allGames.length - 5, 0)));
     } catch (error) {
       console.error("Error fetching game details:", error);
@@ -57,6 +59,7 @@ export default function RecentGames(props) {
         if (response.ok) {
           const data = await response.json();
           setUserGames(data);
+          props.setGames(data)
         } else {
           console.error("Failed to fetch user games");
         }

@@ -20,7 +20,8 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
   const [isLoading, setLoading] = useState(true);
   const { data: session } = useSession();
   const [completedGamesCount, setCompletedGamesCount] = useState<number>(0);
-  const games = ["", "", "", ""]
+  const fakegames = ["", "", "", ""]
+  const [games, setGames] = useState([]);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -75,7 +76,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
           <div className="  bg-grey-dark w-40 h-8"></div>
 
             <div className='flex gap-4'>
-              {games.map((_,index) =>
+              {fakegames.map((_,index) =>
                 < div className ='bg-grey-dark w-full h-28 lg:h-60' key={index}></div>
               )}
             </div>
@@ -124,15 +125,15 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
         </Link>
       </section>
 
-      <RecentGames id={params.id} setCompletedGamesCount={setCompletedGamesCount}/>
+      <RecentGames id={params.id} setGames={setGames}/>
 
       <section className="flex flex-col gap-4 lg:my-12 lg:items-center">
         <h1 className="text-3xl font-semibold text-white ">Statistics</h1>
         <ul className='bg-grey-dark border-2 border-white sm:w-2/3 xl:w-1/3 text-white rounded-xl p-2'>
-          <li>Games Completed:{completedGamesCount} </li>
-          <li>Games Playing: </li>
-          <li>Games Droped: </li>
-          <li>Games In The Backlog: </li>
+          <li>Games Completed:{games.filter((game)=>game.status==="Completed").length} </li>
+          <li>Games Playing:{games.filter((game)=>game.status==="Playing").length} </li>
+          <li>Games Droped:{games.filter((game)=>game.status==="Dropped").length} </li>
+          <li>Games In The Backlog:{games.filter((game)=>game.status==="Backlog").length} </li>
         </ul>
 
       </section>
