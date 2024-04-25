@@ -14,12 +14,7 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
     async session({ session, token }) {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: session.user.email,
-        },
-      });
-      token.name=user.name
+      
       session.user = token as any;
       return session;
     },
