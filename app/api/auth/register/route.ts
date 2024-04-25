@@ -1,9 +1,11 @@
 import prisma from "@/lib/prisma";
 import { hash } from "bcrypt";
 import { NextResponse } from "next/server";
+import { NeverCompare } from "three";
 
 export async function POST(req: Request) {
-  const { email, name, password, iss } = await req.json();
+  try {
+const { email, name, password, iss } = await req.json();
   const nameexists = await prisma.user.findUnique({
     where: {
       name
@@ -42,11 +44,9 @@ export async function POST(req: Request) {
       });
       return NextResponse.json(user);
     }
-
-
-
-
-
-
   }
+  } catch (error) {
+    return NextResponse.json(error)
+  }
+  
 }
