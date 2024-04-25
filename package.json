@@ -10,7 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.7.0",
+    "@prisma/client": "^5.13.0",
     "@react-three/fiber": "^8.15.12",
     "@types/bcrypt": "^5.0.2",
     "@types/three": "^0.159.0",
@@ -19,7 +19,6 @@
     "bcrypt": "^5.1.1",
     "next": "^13.5.6",
     "next-auth": "^4.24.5",
-    "prisma": "^5.7.0",
     "react-hot-toast": "^2.4.1",
     "tailwindcss": "^3.3.6",
     "three": "^0.159.0",
@@ -28,6 +27,7 @@
   "devDependencies": {
     "@types/node": "20.10.4",
     "@types/react": "18.2.45",
+    "prisma": "^5.13.0",
     "typescript": "5.3.3"
   }
 }
