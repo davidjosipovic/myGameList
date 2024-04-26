@@ -81,7 +81,7 @@ const Navbar: FC = () => {
         </button>
 
         {/* Dropdown Menu */}
-        <div className={` text-xl px-4 gap-4 fixed top-0   ${isHamburgerMenuOpen ? slidemenu.open : slidemenu.close}  h-screen bg-grey-light text-white  z-20 flex flex-col `}>
+        <div className={` text-xl px-4 gap-4 fixed top-0 border-l   ${isHamburgerMenuOpen ? slidemenu.open : slidemenu.close}  h-screen bg-grey-light text-white  z-20 flex flex-col `}>
           <div onClick={() => setIsHamburgerMenuOpen(false)} className=" justify-self-end self-end cursor-pointer py-2 px-4">X</div>
 
           <div className="flex gap-2 mb-8">
@@ -97,13 +97,13 @@ const Navbar: FC = () => {
               link.href = `/gamelist/${session.user.name}`
             }
             else if (link.key === 'signout') {
-              return(<Link href={link.href} key={link.key} onClick={() => {setIsHamburgerMenuOpen(false)
+              return(<Link className="hover:underline hover:underline-offset-4" href={link.href} key={link.key} onClick={() => {setIsHamburgerMenuOpen(false)
                 signOut()
               }} >{link.label}</Link>)
             }
-            return (<Link href={link.href} key={link.key} onClick={() => setIsHamburgerMenuOpen(false)} >{link.label}</Link>)
+            return (<Link className="hover:underline hover:underline-offset-4" href={link.href} key={link.key} onClick={() => setIsHamburgerMenuOpen(false)} >{link.label}</Link>)
           }) :
-            NAV_LINKS.map((link) => (<Link href={link.href} key={link.key} onClick={() => setIsHamburgerMenuOpen(false)}>{link.label}</Link>))
+            NAV_LINKS.map((link) => (<Link className="hover:underline hover:underline-offset-4" href={link.href} key={link.key} onClick={() => setIsHamburgerMenuOpen(false)}>{link.label}</Link>))
           }
           
         </div>
@@ -115,17 +115,17 @@ const Navbar: FC = () => {
         <SearchGame screen="large" />
 
         <Link href="/">
-          <div className="hover:text-gray-300 pr-2 pl-4">Home</div>
+          <div className="hover:underline pr-2 pl-4">Home</div>
         </Link>
 
         <div onClick={()=>{
           if(!isChartsMenuOpen){
           setIsChartsMenuOpen(!isChartsMenuOpen)}
-          }} className="hover:text-gray-300 px-2 cursor-pointer">Charts</div>
+          }} className={` px-2 hover:underline cursor-pointer ${isChartsMenuOpen && "underline underline-offset-4"}`}>Charts</div>
 
         {/* Welcome message and dropdown button*/}
         {session ? <div
-          className={`px-2 cursor-pointer flex gap-2 items-center hover:text-gray-300 ${!isUserMenuOpen ? "cursor-pointer" : ""
+          className={`px-2 hover:underline cursor-pointer flex gap-2 items-center ${isUserMenuOpen && "underline underline-offset-4"}  ${!isUserMenuOpen ? "cursor-pointer" : ""
             }`}
           onClick={() => {
             if (!isUserMenuOpen) {
@@ -147,9 +147,9 @@ const Navbar: FC = () => {
             {/* Charts Menu Dropdown*/}
         <div className="relative">
           {isChartsMenuOpen && (
-            <div ref={userMenuRef} className="absolute flex flex-col top-10 items-end right-2 mt-2 w-40 bg-grey-light border text-white rounded-lg shadow-xl ">
-             <Link className="p-2 hover:bg-grey-dark w-full text-right" href={"/charts/top"}>Top 100 Games</Link>
-             <Link className="p-2 hover:bg-grey-dark w-full text-right" href={"/charts/popular"}>Most Popular Games</Link>
+            <div ref={userMenuRef} className="absolute flex flex-col top-5  right-6 mt-2 w-40 bg-grey-light border-b border-l border-r  text-white shadow-xl ">
+             <Link className="p-2 hover:bg-grey-dark w-full text-center" href={"/charts/top"}>Top 100 Games</Link>
+             <Link className="p-2 hover:bg-grey-dark w-full text-center" href={"/charts/popular"}>Most Popular Games</Link>
             </div>
           )}
         </div>
@@ -157,7 +157,7 @@ const Navbar: FC = () => {
         {/* User Menu Dropdown*/}
         <div className="relative">
           {isUserMenuOpen && (
-            <div ref={userMenuRef} className="absolute flex flex-col top-10 items-end right-2 mt-2 w-40 bg-grey-light border text-white rounded-lg shadow-xl ">
+            <div ref={userMenuRef} className="absolute flex flex-col top-5  right-6 mt-2 w-40 bg-grey-light border-b border-l border-r  text-white shadow-xl">
               {session? SESSION_USER_MENU_DROPDOWN.map((link)=>{
                  if (link.key === 'profile') {
                   link.href = `/profile/${session.user.name}`
@@ -167,12 +167,12 @@ const Navbar: FC = () => {
                 }
 
                 else if (link.key === 'signout') {
-                  return(<Link className="p-2 hover:bg-grey-dark w-full text-right" href={link.href} key={link.key} onClick={() => {setIsUserMenuOpen(false)
+                  return(<Link className="p-2 hover:bg-grey-dark w-full text-center" href={link.href} key={link.key} onClick={() => {setIsUserMenuOpen(false)
                     signOut()
                   }} >{link.label}</Link>)
                 }
-                return(<Link className="p-2 hover:bg-grey-dark w-full text-right" href={link.href} key={link.key} onClick={()=>setIsUserMenuOpen(false)}>{link.label}</Link>)}):
-                USER_MENU_DROPDOWN.map((link) => (<Link className="p-2 hover:bg-grey-dark w-full text-right" href={link.href} key={link.key} onClick={() => setIsUserMenuOpen(false)}>{link.label}</Link>))
+                return(<Link className="p-2 hover:bg-grey-dark w-full text-center" href={link.href} key={link.key} onClick={()=>setIsUserMenuOpen(false)}>{link.label}</Link>)}):
+                USER_MENU_DROPDOWN.map((link) => (<Link className="p-2 hover:bg-grey-dark w-full text-center" href={link.href} key={link.key} onClick={() => setIsUserMenuOpen(false)}>{link.label}</Link>))
                 }
             </div>
           )}

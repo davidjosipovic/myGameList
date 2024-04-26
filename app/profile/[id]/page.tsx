@@ -67,7 +67,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
         <div className="mt-24 mx-4 ">
 
-          <section className='flex gap-6 my-8 lg:justify-center xl:mx-80'>
+          <section className='flex gap-6 my-8 lg:justify-center xl:mx-80 '>
           <div  className="block relative  ">
             <div className={` object-cover rounded-full w-32 h-32 bg-grey-dark  `}   />
         </div>
@@ -117,18 +117,18 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
   return (
     <div className="mt-24 mx-4">
 
-      <section className='flex gap-6 my-8 lg:justify-center xl:mx-80 '>
+      <section className='flex gap-6 mt-8 mb-4 xl:mb-0  lg:justify-center xl:mx-80  '>
         <ProfilePicture className=" " size="big" />
-        <div className='mt-1 w-2/3  lg:w-2/4  '>
+        <div className='mt-1 w-2/3  lg:w-2/5   '>
           <h1 className="text-3xl font-semibold text-white ">{user.name}</h1>
           <p className=" text-sm text-white mb-2 mt-1 ">mGl Member Since {user.createdAt.slice(0, 7)}</p>
-          <p className="text-white text-md  ">{user.info}</p>
+          <p className="text-white text-md overflow-clip  ">{user.info}</p>
         </div>
       </section>
 
 
       {/* Add an "Edit Profile" button, but require a session for editing */}
-      <section className='flex flex-col gap-4 lg:flex-row lg:justify-center lg:gap-16   my-8 '>
+      <section className='flex flex-col gap-4 lg:flex-row  lg:gap-16 w-fit lg:mx-auto lg:p-4    '>
         {session ? (
           <Link href="/editprofile" >
             <Button label="Edit Profile" color="green"></Button>
