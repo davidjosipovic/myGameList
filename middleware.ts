@@ -18,7 +18,6 @@ export default async function middleware(req: NextRequest) {
   if (session && path === "/login" || session && path === "/register") {
     return NextResponse.redirect(new URL("/", req.url));
   }
- 
 
   if(!session){
     if(path==="/editprofile"){

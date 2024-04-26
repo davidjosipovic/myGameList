@@ -28,17 +28,29 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
       try {
         const response = await fetch(`/api/user/${params.id}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+          // Check if the response status is 404 (User not found)
+          if (response.status === 404) {
+            // If user is not found, set user to null to indicate user not found
+            setUser(null);
+            setLoading(false); // Set loading state to false
+          } else {
+            // If there's another error, throw it
+            throw new Error('Failed to fetch user data');
+          }
+        } else {
+          const fetchedData = await response.json();
+          setUser((prev) => ({ ...userData, ...fetchedData }));
+          setLoading(false); // Set loading state to false
+          console.log('Fetched Data:', fetchedData);
         }
-        const fetchedData = await response.json();
-        setUser((prev) => ({ ...userData, ...fetchedData }));
-        setLoading(false);
-        console.log('Fetched Data:', fetchedData);
       } catch (error) {
         console.error('Error fetching user:', error);
-        setLoading(false);
+        setLoading(false); // Set loading state to false
       }
     }
+    
+    
+    
 
     fetchUserData();
   }, [params.id]);
@@ -96,8 +108,12 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
       </div>);
   }
-
-
+  else if (user.name === "DemoUser") {
+    return <div  className='mt-40 h-96 mx-4'>
+      <p className='text-white text-xl font-bold text-center'>User does not exist</p>
+    </div>;}
+  else 
+  {
   return (
     <div className="mt-24 mx-4">
 
@@ -142,5 +158,5 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
     </div>
   );
-};
+}};
 export default ProfilePage;
