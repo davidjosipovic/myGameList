@@ -26,7 +26,7 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const response = await fetch(`/api/user/${encodeURIComponent(params.id)}`);
+        const response = await fetch(`/api/user/${params.id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch user data');
         }
@@ -129,12 +129,14 @@ const ProfilePage: React.FC = ({ params }: { params: { id: string } }) => {
 
       <section className="flex flex-col gap-4 lg:my-12 lg:items-center">
         <h1 className="text-3xl font-semibold text-white ">Statistics</h1>
-        <ul className='bg-grey-dark border-2 border-white sm:w-2/3 xl:w-1/3 text-white rounded-xl p-2'>
-          <li>Games Completed:{games.filter((game)=>game.status==="Completed").length} </li>
-          <li>Games Playing:{games.filter((game)=>game.status==="Playing").length} </li>
-          <li>Games Droped:{games.filter((game)=>game.status==="Dropped").length} </li>
-          <li>Games In The Backlog:{games.filter((game)=>game.status==="Backlog").length} </li>
-        </ul>
+     {games &&   <ul className='bg-grey-dark border-2 border-white sm:w-2/3 xl:w-1/3 text-white rounded-xl p-2'>
+
+          <li>Games Completed:{Object.values(games).filter((game)=>game.status==="Completed").length} </li>
+          <li>Games Playing:{Object.values(games).filter((game)=>game.status==="Playing").length} </li>
+          <li>Games Droped:{Object.values(games).filter((game)=>game.status==="Dropped").length} </li>
+          <li>Games In The Backlog:{Object.values(games).filter((game)=>game.status==="Backlog").length} </li>
+
+        </ul>}
 
       </section>
 

@@ -8,7 +8,9 @@ export async function DELETE(
   { params }: { params: { id: string, gameid: string } }
 ) {
   const gameIdToDelete = parseInt(params.gameid, 10); // Convert the string to an integer
-  const name = params.id.replace(/%C4%87/g, 'ć').replace(/%20/g, ' ');
+  const name = params.id
+  
+
 
   try {
     // Fetch the user based on the name

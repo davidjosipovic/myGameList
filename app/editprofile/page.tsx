@@ -11,6 +11,7 @@ const EditProfilePage: React.FC = () => {
   const { data: session, update } = useSession();
   const [userNameError, setUserNameError] = useState<string>('');
   const [pictureUrl, setPictureUrl] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const extractFileKey = (url) => {
     const parts = url.split('/');
@@ -20,7 +21,7 @@ const EditProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async (username: string) => {
       try {
-        const response = await fetch(`/api/user/${encodeURIComponent(username)}`);
+        const response = await fetch(`/api/user/${username}`);
         if (response.ok) {
           const userData = await response.json();
           setUserName(userData.name);
@@ -37,7 +38,7 @@ const EditProfilePage: React.FC = () => {
     if (session && !userName) {
       fetchUserProfile(session.user.name);
     }
-  }, []);
+  }, [session]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +49,7 @@ const EditProfilePage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`/api/editprofile/${encodeURIComponent(session.user.name)}`, {
+      const response = await fetch(`/api/editprofile/${session.user.name}`, {
         method: 'PUT',
         body: JSON.stringify({ name: userName, password: userPassword, info: userInfo, picture: pictureUrl }),
         headers: {
@@ -58,6 +59,8 @@ const EditProfilePage: React.FC = () => {
 
       if (response.ok) {
         setUserNameError('');
+        setSuccessMessage('Profile updated successfully.');
+       
       } else {
         console.error('Failed to update profile');
       }
@@ -65,12 +68,12 @@ const EditProfilePage: React.FC = () => {
       console.error('Error updating profile:', error);
     }
   };
-
+  
   const handleDeletePicture = async () => {
     try {
       const fileKey = extractFileKey(pictureUrl);
       console.log(fileKey)
-      const deleteResponse = await fetch(`/api/deletepicture/${encodeURIComponent(fileKey)}`, {
+      const deleteResponse = await fetch(`/api/deletepicture/${fileKey}`, {
         method: 'GET',
       });
 
@@ -94,7 +97,7 @@ const EditProfilePage: React.FC = () => {
 
 
     try {
-      const response = await fetch(`/api/editprofile/${encodeURIComponent(session.user.name)}`, {
+      const response = await fetch(`/api/editprofile/${session.user.name}`, {
         method: 'PUT',
         body: JSON.stringify({ picture: res[0].url }),
         headers: {
@@ -199,18 +202,21 @@ const EditProfilePage: React.FC = () => {
           type="submit"
           className={`my-12 hover:bg-green-dark w-full bg-green-light hover:shadow-xl p-2 text-center text-lg rounded-lg font-bold shadow-lg  shadow-grey-dark  text-grey-dark ${!userName.trim() ? 'cursor-not-allowed' : ''}`}
           disabled={!userName.trim()} // Disable the button if userName is empty
-          onClick={() =>
-            update({
+          onClick={() =>{update({
               ...session,
               user: {
                 ...session?.user,
                 name: userName,
               },
             })
+            setSuccessMessage("")
+          }
+            
           }
         >
           Save Profile
         </button>
+        {successMessage && <p className="text-white mb-12 text-center">{successMessage}</p>}
       </form>
     </div>
   );
