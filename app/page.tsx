@@ -97,8 +97,8 @@ const MyGameListHome: React.FC = () => {
       </div>}
 
       {!session && <div className="flex gap-8 justify-center lg:hidden">
-        <Link href={"/"}><Button label="Login" color="green" /></Link>
-        <Link href={"/"}><Button label="Register" color="green" /></Link>
+        <Link href={"/login"}><Button label="Login" color="green" /></Link>
+        <Link href={"/register"}><Button label="Register" color="green" /></Link>
       </div>}
 
     </div>

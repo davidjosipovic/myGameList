@@ -7,13 +7,16 @@ interface DeleteGameButtonProps {
   userId: string;
   onGameDeleted: any;
   text:boolean;
+  setIsDeletingGame:any;
+  isAddingToList:any;
 }
 
-const DeleteGameButton: React.FC<DeleteGameButtonProps> = ({ gameId, userId, onGameDeleted,text }) => {
-  const [isDeleting, setDeleting] = useState(false);
+const DeleteGameButton: React.FC<DeleteGameButtonProps> = ({ gameId, userId,isAddingToList, onGameDeleted,text, setIsDeletingGame }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteGame = async () => {
-    setDeleting(true);
+    setIsDeletingGame(true)
+    setIsDeleting(true);
     
 
     try {
@@ -30,7 +33,8 @@ console.log("OK")
       console.error('Error deleting the game:', error);
     }
     onGameDeleted();
-    setDeleting(false);
+    setIsDeletingGame(false)
+    setIsDeleting(false);
   };
 
   return (<>
@@ -41,11 +45,11 @@ console.log("OK")
     >
       <Image width={30} height={30} alt='Delete Button' src={isDeleting?"/trash-deleting.svg":"/trash-bin.svg"}/>
     </button>:<button
-      className={`px-6 py-2 w-full bg-red hover:bg-opacity-60 text-grey-dark font-bold  rounded-md  ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`px-6 py-2 w-full bg-red hover:bg-opacity-60 text-grey-dark font-bold  rounded-md  ${isAddingToList ? 'opacity-50 cursor-not-allowed' : ''}`}
       onClick={handleDeleteGame}
-      disabled={isDeleting}
+      disabled={isAddingToList}
     >
-      Delete
+      {isDeleting?"Deleting...":"Delete"}
     </button>}
 
   </>

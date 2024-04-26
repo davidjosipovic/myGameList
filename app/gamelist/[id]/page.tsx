@@ -19,6 +19,7 @@ interface Game {
   name: string;
   rating: number | null;
   status: string | null;
+  userRating:number | null;
   cover: {
     id: number;
     url: string;
@@ -34,8 +35,9 @@ interface GameListProps {
 const GameList: React.FC<GameListProps> = ({ params }) => {
   const [userGames, setUserGames] = useState<UserGame[]>([]);
   const [completedGames, setCompletedGames] = useState<Game[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState("Playing");
+  const [, setIsLoading] = useState(true);
+  const [, setIsDeletingGame] = useState("All games");
+  const [filter, setFilter] = useState("All games");
 
   const fetchAllGames = async () => {
     try {
@@ -64,7 +66,9 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
       const allGames = gamesData
         .map((responseData, index) => ({
           ...responseData.data[0],
-          status: userGames[index].status // Include status from userGames
+          status: userGames[index].status,
+          userRating: userGames[index].rating,
+          
         }))
         .filter(Boolean);
 
@@ -93,7 +97,15 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
   }, [userGames]);
 
   const filteredGames = completedGames.filter(
-    (game) => game.status === filter
+    (game) => {
+      if(filter==="All games"){
+        return game
+      }
+      else{
+        return game.status === filter
+      }
+      
+    }
   );
 
   return (
@@ -107,6 +119,8 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
           <div key={game.id}>
             <div className="relative top-10 left-0 z-10 ">
               <DeleteGameButton
+                setIsDeletingGame={setIsDeletingGame}
+                isAddingToList
                 gameId={game.id}
                 userId={params.id}
                 onGameDeleted={() => {
@@ -130,10 +144,15 @@ const GameList: React.FC<GameListProps> = ({ params }) => {
                     alt={`${game.name} cover`}
                   />
                 )}
-                <div className="absolute top-0 right-0 m-1 px-3 text-xl bg-grey-dark border w-fit text-white rounded-lg border-white">
+                <div className="absolute top-0 right-0 m-1 px-3 py-0.5 text-xl bg-grey-dark border w-fit text-white rounded-lg border-white">
                   {Math.floor(game.rating)}
                 </div>
-                <p className="text-md text-white whitespace-nowrap overflow-hidden truncate">
+                <div className=" items-center">
+                  <Image className="absolute top-4 right-4 m-1 px-3 " src="/rating-star.svg" width={75} height={75} alt="Rating Star"/>
+                  <p className="absolute text-grey-dark top-7 right-11 text-xl font-bold   ">{game.userRating}<span className={game.userRating===10?"hidden":"invisible"}>.</span></p>
+                  </div>
+                
+                <p className="text-md text-white  whitespace-nowrap overflow-hidden truncate">
                   {index + 1 + ". " + game.name}
                 </p>
               </div>

@@ -9,6 +9,7 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
     const [selectedRating, setSelectedRating] = useState<number>(0); // State for selected rating with initial value
     const [review, setReview] = useState("");
     const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false);
+    const[isDeleting,setIsDeleting]=useState(false)
 
     useEffect(() => {
         // Fetch game data when the component mounts
@@ -72,6 +73,7 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
             })
             .finally(() => {
                 setIsAddingToList(false);
+                setIsUpdateGameOpen(false);
             });
     };
 
@@ -122,13 +124,13 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
             ></textarea>
             {/* Buttons */}
             <div className="flex justify-between gap-8 my-8">
-                <button
+                <button disabled={isDeleting}
                     onClick={handleAddToListClick}
-                    className="px-6 py-2 w-full bg-green-light text-grey-dark font-bold rounded-md hover:bg-green-dark focus:outline-none"
+                    className={`px-6 py-2 w-full bg-green-light text-grey-dark font-bold rounded-md hover:bg-green-dark focus:outline-none ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     {isAddingToList ? "Adding..." : gameExistsInDatabase ? "Update" : "Add to List"}
                 </button>
-                <DeleteGameButton gameId={game.id} userId={userId} onGameDeleted={checkGameInDatabase} text={true} />
+                <DeleteGameButton  gameId={game.id} userId={userId} isAddingToList={isAddingToList}  onGameDeleted={()=>setIsUpdateGameOpen(false)} text={true} setIsDeletingGame={setIsDeleting} />
             </div>
         </div>
     );

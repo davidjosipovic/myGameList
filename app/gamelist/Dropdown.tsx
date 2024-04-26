@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Dropdown = ({ setFilter }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("Playing");
+  const [selectedOption, setSelectedOption] = useState("All games");
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -29,6 +29,12 @@ const Dropdown = ({ setFilter }) => {
           <div className="">
             
             {/* Additional options */}
+            <p
+              className="px-2 py-2 cursor-pointer hover:bg-gray-100"
+              onClick={() => handleOptionChange("All games")}
+            >
+              All games
+            </p>
             <p
               className="px-2 py-2 cursor-pointer hover:bg-gray-100"
               onClick={() => handleOptionChange("Completed")}

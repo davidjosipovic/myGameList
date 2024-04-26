@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { UploadButton } from '@/src/utils/uploadthing';
 import ProfilePicture from '@/components/ProfilePicture';
+import {useRouter} from 'next/navigation';
 
 const EditProfilePage: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
@@ -11,7 +12,8 @@ const EditProfilePage: React.FC = () => {
   const { data: session, update } = useSession();
   const [userNameError, setUserNameError] = useState<string>('');
   const [pictureUrl, setPictureUrl] = useState<string>('');
-  const [successMessage, setSuccessMessage] = useState<string>('');
+  const router = useRouter();
+  const[isSavingProfile,setIsSavingProfile]=useState(false)
 
   const extractFileKey = (url) => {
     const parts = url.split('/');
@@ -41,6 +43,7 @@ const EditProfilePage: React.FC = () => {
   }, [session]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
+    setIsSavingProfile(true)
     e.preventDefault();
 
     if (!userName.trim()) {
@@ -59,7 +62,7 @@ const EditProfilePage: React.FC = () => {
 
       if (response.ok) {
         setUserNameError('');
-        setSuccessMessage('Profile updated successfully.');
+        router.push(`/profile/${userName}`)
        
       } else {
         console.error('Failed to update profile');
@@ -208,15 +211,15 @@ const EditProfilePage: React.FC = () => {
                 ...session?.user,
                 name: userName,
               },
+              
             })
-            setSuccessMessage("")
+           
           }
             
           }
         >
-          Save Profile
+          {isSavingProfile?"Saving profile...":"Save Profile"}
         </button>
-        {successMessage && <p className="text-white mb-12 text-center">{successMessage}</p>}
       </form>
     </div>
   );
