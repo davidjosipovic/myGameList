@@ -5,6 +5,7 @@ import { compare } from "bcrypt";
 import TwitchProvider from "next-auth/providers/twitch";
 import GoogleProvider from "next-auth/providers/google";
 
+
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, trigger, session }) {
@@ -14,15 +15,24 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
     async session({ session, token }) {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: session.user.email,
-        },
-      });
-      token.name=user.name
-      session.user = token as any;
+      // Check if session.user exists and is not null
+      if (session?.user) {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: session.user.email,
+          },
+        });
+        if (user) {
+          // If user is found, update token.name
+          token.name = user.name;
+          // Update session.user with the updated token
+          session.user = token as any;
+        }
+      }
+      // Return the updated session
       return session;
     },
+    
     async signIn({ account, profile }) {
       if (account.provider === "google") {
         console.log(profile)
@@ -36,7 +46,7 @@ export const authOptions: NextAuthOptions = {
           
         }
         else{
-          fetch(`https://mygamelistdj.vercel.app/api/auth/register`, {
+          fetch(`${process.env.DOMAIN}/api/auth/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -44,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           body: JSON.stringify({
             email: profile.email,
             name: profile.name, 
-            iss: profile.iss, 
+            account_provider: account.provider, 
           }),
         }).then(async (res) => {
           if (res.status === 200) {
@@ -77,7 +87,8 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email or Username", type: "text" }, // Changed type to text to allow either email or username
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        
       },
       async authorize(credentials) {
         const { email, password } = credentials ?? {};

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-const { email, name, password, iss } = await req.json();
+const { email, name, password, account_provider } = await req.json();
   const nameexists = await prisma.user.findUnique({
     where: {
       name
@@ -20,7 +20,7 @@ const { email, name, password, iss } = await req.json();
     return NextResponse.json({ error: "User already exists" }, { status: 400 });
   } else {
 
-    if (iss === "https://accounts.google.com") {
+    if (account_provider === "google") {
       const user = await prisma.user.create({
         data: {
           email,
