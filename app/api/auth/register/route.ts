@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
 const { email, name, password, account_provider } = await req.json();
+     
   const nameexists = await prisma.user.findUnique({
     where: {
       name
@@ -24,7 +25,7 @@ const { email, name, password, account_provider } = await req.json();
       const user = await prisma.user.create({
         data: {
           email,
-          name,
+          name:name.replace(/\//g, ''),
           password: "",
           picture: '/Default_pfp.png'
         },
