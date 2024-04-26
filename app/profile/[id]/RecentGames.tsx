@@ -81,7 +81,7 @@ export default function RecentGames(props) {
 
   return (
     <section className="flex flex-col my-8">
-      <h1 className="text-3xl font-semibold text-white lg:text-center lg:my-6 ">Your Recent Games</h1>
+      <h1 className="text-3xl font-semibold text-white lg:text-center mb-4 lg:my-6 ">Your Recent Games</h1>
 
       <div className='xl:hidden grid gap-2 grid-cols-4 sm:w-3/4 lg:w-auto content-evenly justify-items-center justify-evenly items-center lg:mx-28'>
         {games.slice(Math.max(games.length - 4, 0)).reverse().map((game) =>
