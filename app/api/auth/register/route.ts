@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
 import { hash } from "bcrypt";
 import { NextResponse } from "next/server";
-import { NeverCompare } from "three";
 
 export async function POST(req: Request) {
   try {

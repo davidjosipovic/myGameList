@@ -32,11 +32,11 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if(user){
-          
+          console.log("User found");
           
         }
         else{
-          fetch(`${process.env.DOMAIN}/api/auth/register`, {
+          fetch(`http://localhost:3000/api/auth/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -53,6 +53,8 @@ export const authOptions: NextAuthOptions = {
           } else {
             const { error } = await res.json();
             console.error(error);
+            console.log("It didn't ho through");
+
           }
         });
         }
