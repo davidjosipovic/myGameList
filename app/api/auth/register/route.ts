@@ -25,7 +25,7 @@ const { email, name, password, account_provider } = await req.json();
       const user = await prisma.user.create({
         data: {
           email,
-          name:name.replace(/\//g, ''),
+          name:name.replace(/\//g, '').replace(/%20/g,''),
           password: "",
           picture: '/Default_pfp.png'
         },
