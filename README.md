@@ -14,5 +14,4 @@ myGameList is an open-source project developed to help gamers manage their game 
 - View a list of your completed games.
 
 Thanks to the developers of Next.js for providing a powerful React framework.
-
  
