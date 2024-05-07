@@ -18,7 +18,6 @@ export default function ProfilePicture(props){
         var widthHeight='w-24 h-24'
         var resolution=100
     }
-
     return(
         <div  className={`block relative ${props.className}`}>
             <Image className={` object-cover rounded-full ${widthHeight} border-2 border-white `} priority alt="Profile Picture" width={resolution} height={resolution} src={picture} />
