@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from '@prisma/client';
 import { hash } from "bcrypt";
+import { utapi } from "@/server/uploadthing";
 
 const prisma = new PrismaClient();
+
+const extractFileKey = (url: string): string => {
+  const parts = url.split('/');
+  return parts[parts.length - 1];
+};
 
 export async function PUT(
   request: Request,
@@ -24,12 +30,27 @@ export async function PUT(
       return NextResponse.json({ status: 404, statusText: 'User not found' });
     }
 
+    // If picture changed and old picture is not default, delete it from UploadThing
+    if (body.oldPicture && 
+        body.picture !== body.oldPicture && 
+        body.oldPicture !== '/Default_pfp.png' && 
+        body.oldPicture.includes('uploadthing')) {
+      try {
+        const oldFileKey = extractFileKey(body.oldPicture);
+        await utapi.deleteFiles(oldFileKey);
+        console.log('Old picture deleted from UploadThing:', oldFileKey);
+      } catch (deleteError) {
+        console.error('Error deleting old picture:', deleteError);
+        // Continue with profile update even if deletion fails
+      }
+    }
+
     // Prepare the data object for updating
     const updateData = {
       info: body.info,
       name: body.name,
-      password:user.password,
-      picture:body.picture
+      password: user.password,
+      picture: body.picture
     };
 
     // Conditionally update the password only if it's not empty
@@ -53,5 +74,7 @@ export async function PUT(
   } catch (error) {
     console.error("Error updating user profile:", error);
     return NextResponse.json({ status: 500, statusText: 'Internal Server Error' });
+  } finally {
+    await prisma.$disconnect();
   }
 }
