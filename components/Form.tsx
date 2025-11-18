@@ -30,12 +30,13 @@ export default function Form({ type }: { type: "login" | "register" }) {
       onSubmit={(e) => {
         e.preventDefault();
         setLoading(true);
-        const email = e.currentTarget.email.value;
-        const name = e.currentTarget.name?.value; // Only capture name if it exists
-        const password = e.currentTarget.password.value;
+        const formData = new FormData(e.currentTarget);
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
 
         if (type === "register") {
-          const confirmPassword = e.currentTarget.confirmPassword.value;
+          const name = formData.get("name") as string;
+          const confirmPassword = formData.get("confirmPassword") as string;
 
           if (password !== confirmPassword) {
             setLoading(false);
@@ -54,11 +55,10 @@ export default function Form({ type }: { type: "login" | "register" }) {
         }
 
         if (type === "login") {
-          // Use email as a fallback for login if name is not provided
+          // For login, use email field (which can contain email or username)
           signIn("credentials", {
             redirect: false,
-            email: name ? undefined : email,
-            name: name,
+            email: email,
             password: password,
           }).then(({ error }) => {
             if (error) {
@@ -70,6 +70,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
             }
           });
         } else if (type === "register") {
+          const name = formData.get("name") as string;
           fetch("/api/auth/register", {
             method: "POST",
             headers: {
@@ -108,6 +109,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
         </label>
         <input
           id="email"
+          name="email"
           type="email"
           autoComplete="email"
           required
@@ -121,6 +123,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
           </label>
           <input
             id="name"
+            name="name"
             type="text"
             autoComplete="name"
             required
@@ -134,6 +137,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
         </label>
         <input
           id="password"
+          name="password"
           type="password"
           required
           onChange={(e) => checkPasswordStrength(e.target.value)} // Invoke password strength check
@@ -150,6 +154,7 @@ export default function Form({ type }: { type: "login" | "register" }) {
           </label>
           <input
             id="confirmPassword"
+            name="confirmPassword"
             type="password"
             required
             className="mt-1 block w-full appearance-none text-white rounded-lg border border-white bg-grey-dark px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
@@ -161,24 +166,24 @@ export default function Form({ type }: { type: "login" | "register" }) {
           disabled={loading}
           className={`${
             loading
-              ? "cursor-not-allowed bg-grey-dark"
-              : "border-black bg-black text-grey-dark hover:bg-green-dark hover:text-black"
-          } bg-green-light font-bold w-1/3 mr-4 flex h-10 items-center justify-center rounded-lg border text-xl transition-all focus:outline-none`}
+              ? "cursor-not-allowed bg-grey-dark opacity-50"
+              : "bg-green-light hover:bg-green-dark text-grey-dark hover:shadow-lg hover:shadow-green-light/20"
+          } font-bold px-6 py-3 flex items-center justify-center rounded-lg text-lg transition-all duration-200 active:scale-95 focus:outline-none`}
         >
           {loading ? <LoadingDots color="#808080" /> : <p>{type === "login" ? "Sign In" : "Sign Up"}</p>}
         </button>
         {type === "login" ? (
-          <p className="text-center text-sm text-white w-2/3">
+          <p className="text-center text-sm text-white ml-4">
             Don&apos;t have an account?{" "}
-            <Link className="underline text-white" href="/register">
+            <Link className="underline text-green-light hover:text-green-dark transition-colors" href="/register">
               Sign up
             </Link>{" "}
             for free.
           </p>
         ) : (
-          <p className="text-center text-sm text-white w-2/3">
+          <p className="text-center text-sm text-white ml-4">
             Already have an account?{" "}
-            <Link className="underline text-white" href="/login">
+            <Link className="underline text-green-light hover:text-green-dark transition-colors" href="/login">
               Sign in
             </Link>{" "}
             instead.

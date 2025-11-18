@@ -4,7 +4,6 @@ import { Image } from 'next/dist/client/image-component';
 const ScreenshotGallery: React.FC<{ screenshots: any[] }> = ({ screenshots }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-
   const prevImage = () => {
     const newIndex = (currentImageIndex - 1 + screenshots.length) % screenshots.length;
     setCurrentImageIndex(newIndex);
@@ -16,74 +15,102 @@ const ScreenshotGallery: React.FC<{ screenshots: any[] }> = ({ screenshots }) =>
   };
 
   useEffect(() => {
-    // Automatically change the picture every 2 seconds
     const interval = setInterval(() => {
       nextImage();
     }, 5000);
 
     return () => {
-      // Clean up the interval when the component unmounts
       clearInterval(interval);
     };
   }, [currentImageIndex]);
 
   return (
-    <div className="my-8 w-full md:w-4/5 sm:order-7 lg:order-3 lg:w-2/6  lg:bg-black  lg:my-0  ">
-      <h1 className='text-2xl text-white mb-2 lg:hidden'>Photos</h1>
-      <div className="relative">
+    <div className="w-full">
+      <h2 className="text-xl sm:text-2xl font-semibold text-green-light mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+        </svg>
+        Screenshots
+      </h2>
+      
+      <div className="relative bg-grey-dark border border-white/10 rounded-lg overflow-hidden shadow-2xl hover:border-green-light/50 transition-all duration-300 group">
+        {/* Navigation Buttons */}
         {screenshots.length > 1 && (
-          <div className="flex items-center justify-center absolute inset-x-0 bottom-4">
+          <>
+            {currentImageIndex !== 0 && (
+              <button 
+                onClick={prevImage} 
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-green-light/20 border border-white/20 hover:border-green-light p-2 sm:p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Previous image"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            )}
+            
+            {currentImageIndex !== screenshots.length - 1 && (
+              <button 
+                onClick={nextImage} 
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-green-light/20 border border-white/20 hover:border-green-light p-2 sm:p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Next image"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            )}
+          </>
+        )}
+
+        {/* Image */}
+        <Image
+          loading="lazy"
+          height={720}
+          width={1280}
+          src={`https:${screenshots[currentImageIndex].url.replace('t_thumb', 't_screenshot_big')}`}
+          alt={`Screenshot ${currentImageIndex + 1}`}
+          className="w-full h-auto"
+          sizes="(max-width: 768px) 100vw, 1280px"
+        />
+
+        {/* Dots Navigation */}
+        {screenshots.length > 1 && (
+          <div className="absolute bottom-3 sm:bottom-4 left-0 right-0 flex items-center justify-center gap-1.5 sm:gap-2">
             {screenshots.map((_, index) => (
-              <span
+              <button
                 key={index}
                 onClick={() => setCurrentImageIndex(index)}
-                className={`h-2 w-2 rounded-full mx-1 cursor-pointer border  border-white ${index === currentImageIndex ? 'bg-green-light' : 'bg-grey-dark'
-                  }`}
-              ></span>
+                className={`transition-all duration-300 rounded-full border-2 ${
+                  index === currentImageIndex
+                    ? 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-light border-green-light'
+                    : 'w-2 h-2 sm:w-2.5 sm:h-2.5 bg-grey-dark border-white/50 hover:border-green-light'
+                }`}
+                aria-label={`Go to screenshot ${index + 1}`}
+              />
             ))}
           </div>
         )}
-        
 
-        {screenshots.length > 1 && (
-          <div className="flex items-center">
-            {currentImageIndex !== 0 && (
-              <button onClick={prevImage} className="absolute top-1/2 bottom-1/2 px-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="2em"
-                  viewBox="0 0 256 512"
-                  className="fill-grey-dark stroke-white stroke-[16]"
-                >
-                  <path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z" />
-                </svg>
-              </button>
-            )}
-            {currentImageIndex !== screenshots.length - 1 && (
-              <button onClick={nextImage} className="absolute top-1/2 bottom-1/2 px-4 right-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="2em"
-                  viewBox="0 0 256 512"
-                  className="fill-grey-dark stroke-white stroke-[16]"
-                >
-                  <path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z" />
-                </svg>
-              </button>
-            )}
-          </div>
-        )}
-        
-        <Image
-        priority
-          height={400}
-          width={400}
-          src={`https:${screenshots[currentImageIndex].url.replace('t_thumb', 't_screenshot_big')}`}
-          alt={`Screenshot ${currentImageIndex}`}
-          className="w-full  lg:py-10 "
-        />
+        {/* Counter */}
+        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-black/60 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20">
+          <span className="text-white text-xs sm:text-sm font-medium">
+            {currentImageIndex + 1} / {screenshots.length}
+          </span>
+        </div>
       </div>
     </div>
   );
 };
+
 export default ScreenshotGallery;

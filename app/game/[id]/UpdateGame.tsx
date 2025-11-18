@@ -5,25 +5,24 @@ import DeleteGameButton from "@/components/DeleteGameButton";
 export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
     const { data: session } = useSession();
     const [isAddingToList, setIsAddingToList] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState("Playing"); // State for selected status
-    const [selectedRating, setSelectedRating] = useState<number>(0); // State for selected rating with initial value
+    const [selectedStatus, setSelectedStatus] = useState("Playing");
+    const [selectedRating, setSelectedRating] = useState<number>(0);
     const [review, setReview] = useState("");
     const [gameExistsInDatabase, setGameExistsInDatabase] = useState(false);
-    const[isDeleting,setIsDeleting]=useState(false)
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
-        // Fetch game data when the component mounts
         if (session && game) {
             checkGameInDatabase();
         }
-    }, [session, game]); // Fetch data whenever the 'session' or 'game' changes
+    }, [session, game]);
 
     const checkGameInDatabase = () => {
         fetch(`/api/gamelist/${session.user?.name}/${game.id}`, { method: "GET" })
             .then((response) => {
                 response.json().then((data) => {
                     if (data.status === 404) {
-                        setGameExistsInDatabase(false); // Set the state when the specific status message is received
+                        setGameExistsInDatabase(false);
                     } else {
                         setSelectedRating(data.rating);
                         setReview(data.review);
@@ -34,7 +33,7 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
             })
             .catch((error) => {
                 console.error("Error checking game in the database:", error);
-                setGameExistsInDatabase(false); // Handle the error by setting the state accordingly
+                setGameExistsInDatabase(false);
             });
     };
 
@@ -78,59 +77,132 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
     };
 
     return (
-        <div className="fixed h-full w-full sm:w-2/3 lg:w-2/4 xl:w-2/5 top-12 left-0 right-0 md:px-12 mx-auto z-10 bg-grey-light sm:border p-4 lg:py-4 lg:px-12 sm:top-20 sm:h-fit ">
-            <div className="flex justify-between items-center mt-2 mb-8">
-                <h2 className="text-2xl font-bold text-white">{game.name}</h2>
-                <button onClick={() => setIsUpdateGameOpen(false)} className="text-white text-2xl">
-                    X
-                </button>
+        <div className="fixed inset-x-0 top-20 mx-auto w-[95%] sm:w-[600px] lg:w-[700px] max-h-[85vh] overflow-y-auto z-50 bg-grey-dark border border-green-light/30 rounded-lg shadow-2xl">
+            <div className="sticky top-0 bg-grey-dark border-b border-white/10 p-6 z-10">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white">{game.name}</h2>
+                    <button 
+                        onClick={() => setIsUpdateGameOpen(false)} 
+                        className="text-white/60 hover:text-green-light transition-colors duration-200 p-2 hover:bg-white/5 rounded-full"
+                        aria-label="Close"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div className="flex mb-4 gap-8">
-                {/* Dropdown buttons */}
-                <select
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="w-full py-1 border bg-grey-dark text-white rounded-md focus:outline-none focus:border-indigo-500"
-                >
-                    <option value="Playing">Playing</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Dropped">Dropped</option>
-                    <option value="Backlog">Backlog</option>
-                </select>
-                <select
-                    value={selectedRating}
-                    onChange={(e) => handleRatingChange(parseInt(e.target.value, 10))}
-                    className="w-full py-1 border bg-grey-dark text-white rounded-md focus:outline-none focus:border-indigo-500"
-                >
-                    <option value="" hidden>Rating</option>
-                    {[...Array(10)].map((_, index) => (
-                        <option key={index + 1} value={index + 1}>
-                            {index + 1}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            {/* Review input */}
-            <label className="text-white" htmlFor="review">
-                Review
-            </label>
-            <textarea
-                value={review}
-                onChange={(e) => setReview(e.target.value)}
-                className="w-full px-4 py-1 h-96 border bg-grey-dark text-white rounded-md focus:outline-none focus:border-indigo-500 mb-4"
-                placeholder=""
-                id="review"
-            ></textarea>
-            {/* Buttons */}
-            <div className="flex justify-between gap-8 my-8">
-                <button disabled={isDeleting}
-                    onClick={handleAddToListClick}
-                    className={`px-6 py-2 w-full bg-green-light text-grey-dark font-bold rounded-md hover:bg-green-dark focus:outline-none ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                    {isAddingToList ? "Adding..." : gameExistsInDatabase ? "Update" : "Add to List"}
-                </button>
-                <DeleteGameButton  gameId={game.id} userId={userId} isAddingToList={isAddingToList}  onGameDeleted={()=>setIsUpdateGameOpen(false)} text={true} setIsDeletingGame={setIsDeleting} />
+            <div className="p-6 space-y-6">
+                {/* Status and Rating Dropdowns */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-white/80 text-sm font-medium mb-2">Status</label>
+                        <select
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                            className="w-full px-4 py-3 bg-grey-light border border-white/20 text-white rounded-lg focus:outline-none focus:border-green-light transition-colors duration-200"
+                        >
+                            <option value="Playing">Playing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Dropped">Dropped</option>
+                            <option value="Backlog">Backlog</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label className="block text-white/80 text-sm font-medium mb-2">Rating</label>
+                        <select
+                            value={selectedRating}
+                            onChange={(e) => handleRatingChange(parseInt(e.target.value, 10))}
+                            className="w-full px-4 py-3 bg-grey-light border border-white/20 text-white rounded-lg focus:outline-none focus:border-green-light transition-colors duration-200"
+                        >
+                            <option value="" hidden>Select rating</option>
+                            {[...Array(10)].map((_, index) => (
+                                <option key={index + 1} value={index + 1}>
+                                    {index + 1} / 10
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                {/* Review Textarea */}
+                <div>
+                    <label className="block text-white/80 text-sm font-medium mb-2" htmlFor="review">
+                        Review
+                    </label>
+                    <textarea
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                        className="w-full px-4 py-3 h-48 bg-grey-light border border-white/20 text-white rounded-lg focus:outline-none focus:border-green-light transition-colors duration-200 resize-none"
+                        placeholder="Share your thoughts about this game..."
+                        id="review"
+                    />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-4 pt-4">
+                    <button
+                        disabled={isDeleting || isAddingToList}
+                        onClick={handleAddToListClick}
+                        className={`w-full py-3 px-6 bg-green-light text-grey-dark font-bold text-lg rounded-lg transition-all duration-200 ${
+                            isDeleting || isAddingToList 
+                                ? 'opacity-50 cursor-not-allowed' 
+                                : 'hover:bg-green-dark hover:shadow-lg hover:shadow-green-light/30 active:scale-95'
+                        }`}
+                    >
+                        {isAddingToList ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                {gameExistsInDatabase ? "Updating..." : "Adding..."}
+                            </span>
+                        ) : (
+                            gameExistsInDatabase ? "Update Game" : "Add to List"
+                        )}
+                    </button>
+                    
+                    {gameExistsInDatabase && (
+                        <button
+                            disabled={isDeleting || isAddingToList}
+                            onClick={async () => {
+                                setIsDeleting(true);
+                                try {
+                                    const response = await fetch(`/api/gamelist/${userId}/delete/${game.id}`, {
+                                        method: 'DELETE',
+                                    });
+                                    if (response.ok) {
+                                        setIsUpdateGameOpen(false);
+                                    }
+                                } catch (error) {
+                                    console.error('Error deleting the game:', error);
+                                } finally {
+                                    setIsDeleting(false);
+                                }
+                            }}
+                            className={`w-full py-3 px-6 bg-grey-dark border-2 border-red-500 text-red-500 font-bold text-lg rounded-lg transition-all duration-200 ${
+                                isDeleting || isAddingToList
+                                    ? 'opacity-50 cursor-not-allowed'
+                                    : 'hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-500/30 active:scale-95'
+                            }`}
+                        >
+                            {isDeleting ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Removing...
+                                </span>
+                            ) : (
+                                "Remove from List"
+                            )}
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );

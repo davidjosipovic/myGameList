@@ -14,60 +14,90 @@ const VideoGallery = ({ game }) => {
   };
 
   return (
-    <section className="w-full md:w-4/5  lg:w-3/6  my-4 sm:order-8 lg:order-7">
-      <h3 className="text-2xl text-white mt-5 mb-2">Videos</h3>
-      <div className="relative lg:w-5/6">
-        <div className="">
-          <iframe
+    <div className="w-full">
+      <h2 className="text-xl sm:text-2xl font-semibold text-green-light mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+        </svg>
+        Additional Videos
+      </h2>
+      
+      <div className="relative bg-grey-dark border border-white/10 rounded-lg overflow-hidden shadow-2xl hover:border-green-light/50 transition-all duration-300 group">
+        {/* Video Frame */}
+        <iframe
+          src={`https://www.youtube.com/embed/${game.videos[currentVideoIndex].video_id}`}
+          title={`Video ${currentVideoIndex + 1}`}
+          className="w-full aspect-video"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
 
-            src={`https://www.youtube.com/embed/${game.videos[currentVideoIndex].video_id}`}
-            title={`Video ${currentVideoIndex}`}
-            className="w-full h-full   p-0.5 aspect-video "
-          ></iframe>
-        </div>
+        {/* Navigation Buttons */}
         {game.videos.length > 1 && (
-          <div className="flex items-center justify-center absolute inset-x-0 bottom-4 ">
+          <>
+            {currentVideoIndex !== 0 && (
+              <button 
+                onClick={handlePrevVideo} 
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-green-light/20 border border-white/20 hover:border-green-light p-2 sm:p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Previous video"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            )}
+            
+            {currentVideoIndex !== game.videos.length - 1 && (
+              <button 
+                onClick={handleNextVideo} 
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-green-light/20 border border-white/20 hover:border-green-light p-2 sm:p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Next video"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            )}
+          </>
+        )}
+
+        {/* Dots Navigation */}
+        {game.videos.length > 1 && (
+          <div className="absolute bottom-3 sm:bottom-4 left-0 right-0 flex items-center justify-center gap-1.5 sm:gap-2">
             {game.videos.map((_, index) => (
-              <span
+              <button
                 key={index}
                 onClick={() => setCurrentVideoIndex(index)}
-                className={`h-2 w-2 rounded-full mx-1 cursor-pointer border  border-white ${
-                  index === currentVideoIndex ? 'bg-green-light' : 'bg-grey-dark'
+                className={`transition-all duration-300 rounded-full border-2 ${
+                  index === currentVideoIndex
+                    ? 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-light border-green-light'
+                    : 'w-2 h-2 sm:w-2.5 sm:h-2.5 bg-grey-dark border-white/50 hover:border-green-light'
                 }`}
-              ></span>
+                aria-label={`Go to video ${index + 1}`}
+              />
             ))}
           </div>
         )}
-        {game.videos.length > 1 && (
-          <div className="flex items-center ">
-            {currentVideoIndex !== 0 && (
-              <button onClick={handlePrevVideo} className="absolute top-1/2 bottom-1/2 px-4 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="2em"
-                  viewBox="0 0 256 512"
-                  className="fill-grey-dark stroke-white stroke-[16]"
-                >
-                  <path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z" />
-                </svg>
-              </button>
-            )}
-            {currentVideoIndex !== game.videos.length - 1 && (
-              <button onClick={handleNextVideo} className="absolute top-1/2 bottom-1/2 px-4 right-0 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="2em"
-                  viewBox="0 0 256 512"
-                  className="fill-grey-dark stroke-white stroke-[16]"
-                >
-                  <path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z" />
-                </svg>
-              </button>
-            )}
-          </div>
-        )}
+
+        {/* Counter */}
+        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-black/60 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20">
+          <span className="text-white text-xs sm:text-sm font-medium">
+            {currentVideoIndex + 1} / {game.videos.length}
+          </span>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 

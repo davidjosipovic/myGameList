@@ -9,98 +9,112 @@ export default function RecentGames(props) {
     gameId: string;
     rating: number | null;
     review: string | null;
-    status:string | null;
+    status: string | null;
     userId: string;
-  }
-
-  interface ApiGame {
-    id: number;
-    name: string;
-    rating: number | null;
-    cover: {
+    gameDetails: {
       id: number;
-      url: string;
+      name: string;
+      rating: number | null;
+      cover: {
+        id: number;
+        url: string;
+      };
     };
   }
 
-  const [userGames, setUserGames] = useState<UserGame[]>([]);
-  const [games, setGames] = useState<ApiGame[]>([]);
-
-
-  const fetchGameDetails = async (games: UserGame[]) => {
-    try {
-      const fetchPromises = games.map((game) =>
-        fetch(`/api/game/${game.gameId}`, { method: "POST" }).then((res) =>
-          res.json()
-        )
-      );
-
-      const gamesData = await Promise.all(fetchPromises);
-
-      const allGames = gamesData
-        .map((responseData) =>
-          responseData && responseData.data ? responseData.data[0] : null
-        )
-        .filter(Boolean);
-        
-      
-      setGames(allGames.slice(Math.max(allGames.length - 5, 0)));
-    } catch (error) {
-      console.error("Error fetching game details:", error);
-    } finally {
-
-    }
-  };
+  const [recentGames, setRecentGames] = useState<UserGame[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserGames = async () => {
+    const fetchRecentGames = async () => {
       try {
-        const response = await fetch(`/api/gamelist/${props.id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setUserGames(data);
-          props.setGames(data)
+        setIsLoading(true);
+        
+        console.log('Fetching recent games for user:', props.id);
+        
+        // Fetch recent games with details in single request
+        const recentResponse = await fetch(`/api/gamelist/${props.id}/recent`);
+        console.log('Recent games response status:', recentResponse.status);
+        
+        if (recentResponse.ok) {
+          const recentData = await recentResponse.json();
+          console.log('Recent games data:', recentData);
+          setRecentGames(Array.isArray(recentData) ? recentData : []);
         } else {
-          console.error("Failed to fetch user games");
+          console.log('Recent games fetch failed');
+          setRecentGames([]);
+        }
+
+        // Fetch all user games for stats
+        const allGamesResponse = await fetch(`/api/gamelist/${props.id}`);
+        console.log('All games response status:', allGamesResponse.status);
+        
+        if (allGamesResponse.ok) {
+          const allGamesData = await allGamesResponse.json();
+          console.log('All games data:', allGamesData);
+          props.setGames(Array.isArray(allGamesData) ? allGamesData : []);
+        } else {
+          console.log('All games fetch failed');
+          props.setGames([]);
         }
       } catch (error) {
-        console.error("Error fetching user games:", error);
+        console.error("Error fetching games:", error);
+        setRecentGames([]);
+        props.setGames([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchUserGames();
-  }, []); // Empty dependency array to ensure it runs only once when component mounts
-
-  useEffect(() => {
-    // Call fetchGameDetails with the updated userGames
-    if (userGames.length > 0) {
-      fetchGameDetails(userGames);
+    if (props.id) {
+      fetchRecentGames();
     }
-  }, [userGames]); // Now using userGames as a dependency
+  }, [props.id]);
 
 
   return (
-    <section className="flex flex-col my-8   ">
-      <h1 className="text-3xl font-semibold text-white lg:text-center mb-4 lg:my-6 ">Your Recent Games</h1>
+    <section className="mb-12">
+      <h2 className="text-3xl font-bold text-white mb-6 text-center">Recent Games</h2>
       
-
-      <div className='xl:hidden grid gap-2 lg:bg-grey-dark lg:p-6 rounded-2xl grid-cols-4 sm:w-3/4 lg:w-auto content-evenly justify-items-center justify-evenly items-center lg:mx-28'>
-        {games.slice(Math.max(games.length - 4, 0)).reverse().map((game) =>
-          <Link key={game.id} href={`/game/${game.id}`}>
-            <Image priority key={game.id} alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={200} height={200} />
-          </Link>
-        )}
-      </div>
-
-      <div className='hidden lg:bg-grey-dark  p-6 rounded-2xl my-2 xl:grid   grid-cols-5 gap-1 content-evenly justify-items-center justify-evenly items-center mx-28'>
-        {games.slice().reverse().map((game) =>
-        <Link key={game.id} href={`/game/${game.id}`}>
-          <Image className=" border-2 border-hidden border-white hover:border-solid" 
-          priority key={game.id} alt="Recent game" src={`https:${game.cover.url.replace('t_thumb', 't_cover_big')}`} width={250} height={250} />
-          </Link>
-        )}
-      </div>
-      
-
-    </section>)
+      {isLoading ? (
+        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4'>
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="bg-grey-dark aspect-[3/4] rounded-lg animate-pulse border border-white/10"></div>
+          ))}
+        </div>
+      ) : recentGames.length > 0 ? (
+        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4'>
+          {recentGames.map((game) => (
+            <Link 
+              key={game.id} 
+              href={`/game/${game.gameDetails.id}`}
+              className="group relative overflow-hidden rounded-lg border-2 border-transparent hover:border-green-light transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-light/30"
+            >
+              <Image 
+                className="w-full h-auto aspect-[3/4] object-cover" 
+                loading="lazy"
+                alt={game.gameDetails.name || "Game cover"} 
+                src={`https:${game.gameDetails.cover.url.replace('t_thumb', 't_cover_big')}`} 
+                width={250} 
+                height={333} 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <p className="text-white font-semibold text-sm line-clamp-2">{game.gameDetails.name}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className='bg-grey-dark border border-white/20 rounded-2xl p-12 text-center'>
+          <svg className="w-16 h-16 text-white/30 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <p className='text-white/70 text-lg'>No games added yet</p>
+          <p className='text-white/50 text-sm mt-2'>Start building your game list!</p>
+        </div>
+      )}
+    </section>
+  )
 }

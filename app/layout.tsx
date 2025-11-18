@@ -37,13 +37,25 @@ export default async function RootLayout({
      
       <body className={`bg-grey-light ${monda.className}`}>
         
-        <Toaster />
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: '#1F1F1F',
+              color: '#D9D9D9',
+              border: '1px solid #00FFA2',
+            },
+          }}
+        />
         <Suspense fallback="Loading...">
         </Suspense>
         <Provider session={session} >
          <AppWrapper>
         <Navbar/>
-        {children}
+        <main className="pt-16">
+          {children}
+        </main>
         <Footer/>
         </AppWrapper>
         </Provider>

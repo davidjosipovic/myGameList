@@ -1,7 +1,7 @@
 // pages/api/games.ts
 
 import { NextResponse } from "next/server";
-
+import { igdbClient } from "@/lib/igdb";
 
 
 export async function POST(req: Request,{ params }: { params: { id: string }}) {
@@ -11,25 +11,17 @@ export async function POST(req: Request,{ params }: { params: { id: string }}) {
   }
 
   try {
-    const response = await fetch('https://api.igdb.com/v4/games', {
-      method: 'POST', 
-      headers: {
-        'Accept': 'application/json',
-        'Client-ID': process.env.CLIENT_ID ,
-        'Authorization': process.env.BEARER_ACCESS_TOKEN
-      },
-      body: `fields id, name, cover.url; search "${id}";limit 6; where version_parent = null;`
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Error fetching from IGDB API');
-    }
-
+    console.log('Searching for:', id);
+    const data = await igdbClient.request(
+      'games',
+      `fields id, name, cover.url; search "${id}"; limit 6; where version_parent = null;`
+    );
+    
+    console.log('Search results:', data);
     return  NextResponse.json({ data }, { status: 200 });
 
   } catch (error) {
+    console.error('Search error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
