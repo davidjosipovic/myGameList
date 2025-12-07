@@ -9,6 +9,7 @@ import Provider from "@/app/context/client-provider"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import Footer from "@/components/Footer";
+import ChatbotButton from "@/components/ChatbotButton";
 import {AppWrapper} from '@/app/context'
 
 const monda = Monda({
@@ -57,6 +58,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer/>
+        <ChatbotButton />
         </AppWrapper>
         </Provider>
     
