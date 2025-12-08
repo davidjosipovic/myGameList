@@ -59,11 +59,11 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Color scale za gradient
+    // Color scale za gradient - zelena tema
     const colorScale = d3
       .scaleLinear<string>()
       .domain([0, d3.max(data, (d) => d.rating) || 10])
-      .range(['#3b82f6', '#8b5cf6']);
+      .range(['#22c55e', '#16a34a']); // green-light to green-dark
 
     // Kreiraj skale
     const xScale = d3
@@ -81,12 +81,14 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
     svg
       .append('g')
       .attr('class', 'grid')
-      .attr('opacity', 0.1)
+      .attr('opacity', 0.2)
       .call(
         d3.axisLeft(yScale)
           .tickSize(-width)
           .tickFormat(() => '')
-      );
+      )
+      .selectAll('line')
+      .style('stroke', '#ffffff');
 
     // Kreiraj barove sa animacijom
     const bars = svg
@@ -101,10 +103,46 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
       .attr('height', 0)
       .attr('fill', (d) => colorScale(d.rating))
       .attr('rx', 6)
+      .attr('opacity', 1)
       .style('cursor', 'pointer')
       .style('filter', 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))');
 
-    // Animacija barova
+    // Tooltip interakcije - dodaj PRIJE animacije
+    const tooltip = d3.select(tooltipRef.current);
+
+    bars
+      .on('mouseover', function (event, d) {
+        // Samo promijeni opacity i filter, bez mijenjanja pozicije/veličine
+        d3.select(this)
+          .attr('opacity', 0.8)
+          .style('filter', 'drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2))');
+
+        tooltip
+          .style('display', 'block')
+          .style('left', event.pageX + 10 + 'px')
+          .style('top', event.pageY - 10 + 'px')
+          .html(`
+            <div class="font-bold text-lg mb-2">${d.name}</div>
+            <div class="space-y-1">
+              <div>⭐ Rating: <span class="font-semibold">${d.rating}/10</span></div>
+              <div>🎮 Reviews: <span class="font-semibold">${d.plays.toLocaleString()}</span></div>
+            </div>
+          `);
+      })
+      .on('mousemove', function (event) {
+        tooltip
+          .style('left', event.pageX + 10 + 'px')
+          .style('top', event.pageY - 10 + 'px');
+      })
+      .on('mouseout', function () {
+        d3.select(this)
+          .attr('opacity', 1)
+          .style('filter', 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))');
+
+        tooltip.style('display', 'none');
+      });
+
+    // Animacija barova - pokreni NAKON što su event listeneri dodani
     bars
       .transition()
       .duration(1000)
@@ -135,57 +173,23 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
         .style('opacity', 1);
     }
 
-    // Tooltip interakcije
-    const tooltip = d3.select(tooltipRef.current);
-
-    bars
-      .on('mouseover', function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr('opacity', 0.8)
-          .style('filter', 'drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2))');
-
-        tooltip
-          .style('display', 'block')
-          .style('left', event.pageX + 10 + 'px')
-          .style('top', event.pageY - 10 + 'px')
-          .html(`
-            <div class="font-bold text-lg mb-2">${d.name}</div>
-            <div class="space-y-1">
-              <div>⭐ Ocjena: <span class="font-semibold">${d.rating}/10</span></div>
-              <div>🎮 Broj ocjena: <span class="font-semibold">${d.plays.toLocaleString()}</span></div>
-            </div>
-          `);
-      })
-      .on('mousemove', function (event) {
-        tooltip
-          .style('left', event.pageX + 10 + 'px')
-          .style('top', event.pageY - 10 + 'px');
-      })
-      .on('mouseout', function () {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr('opacity', 1)
-          .style('filter', 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))');
-
-        tooltip.style('display', 'none');
-      });
-
     // Kreiraj X os
-    svg
+    const xAxis = svg
       .append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale))
-      .selectAll('text')
+      .call(d3.axisBottom(xScale));
+    
+    xAxis.selectAll('line').style('stroke', '#ffffff');
+    xAxis.select('.domain').style('stroke', '#ffffff');
+    
+    xAxis.selectAll('text')
       .attr('transform', 'rotate(-45)')
       .attr('text-anchor', 'end')
       .attr('dx', '-0.8em')
       .attr('dy', '0.2em')
       .style('font-size', isMobile ? '11px' : '12px')
       .style('font-weight', '500')
-      .style('fill', '#374151')
+      .style('fill', '#ffffff')
       .each(function(d) {
         const text = d as string;
         const maxLength = isMobile ? 15 : 20;
@@ -194,10 +198,14 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
       });
 
     // Kreiraj Y os
-    svg
+    const yAxis = svg
       .append('g')
       .call(d3.axisLeft(yScale).ticks(isMobile ? 5 : 10))
       .style('font-size', isMobile ? '11px' : '13px');
+    
+    yAxis.selectAll('text').style('fill', '#ffffff');
+    yAxis.selectAll('line').style('stroke', '#ffffff');
+    yAxis.select('.domain').style('stroke', '#ffffff');
 
     // Dodaj Y os labelu
     if (!isMobile) {
@@ -210,8 +218,8 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
         .style('font-weight', 'bold')
-        .style('fill', '#374151')
-        .text('Ocjena (0-10)');
+        .style('fill', '#ffffff')
+        .text('Rating (0-10)');
     }
 
     // Dodaj naslov
@@ -222,7 +230,7 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
       .attr('text-anchor', 'middle')
       .style('font-size', isMobile ? '16px' : '22px')
       .style('font-weight', 'bold')
-      .style('fill', '#1f2937')
+      .style('fill', '#22c55e')
       .text(title);
 
     // Dodaj prosječnu liniju
@@ -233,7 +241,7 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
       .attr('x2', width)
       .attr('y1', yScale(avgRating))
       .attr('y2', yScale(avgRating))
-      .attr('stroke', '#ef4444')
+      .attr('stroke', '#22c55e')
       .attr('stroke-width', 2)
       .attr('stroke-dasharray', '5,5')
       .style('opacity', 0)
@@ -248,10 +256,10 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
         .attr('y', yScale(avgRating) - 8)
         .attr('text-anchor', 'end')
         .style('font-size', '11px')
-        .style('fill', '#ef4444')
+        .style('fill', '#22c55e')
         .style('font-weight', 'bold')
         .style('opacity', 0)
-        .text(`Prosjek: ${avgRating.toFixed(2)}`)
+        .text(`Average: ${avgRating.toFixed(2)}`)
         .transition()
         .duration(1500)
         .style('opacity', 1);
@@ -260,7 +268,7 @@ export default function GameStatsChart({ data, title = 'Statistika Igara' }: Gam
   }, [data, title, dimensions]);
 
   return (
-    <div ref={containerRef} className="w-full bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl relative">
+    <div ref={containerRef} className="w-full bg-grey-dark p-4 sm:p-6 md:p-8 rounded-xl relative">
       <svg ref={svgRef} className="w-full" />
       <div
         ref={tooltipRef}

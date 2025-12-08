@@ -3,20 +3,20 @@ import { igdbClient } from "@/lib/igdb";
 
 export async function GET() {
   try {
-    // Dohvati top ocijenjene igre s IGDB-a
+    // Dohvati top ocijenjene igre s IGDB-a (bez DLC-ova i expansiona)
     const topRatedGames = await igdbClient.request(
       'games',
       `fields name,rating,rating_count; 
-       where rating != null & rating_count > 100; 
+       where rating != null & rating_count > 100 & version_parent = null; 
        sort rating desc; 
        limit 8;`
     );
 
-    // Dohvati najpopularnije igre (najviše ocjena)
+    // Dohvati najpopularnije igre (najviše ocjena, bez DLC-ova i expansiona)
     const popularGames = await igdbClient.request(
       'games',
       `fields name,rating,rating_count; 
-       where rating_count != null; 
+       where rating_count != null & version_parent = null; 
        sort rating_count desc; 
        limit 8;`
     );

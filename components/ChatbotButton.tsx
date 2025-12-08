@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function ChatbotButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,14 +9,24 @@ export default function ChatbotButton() {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [sessionId, setSessionId] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Generate session ID on mount
   useEffect(() => {
     setSessionId(`session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   }, []);
 
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
+    if (inputMessage.length > 500) {
+      alert('Message too long. Please keep it under 500 characters.');
+      return;
+    }
 
     const userMessage = inputMessage;
     // Add user message
@@ -46,7 +56,7 @@ export default function ChatbotButton() {
       setMessages(prev => {
         const withoutTyping = prev.slice(0, -1);
         return [...withoutTyping, { 
-          text: 'Oops! An error occurred. Please try again.', 
+          text: 'Oops! Something went wrong. This could be a network issue or the AI service might be temporarily unavailable. Please try again in a moment.', 
           sender: 'bot' 
         }];
       });
@@ -94,10 +104,11 @@ export default function ChatbotButton() {
                         : 'bg-white text-gray-800 shadow-md'
                     }`}
                   >
-                    <p className="text-sm">{msg.text}</p>
+                    <p className="text-sm whitespace-pre-line">{msg.text}</p>
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
@@ -128,7 +139,7 @@ export default function ChatbotButton() {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 flex items-center justify-center group z-50"
+        className="fixed bottom-6 left-6 md:bottom-6 md:left-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 flex items-center justify-center group z-50"
         aria-label={isOpen ? 'Close chatbot' : 'Open chatbot'}
       >
         {isOpen ? (

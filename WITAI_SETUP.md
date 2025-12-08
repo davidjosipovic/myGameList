@@ -80,13 +80,42 @@
 
 ### Intent 8: how_to_use
 **Examples:**
-- How to use the site
-- Instructions
+- How do I use this site
+- How does this work
+- Can you show me how to use it
+- I need a tutorial
+- Help me understand how this platform works
+- What do I do here
+- How can I start using myGameList
+- Please guide me through the site
+- I'm new, how do I use this
+- Can you explain how to use this
+- Show me how to navigate
+- Give me instructions
+- I want to know how to use it
+- Explain how this chatbot works
+- Tell me how to start
+- What's the first step
+- Help me get started
+- I need help using myGameList
+- I don't know how this site works
+- What's the process to use it
+- Give me a quick guide
+- Can you give me a tutorial
+- How to start
+- What is the proper way to use it
+- I want to learn how to use this chatbot
+- Tell me how to use the database
+- Guide me step by step
+- Teach me how to use myGameList
+- Can you walk me through it
+- How do I use the functions here
+- Explain the usage
+- I need help navigating the app
+- How can I access everything here
+- Show me how to work with this site
+- Instructions please
 - Help
-- How does it work
-- How to use the database
-- Tutorial
-- Guide me
 
 ### Intent 9: about_site
 **Examples:**

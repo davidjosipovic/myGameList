@@ -10,7 +10,10 @@ export async function fetchGenreId(genreName: string): Promise<number | null> {
     "point-and-click": 2,
     "fighting": 4,
     "shooter": 5,
+    "fps": 5,
+    "first-person shooter": 5,
     "music": 7,
+    "rhythm": 7,
     "platform": 8,
     "platformer": 8,
     "puzzle": 9,
@@ -20,8 +23,11 @@ export async function fetchGenreId(genreName: string): Promise<number | null> {
     "role playing": 12,
     "rpg": 12,
     "role-playing": 12,
+    "jrpg": 12,
+    "crpg": 12,
     "simulator": 13,
     "simulation": 13,
+    "sim": 13,
     "sport": 14,
     "sports": 14,
     "strategy": 15,
@@ -31,6 +37,8 @@ export async function fetchGenreId(genreName: string): Promise<number | null> {
     "tactical": 24,
     "hack and slash": 25,
     "beat 'em up": 25,
+    "beat em up": 25,
+    "brawler": 25,
     "quiz": 26,
     "trivia": 26,
     "pinball": 30,
@@ -38,10 +46,24 @@ export async function fetchGenreId(genreName: string): Promise<number | null> {
     "indie": 32,
     "arcade": 33,
     "visual novel": 34,
+    "vn": 34,
     "card and board game": 35,
     "card game": 35,
     "board game": 35,
-    "moba": 36
+    "moba": 36,
+    // Common gameplay tags that users might search for
+    "action": 4,  // Map to fighting as closest match
+    "roguelike": 12,  // Often RPG-based
+    "roguelite": 12,
+    "souls-like": 12,
+    "soulslike": 12,
+    "metroidvania": 8,  // Platformer hybrid
+    "sandbox": 13,  // Simulation
+    "survival": 31,  // Adventure
+    "horror": 31,  // Adventure
+    "stealth": 31,  // Adventure
+    "mmo": 12,  // RPG
+    "mmorpg": 12
   };
 
   const normalizedGenreName = genreName.toLowerCase().trim();
