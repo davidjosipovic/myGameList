@@ -8,31 +8,47 @@ type Game = {
   name: string;
 };
 
-export default function HomeCarousel(props) {
+export default function HomeCarousel({ filter }: { filter: string }) {
   const [data, setData] = useState<Game[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  
+
   useEffect(() => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const MAX_ATTEMPTS = 8;
+    const POLL_INTERVAL = 5000;
+    let attempt = 0;
+
+    const fetchGames = async () => {
+      attempt++;
+      try {
+        const response = await fetch(`/api/games/${filter}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const json = await response.json();
+        if (!cancelled) {
+          setData(json.data);
+          setLoading(false);
+          setError(false);
+        }
+      } catch {
+        if (attempt < MAX_ATTEMPTS && !cancelled) {
+          timer = setTimeout(fetchGames, POLL_INTERVAL);
+          return;
+        }
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    };
+
     setLoading(true);
     setError(false);
-    fetch(`api/games/${props.filter}`, {
-      method: 'GET',
-    })
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to fetch');
-        return response.json();
-      })
-      .then(data => {
-        setData(data.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError(true);
-        setLoading(false);
-      });
-  }, [props.filter]);
+    fetchGames();
+
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [filter]);
 
   if (loading) {
     return (

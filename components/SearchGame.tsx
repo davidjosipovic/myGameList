@@ -32,6 +32,15 @@ const SearchGame = (props) => {
             const data = await response.json();
             setSearchResults(data.data);
             setHasError(false);
+            // GA4 Funnel – korak 2: korisnik pretražuje igru
+            if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+              (window as any).gtag('event', 'search_game', {
+                event_category: 'funnel',
+                event_label: searchInput.trim(),
+                search_term: searchInput.trim(),
+                results_count: data.data?.length ?? 0,
+              });
+            }
           } else {
             setHasError(true);
           }

@@ -111,7 +111,17 @@ const GameComponent: React.FC = ({ params }: { params: { id: string } }) => {
         method: "POST",
       });
       const data = await response.json();
-      setGame(data.data[0]);
+      const gameData = data.data[0];
+      setGame(gameData);
+      // GA4 Funnel – korak 3: korisnik gleda detalje igre
+      if (gameData && typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'view_game_detail', {
+          event_category: 'funnel',
+          event_label: gameData.name,
+          game_id: String(params.id),
+          game_name: gameData.name,
+        });
+      }
     } catch (err) {
       console.error(err);
     } finally {

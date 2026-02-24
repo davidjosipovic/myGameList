@@ -1,6 +1,8 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+
 export default async function middleware(req: NextRequest) {
   // Get the pathname of the request (e.g. /, /protected)
   const path = req.nextUrl.pathname;
@@ -22,6 +24,17 @@ export default async function middleware(req: NextRequest) {
   if(!session){
     if(path==="/editprofile"){
       return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  // Analytics – admin only
+  if (path.startsWith("/analytics")) {
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    const email = (session.email as string || "").toLowerCase();
+    if (ADMIN_EMAILS.length > 0 && !ADMIN_EMAILS.includes(email)) {
+      return NextResponse.rewrite(new URL("/analytics/forbidden", req.url));
     }
   }
 

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import HomeCarousel from "@/components/HomeCarousel";
 import GameStatsChart from "@/components/GameStatsChart";
+import RecommendationsSection from "@/components/RecommendationsSection";
 
 interface GameStats {
   name: string;
@@ -38,45 +39,64 @@ const MyGameListHome: React.FC = () => {
     return () => window.removeEventListener('resize', updateMedia);
   }, []);
 
+  // GA4 Funnel – korak 1: korisnik je na homepageu
   useEffect(() => {
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'page_view_home', {
+        event_category: 'funnel',
+        event_label: 'Homepage Visit',
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const MAX_ATTEMPTS = 8;
+    const POLL_INTERVAL = 5000; // 5 seconds
+    let attempt = 0;
+
     const fetchStats = async () => {
+      attempt++;
       try {
-        setLoading(true);
         const response = await fetch('/api/stats/public');
-        
-        if (!response.ok) {
-          throw new Error('Error fetching data');
-        }
-        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
         const data = await response.json();
-        
-        if (Array.isArray(data) && data.length > 0) {
+        if (!Array.isArray(data) || data.length === 0) throw new Error('Empty data');
+
+        if (!cancelled) {
           setGameStats(data);
-        } else {
-          throw new Error('No data available');
+          setLoading(false);
         }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching statistics:', error);
-        
-        // Fallback data
-        const fallbackData: GameStats[] = [
-          { name: 'The Witcher 3', rating: 9.5, plays: 15234 },
-          { name: 'Elden Ring', rating: 9.2, plays: 18456 },
-          { name: 'Baldur\'s Gate 3', rating: 9.7, plays: 12890 },
-          { name: 'Red Dead Redemption 2', rating: 9.3, plays: 16543 },
-          { name: 'God of War', rating: 9.4, plays: 13245 },
-          { name: 'Cyberpunk 2077', rating: 8.5, plays: 11234 },
-          { name: 'Hades', rating: 9.1, plays: 10234 },
-          { name: 'Hollow Knight', rating: 9.0, plays: 9876 },
-        ];
-        setGameStats(fallbackData);
-        setLoading(false);
+        return; // success — stop polling
+      } catch {
+        // Keep polling until MAX_ATTEMPTS reached
+        if (attempt < MAX_ATTEMPTS && !cancelled) {
+          timer = setTimeout(fetchStats, POLL_INTERVAL);
+          return;
+        }
+        // Final fallback
+        if (!cancelled) {
+          setGameStats([
+            { name: 'The Witcher 3', rating: 9.5, plays: 15234 },
+            { name: 'Elden Ring', rating: 9.2, plays: 18456 },
+            { name: "Baldur's Gate 3", rating: 9.7, plays: 12890 },
+            { name: 'Red Dead Redemption 2', rating: 9.3, plays: 16543 },
+            { name: 'God of War', rating: 9.4, plays: 13245 },
+            { name: 'Cyberpunk 2077', rating: 8.5, plays: 11234 },
+            { name: 'Hades', rating: 9.1, plays: 10234 },
+            { name: 'Hollow Knight', rating: 9.0, plays: 9876 },
+          ]);
+          setLoading(false);
+        }
       }
     };
 
+    setLoading(true);
     fetchStats();
+
+    return () => { cancelled = true; clearTimeout(timer); };
   }, []);
 
   return (
@@ -183,6 +203,19 @@ const MyGameListHome: React.FC = () => {
           </div>
           <HomeCarousel filter="top"/>
         </div>
+
+        {/* Recommendations — visible only to logged-in users */}
+        {session && (
+          <div className="mb-10 lg:mb-16">
+            <div className="inline-flex items-center w-full mb-4 lg:mb-6">
+              <h1 className="text-lg lg:text-3xl font-bold text-white px-4 py-2 bg-grey-dark rounded-l-lg border border-white whitespace-nowrap">
+                Recommended For You
+              </h1>
+              <hr className="w-full h-px bg-white border-0" />
+            </div>
+            <RecommendationsSection />
+          </div>
+        )}
       </section>
 
       {/* Mobile Login/Register */}

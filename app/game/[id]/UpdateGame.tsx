@@ -63,6 +63,20 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
             .then((response) => {
                 if (response.ok) {
                     console.log("Game added/updated successfully");
+
+                    // ── GA4 custom event ──────────────────────────────────
+                    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+                        (window as any).gtag('event', 'add_to_list', {
+                            event_category: 'engagement',
+                            event_label: game.name,
+                            game_id: String(game.id),
+                            game_name: game.name,
+                            status: selectedStatus,
+                            rating: selectedRating,
+                            action: gameExistsInDatabase ? 'update' : 'add',
+                        });
+                    }
+                    // ─────────────────────────────────────────────────────
                 } else {
                     throw new Error(`Error adding/updating game: ${response.status}`);
                 }

@@ -43,17 +43,9 @@ export async function GET() {
     return NextResponse.json(gameStats);
   } catch (error) {
     console.error("Error fetching IGDB stats:", error);
-    
-    // Fallback podaci u slučaju greške
-    const fallbackData = [
-      { name: 'The Witcher 3', rating: 9.5, plays: 15234 },
-      { name: 'Elden Ring', rating: 9.2, plays: 18456 },
-      { name: 'Baldur\'s Gate 3', rating: 9.7, plays: 12890 },
-      { name: 'Red Dead Redemption 2', rating: 9.3, plays: 16543 },
-      { name: 'God of War', rating: 9.4, plays: 13245 },
-      { name: 'Cyberpunk 2077', rating: 8.5, plays: 11234 },
-    ];
-    
-    return NextResponse.json(fallbackData);
+    return NextResponse.json(
+      { error: 'IGDB temporarily unavailable' },
+      { status: 503 }
+    );
   }
 }

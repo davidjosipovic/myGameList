@@ -25,7 +25,7 @@ class IGDBClient {
   }
 
   /**
-   * Fetches a new access token from Twitch OAuth
+   * Fetches a new access token from Twitch OAuth.
    */
   private async fetchNewToken(): Promise<string> {
     if (!this.clientId || !this.clientSecret) {
@@ -34,9 +34,7 @@ class IGDBClient {
 
     const response = await fetch(
       `https://id.twitch.tv/oauth2/token?client_id=${this.clientId}&client_secret=${this.clientSecret}&grant_type=client_credentials`,
-      {
-        method: 'POST',
-      }
+      { method: 'POST' }
     );
 
     if (!response.ok) {
@@ -46,13 +44,11 @@ class IGDBClient {
     }
 
     const data: TokenResponse = await response.json();
-    
-    // Store token and set expiry time (subtract 5 minutes for safety)
+
     this.accessToken = data.access_token;
     this.tokenExpiry = Date.now() + (data.expires_in - 300) * 1000;
-    
+
     console.log('New IGDB token fetched successfully');
-    console.log('Token starts with:', this.accessToken.substring(0, 10) + '...');
     return data.access_token;
   }
 
@@ -84,72 +80,60 @@ class IGDBClient {
   }
 
   /**
-   * Makes a request to the IGDB API with automatic token refresh
+   * Makes a single fetch to IGDB with the given token.
    */
-  async request(endpoint: string, body: string): Promise<any> {
-    // Refresh credentials in case they changed
-    this.clientId = process.env.TWITCH_CLIENT_ID || '';
-    this.clientSecret = process.env.TWITCH_CLIENT_SECRET || '';
-    
-    const token = await this.getToken();
-    
-    console.log('Making IGDB request with token:', token.substring(0, 10) + '...');
-    console.log('Using Client-ID:', this.clientId);
-    
-    const response = await fetch(`https://api.igdb.com/v4/${endpoint}`, {
+  private async fetchIGDB(endpoint: string, body: string, token: string): Promise<Response> {
+    return fetch(`https://api.igdb.com/v4/${endpoint}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Client-ID': this.clientId,
         'Authorization': `Bearer ${token}`,
       },
-      body: body,
+      body,
     });
+  }
 
-    if (!response.ok) {
+  /**
+   * Makes a request to the IGDB API with automatic retry on 401.
+   * New Twitch tokens can take 10-60s to propagate across IGDB edge
+   * servers, so on 401 we simply wait and retry with the same token.
+   */
+  async request(endpoint: string, body: string): Promise<any> {
+    this.clientId = process.env.TWITCH_CLIENT_ID || '';
+    this.clientSecret = process.env.TWITCH_CLIENT_SECRET || '';
+
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY_MS = 4000; // 4 seconds between retries
+    let token = await this.getToken();
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      const response = await this.fetchIGDB(endpoint, body, token);
+
+      if (response.ok) {
+        return await response.json();
+      }
+
       const errorText = await response.text();
-      console.error(`IGDB API error (${response.status}):`, errorText);
-      console.error('Using Client-ID:', this.clientId);
-      
-      // If unauthorized, token might be invalid - try refreshing once
-      if (response.status === 401) {
-        console.log('Token unauthorized, fetching new token...');
-        // Clear the old token
+
+      // Only retry on 401 (token not yet propagated)
+      if (response.status !== 401 || attempt === MAX_RETRIES) {
+        throw new Error(`IGDB API error: ${response.status} ${errorText}`);
+      }
+
+      // After two failed attempts with the same token, try getting a fresh one
+      if (attempt === 1) {
         this.accessToken = null;
         this.tokenExpiry = 0;
         this.tokenFetchPromise = null;
-        
-        // Wait a bit before retrying to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        const newToken = await this.getToken();
-        
-        console.log('Retrying with new token:', newToken.substring(0, 10) + '...');
-        
-        // Retry with new token
-        const retryResponse = await fetch(`https://api.igdb.com/v4/${endpoint}`, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Client-ID': this.clientId,
-            'Authorization': `Bearer ${newToken}`,
-          },
-          body: body,
-        });
-
-        if (!retryResponse.ok) {
-          const retryErrorText = await retryResponse.text();
-          console.error(`IGDB API retry error (${retryResponse.status}):`, retryErrorText);
-          throw new Error(`IGDB API error: ${retryResponse.status} ${retryErrorText}`);
-        }
-
-        return await retryResponse.json();
       }
 
-      throw new Error(`IGDB API error: ${response.status} ${errorText}`);
+      console.warn(
+        `IGDB 401 for "${endpoint}" (attempt ${attempt + 1}/${MAX_RETRIES + 1}) – waiting ${RETRY_DELAY_MS / 1000}s...`
+      );
+      await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+      token = await this.getToken();
     }
-
-    return await response.json();
   }
 }
 
