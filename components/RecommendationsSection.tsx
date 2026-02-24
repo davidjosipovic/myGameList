@@ -72,21 +72,11 @@ export default function RecommendationsSection() {
                 </div>
               )}
 
-              {/* Similarity badge */}
-              <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-green-light text-xs font-mono px-2 py-1 rounded">
-                {(game.similarity * 100).toFixed(0)}%
-              </div>
-
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex flex-col justify-end p-3 lg:p-4">
                 <p className="text-white text-sm md:text-base lg:text-lg font-bold drop-shadow-lg">
                   {game.name}
                 </p>
-                {game.matchedGenres.length > 0 && (
-                  <p className="text-white/60 text-xs mt-1 truncate">
-                    {game.matchedGenres.slice(0, 2).join(' · ')}
-                  </p>
-                )}
               </div>
             </div>
           </Link>

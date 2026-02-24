@@ -19,6 +19,6 @@ export default function ProfilePicture(props){
         var resolution=100
     }
     return(
-        <Image className={` object-cover ${widthHeight} ${props.className}`} priority alt="Profile Picture" width={resolution} height={resolution} src={picture} />
+        <Image className={`rounded-full object-cover ${widthHeight} ${props.className}`} priority alt="Profile Picture" width={resolution} height={resolution} src={picture} />
     )
 }
