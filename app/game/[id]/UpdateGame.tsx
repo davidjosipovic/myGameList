@@ -106,7 +106,7 @@ export default function UpdateGame({ game, setIsUpdateGameOpen, userId }) {
                     </button>
                 </div>
             </div>
-
+ 
             <div className="p-6 space-y-6">
                 {/* Status and Rating Dropdowns */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
