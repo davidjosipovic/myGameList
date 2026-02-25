@@ -302,12 +302,22 @@ export async function fetchActiveUsersOverTime(): Promise<FetchResult> {
 
 export async function fetchUsersByDevice(): Promise<FetchResult> {
   if (isGA4Configured) {
-    // Pokušaj Realtime API prvi (nema delay-a)
+    // 1. Historijski runReport (30 dana)
+    try {
+      const result = await runGA4Report(['deviceCategory'], ['activeUsers', 'sessions'], '30daysAgo', 'today');
+      if (result.rows && result.rows.length > 0) {
+        console.log('[GA4] usersByDevice: historical data, rows:', result.rows.length);
+        return { result, source: 'historical' };
+      }
+      console.warn('[GA4] usersByDevice: historical empty, trying realtime...');
+    } catch (err) {
+      console.error('[GA4] usersByDevice historical failed:', err);
+    }
+    // 2. Fallback: Realtime API
     try {
       const result = await runGA4RealtimeReport(['deviceCategory'], ['activeUsers']);
       if (result.rows && result.rows.length > 0) {
         console.log('[GA4] usersByDevice: LIVE realtime data, rows:', result.rows.length);
-        // Realtime vraća samo activeUsers, sessions nema – dodaj 0 kao fallback
         result.rows = result.rows.map((row) => ({
           ...row,
           metricValues: [row.metricValues[0], { value: '0' }],
@@ -315,17 +325,7 @@ export async function fetchUsersByDevice(): Promise<FetchResult> {
         return { result, source: 'live' };
       }
     } catch (err) {
-      console.warn('[GA4] usersByDevice realtime failed, trying historical:', err);
-    }
-    // Fallback na historijski runReport
-    try {
-      const result = await runGA4Report(['deviceCategory'], ['activeUsers', 'sessions'], '30daysAgo', 'today');
-      if (result.rows && result.rows.length > 0) {
-        console.log('[GA4] usersByDevice: historical data');
-        return { result, source: 'historical' };
-      }
-    } catch (err) {
-      console.error('[GA4] usersByDevice historical failed:', err);
+      console.warn('[GA4] usersByDevice realtime failed:', err);
     }
   }
   return { result: mockUsersByDeviceCategory(), source: 'mock' };
@@ -333,7 +333,18 @@ export async function fetchUsersByDevice(): Promise<FetchResult> {
 
 export async function fetchFunnelEvents(): Promise<FetchResult> {
   if (isGA4Configured) {
-    // Pokušaj Realtime API prvi
+    // 1. Historijski runReport (30 dana) – pouzdaniji, sadrži custom evente
+    try {
+      const result = await runGA4Report(['eventName'], ['eventCount'], '30daysAgo', 'today');
+      if (result.rows && result.rows.length > 0) {
+        console.log('[GA4] funnelEvents: historical data, rows:', result.rows.length);
+        return { result, source: 'historical' };
+      }
+      console.warn('[GA4] funnelEvents: historical empty, trying realtime...');
+    } catch (err) {
+      console.error('[GA4] funnelEvents historical failed:', err);
+    }
+    // 2. Fallback: Realtime API
     try {
       const result = await runGA4RealtimeReport(['eventName'], ['eventCount']);
       if (result.rows && result.rows.length > 0) {
@@ -341,17 +352,7 @@ export async function fetchFunnelEvents(): Promise<FetchResult> {
         return { result, source: 'live' };
       }
     } catch (err) {
-      console.warn('[GA4] funnelEvents realtime failed, trying historical:', err);
-    }
-    // Fallback na historijski runReport
-    try {
-      const result = await runGA4Report(['eventName'], ['eventCount'], '30daysAgo', 'today');
-      if (result.rows && result.rows.length > 0) {
-        console.log('[GA4] funnelEvents: historical data');
-        return { result, source: 'historical' };
-      }
-    } catch (err) {
-      console.error('[GA4] funnelEvents historical failed:', err);
+      console.warn('[GA4] funnelEvents realtime failed:', err);
     }
   }
   return { result: mockEventFunnel(), source: 'mock' };

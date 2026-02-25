@@ -35,6 +35,8 @@ export interface RetentionCohort {
   totalUsers: number;
   day1Retained: number;
   day7Retained: number;
+  day1Eligible: number; // korisnici kojima je Day 1 prozor već prošao
+  day7Eligible: number; // korisnici kojima je Day 7 prozor već prošao
 }
 
 // ────────────────────────────────────────────────────────────
@@ -113,6 +115,8 @@ export async function calculateRetention(): Promise<RetentionData> {
   let totalUsers = 0;
   let day1Retained = 0;
   let day7Retained = 0;
+  let day1Eligible = 0;
+  let day7Eligible = 0;
   const cohorts: RetentionCohort[] = [];
 
   try {
@@ -134,6 +138,9 @@ export async function calculateRetention(): Promise<RetentionData> {
       return generateMockRetention();
     }
 
+    const now = new Date();
+    // Denominatori – brojimo samo korisnike čiji je prozor već prošao
+
     // Za svakog korisnika provjeri aktivnost unutar Day 1 i Day 7
     for (const user of users) {
       const registrationDate = new Date(user.createdAt);
@@ -142,27 +149,38 @@ export async function calculateRetention(): Promise<RetentionData> {
       const day7Deadline = new Date(registrationDate);
       day7Deadline.setDate(day7Deadline.getDate() + 7);
 
+      // Preskočimo korisnike čiji prozor još nije prošao
+      const day1WindowComplete = day1Deadline <= now;
+      const day7WindowComplete = day7Deadline <= now;
+
+      if (!day1WindowComplete && !day7WindowComplete) continue;
+
       // "Aktivnost" = dodavanje igre u listu
-      const hasDay1Activity = user.games.some((g) => {
-        const gameDate = new Date(g.createdAt);
-        return gameDate > registrationDate && gameDate <= day1Deadline;
-      });
+      if (day1WindowComplete) {
+        day1Eligible++;
+        const hasDay1Activity = user.games.some((g) => {
+          const gameDate = new Date(g.createdAt);
+          return gameDate > registrationDate && gameDate <= day1Deadline;
+        });
+        if (hasDay1Activity) day1Retained++;
+      }
 
-      const hasDay7Activity = user.games.some((g) => {
-        const gameDate = new Date(g.createdAt);
-        return gameDate > registrationDate && gameDate <= day7Deadline;
-      });
-
-      if (hasDay1Activity) day1Retained++;
-      if (hasDay7Activity) day7Retained++;
+      if (day7WindowComplete) {
+        day7Eligible++;
+        const hasDay7Activity = user.games.some((g) => {
+          const gameDate = new Date(g.createdAt);
+          return gameDate > registrationDate && gameDate <= day7Deadline;
+        });
+        if (hasDay7Activity) day7Retained++;
+      }
     }
 
     // Grupiraj u mjesečne kohorte
-    const cohortMap = new Map<string, { total: number; d1: number; d7: number }>();
+    const cohortMap = new Map<string, { total: number; d1: number; d7: number; d1Eligible: number; d7Eligible: number }>();
 
     for (const user of users) {
       const monthKey = user.createdAt.toISOString().slice(0, 7); // YYYY-MM
-      const entry = cohortMap.get(monthKey) || { total: 0, d1: 0, d7: 0 };
+      const entry = cohortMap.get(monthKey) || { total: 0, d1: 0, d7: 0, d1Eligible: 0, d7Eligible: 0 };
       entry.total++;
 
       const regDate = new Date(user.createdAt);
@@ -171,11 +189,17 @@ export async function calculateRetention(): Promise<RetentionData> {
       const d7Limit = new Date(regDate);
       d7Limit.setDate(d7Limit.getDate() + 7);
 
-      if (user.games.some((g) => new Date(g.createdAt) > regDate && new Date(g.createdAt) <= d1Limit)) {
-        entry.d1++;
+      if (d1Limit <= now) {
+        entry.d1Eligible++;
+        if (user.games.some((g) => new Date(g.createdAt) > regDate && new Date(g.createdAt) <= d1Limit)) {
+          entry.d1++;
+        }
       }
-      if (user.games.some((g) => new Date(g.createdAt) > regDate && new Date(g.createdAt) <= d7Limit)) {
-        entry.d7++;
+      if (d7Limit <= now) {
+        entry.d7Eligible++;
+        if (user.games.some((g) => new Date(g.createdAt) > regDate && new Date(g.createdAt) <= d7Limit)) {
+          entry.d7++;
+        }
       }
 
       cohortMap.set(monthKey, entry);
@@ -187,6 +211,8 @@ export async function calculateRetention(): Promise<RetentionData> {
         totalUsers: data.total,
         day1Retained: data.d1,
         day7Retained: data.d7,
+        day1Eligible: data.d1Eligible,
+        day7Eligible: data.d7Eligible,
       });
     }
   } catch (err) {
@@ -198,11 +224,11 @@ export async function calculateRetention(): Promise<RetentionData> {
     totalUsers,
     day1: {
       retained: day1Retained,
-      percent: totalUsers > 0 ? Number(((day1Retained / totalUsers) * 100).toFixed(1)) : 0,
+      percent: day1Eligible > 0 ? Number(((day1Retained / day1Eligible) * 100).toFixed(1)) : 0,
     },
     day7: {
       retained: day7Retained,
-      percent: totalUsers > 0 ? Number(((day7Retained / totalUsers) * 100).toFixed(1)) : 0,
+      percent: day7Eligible > 0 ? Number(((day7Retained / day7Eligible) * 100).toFixed(1)) : 0,
     },
     cohorts,
   };
@@ -217,7 +243,7 @@ function generateMockRetention(): RetentionData {
     const total = 20 + Math.round(Math.random() * 30);
     const d1 = Math.round(total * (0.3 + Math.random() * 0.25));
     const d7 = Math.round(total * (0.15 + Math.random() * 0.15));
-    return { cohortDate: m, totalUsers: total, day1Retained: d1, day7Retained: d7 };
+    return { cohortDate: m, totalUsers: total, day1Retained: d1, day7Retained: d7, day1Eligible: total, day7Eligible: total };
   });
 
   const totalUsers = cohorts.reduce((s, c) => s + c.totalUsers, 0);

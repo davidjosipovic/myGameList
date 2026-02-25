@@ -8,6 +8,8 @@ interface RetentionCohort {
   totalUsers: number;
   day1Retained: number;
   day7Retained: number;
+  day1Eligible?: number;
+  day7Eligible?: number;
 }
 
 interface RetentionData {
@@ -64,8 +66,8 @@ export default function RetentionChart({ data }: Props) {
     // Izračunaj postotke
     const chartData = cohorts.map((c) => ({
       label: c.cohortDate,
-      d1Pct: c.totalUsers > 0 ? (c.day1Retained / c.totalUsers) * 100 : 0,
-      d7Pct: c.totalUsers > 0 ? (c.day7Retained / c.totalUsers) * 100 : 0,
+      d1Pct: (c.day1Eligible ?? c.totalUsers) > 0 ? (c.day1Retained / (c.day1Eligible ?? c.totalUsers)) * 100 : 0,
+      d7Pct: (c.day7Eligible ?? c.totalUsers) > 0 ? (c.day7Retained / (c.day7Eligible ?? c.totalUsers)) * 100 : 0,
       totalUsers: c.totalUsers,
       d1: c.day1Retained,
       d7: c.day7Retained,
